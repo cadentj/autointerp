@@ -6,23 +6,20 @@ import torch
 from prompts import system_prompt, few_shot_explainations
 
 @dataclass
-class Activation:
+class Feature:
 
     acts: Tensor
     normalized_acts: Tensor = None
     tokens: List[str]
-
-@dataclass
-class Neuron:
-    feature: Activation
     explaination: str
 
-def parse_activation(activation: Activation) -> str:
+
+def parse_activation(activation: Feature) -> str:
     pass
 
 def build_explainer_prompt(
     tokenizer,
-    few_shot: List[Activation],
+    few_shot: List[Feature],
     template: str,
 ):
     
@@ -33,19 +30,19 @@ def build_explainer_prompt(
         }
     ]
 
-    for neuron in few_shot_explainations:
+    for feature in few_shot_explainations:
 
         messages.append(
             {
                 "role" : "user",
-                "content" : parse_activation(neuron.feature)
+                "content" : parse_activation(feature)
             }
         )
 
         messages.append(
             {
                 "role" : "assistant", 
-                "content" : neuron.explaination
+                "content" : feature.explaination
             }
         )
 
@@ -58,12 +55,10 @@ system_prompt = """We're studying neurons in a neural network. Each neuron looks
 The activation format is token<tab>activation. Activation values range from 0 to 10. A neuron finding what it's looking for is represented by a non-zero activation value. The higher the activation value, the stronger the match."""
 
 few_shot_explainations = [
-    Neuron(
-        feature=Activation(
-            acts=None,
-            normalized_acts=torch.Tensor([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-            tokens=["The", "neuron", "is", "looking", "for", "a", "person."]
-        ),
+    Feature(
+        acts=None,
+        normalized_acts=torch.Tensor([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+        tokens=["The", "neuron", "is", "looking", "for", "a", "person."],
         explaination="The neuron is looking for a person."
     )
 ]
