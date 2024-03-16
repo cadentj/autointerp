@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import re
 
 SYSTEM_PROMPT = ""
-ACTION_PROMPT = "Given your explaination, please output a phrase that maximizes activations. You should only output the phrase, and nothing else before or after it. Surround your phrase with brackets {YOUR_PHRASE} "
+ACTION_PROMPT = "Given your explaination, please output a phrase that maximizes activations. You should only output the phrase, and nothing else before or after it. Surround your phrase with brackets {YOUR_PHRASE}"
 RE_EXPLAIN_PROMPT = "Given the self reflections..."
 REFLECTION_PROMPT = "Given the score..."
 
@@ -50,18 +50,12 @@ class Agent:
         """
         
         if not self.scores:
-            
-            system = {
-                "role" : "system",
-                "content" : SYSTEM_PROMPT
-            }
-
             environment = {
                 "role" : "user",
                 "content" : self.generate_environment(feature)
             }
 
-            messages = [system, environment]
+            messages = [environment]
         else: 
             re_explain = {
                 "role" : "system",
@@ -83,7 +77,9 @@ class Agent:
         """
 
         formatted_tokens = [f"{t}   {a}" for t, a in zip(feature.tokens, feature.acts)]
-        return "\n".join(formatted_tokens)
+        activations = "\n".join(formatted_tokens)
+
+        return SYSTEM_PROMPT + activations
 
     def action(self, messages: str, regenerate=False):
         """Given some explaination, generate phrases which maximize activations
