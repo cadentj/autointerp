@@ -1,15 +1,26 @@
 from typing import List
 from torch import Tensor
+import torch
 from dataclasses import dataclass
+import re
 
 SYSTEM_PROMPT = ""
-ACTION_PROMPT = ""
+ACTION_PROMPT = "Given your explaination, please output a phrase that maximizes activations. You should only output the phrase, and nothing else before or after it. Surround your phrase with brackets {YOUR_PHRASE} "
+RE_EXPLAIN_PROMPT = "Given the self reflections..."
+REFLECTION_PROMPT = "Given the score..."
+
+@dataclass 
+class Location:
+    feature_type: str # mlp, resid, attn
+    index: int # dictionary index
+    layer: int # layer index
 
 @dataclass
 class Feature:
     tokens: List[str]
     acts: Tensor
     n_acts: Tensor = None
+    location: Location = None
 
 def gen(model, messages, remote=False):
     with model.generate(messages, max_new_tokens=100, remote=remote):
@@ -26,7 +37,6 @@ class Agent:
         self.reward_engine = reward_engine
 
         self.scores = []
-        self.memory = None
         self.trials = {}
 
     def explain(self, feature: Feature):
@@ -39,7 +49,7 @@ class Agent:
             explaination (str): A detailed explaination of the feature activations
         """
         
-        if not self.memory:
+        if not self.scores:
             
             system = {
                 "role" : "system",
@@ -53,16 +63,29 @@ class Agent:
 
             messages = [system, environment]
         else: 
-            messages = self.memory
-            # TODO: no idea
+            re_explain = {
+                "role" : "system",
+                "content" : RE_EXPLAIN_PROMPT
+            }
+
+            messages.append(re_explain)
 
         return gen(self.model, messages)
 
     def generate_environment(self, feature: Feature):
-        pass
+        """Generate initial tabulated format for feature activations.
 
+        Args:
+            feature (Feature): The feature to explain, unnormalized activations
 
-    def action(self, messages: str):
+        Returns:
+            environment (str): Initial tabulated format for feature activations
+        """
+
+        formatted_tokens = [f"{t}   {a}" for t, a in zip(feature.tokens, feature.acts)]
+        return "\n".join(formatted_tokens)
+
+    def action(self, messages: str, regenerate=False):
         """Given some explaination, generate phrases which maximize activations
 
         Args: 
@@ -72,6 +95,9 @@ class Agent:
             phrases (List[str]): Phrases which maximize activations
         """
         
+        if regenerate:
+            messages = messages[:-1]
+
         messages.append({
             "role" : "user",
             "content" : ACTION_PROMPT
@@ -79,27 +105,20 @@ class Agent:
 
         return gen(self.model, messages)
 
-    def parse_action(self):
+    def parse_action(self, phrase):
         """Given some phrases, parse them into scorable tokens for the RewardEngine
 
         Args:
-            phrases (List[str]): Phrases which maximize activations
+            phrase (str): Phrase which maximize activations
 
         Returns:
-            tokens (List[str]): Scorable tokens
+            parsed_phrase (str): Parsed phrase
         """
-        pass
-
-    def reward(self):
-        """Call the RewardEngine to score the tokens
-        
-        Args:
-            tokens (List[str]): Scorable tokens
-
-        Returns:
-            score (float): The score of the tokens
-        """
-        pass
+        pattern = r"\{(.+?)\}"
+        parsed_phrase = re.findall(pattern, phrase)
+        if not parsed_phrase:
+            return False
+        return parsed_phrase
 
     def reflect(self):
         """Reflect on the score and update long term memory
@@ -117,9 +136,13 @@ class Agent:
         explaination = self.explain(feature)
 
         action = self.action(explaination)
-        parsed_action = self.parse_action(action)
+        parsed_phrase = self.parse_action(action)
 
-        reward = self.reward_engine.score(parsed_action)
+        while (not parsed_phrase):
+            action = self.action(explaination, regenerate=True)
+            parsed_phrase = self.parse_action(action)
+
+        reward = self.reward_engine.score(feature, parsed_phrase)
         self.scores.append(reward)
 
         reflection = self.reflect(reward)
@@ -132,6 +155,15 @@ class RewardEngine:
         self.model = model
         self.dictionaries = dictionaries
 
-    def score(self):
-        pass
+    def score(self, feature, parsed_phrase):
+        activation = self.get_activation(feature.location)
 
+        # TODO: SOME SCORING
+        return 0
+
+    def get_activation(self, location): 
+
+        with torch.no_grad():
+            acts = self.model.get_activation(location.layer)
+        
+        return acts[location.index]
