@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from torch import Tensor
 import torch
 from dataclasses import dataclass
@@ -19,12 +19,12 @@ Activations:
 Here are three concise sentences that best describe the neurons behavior.
 """
 
-ACTION_PROMPT = """Given your observations, write three sentences that would maximize the activations of the neuron. Return your sentences in brackets.
+ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron. Return each sentence in brackets.
 
-Example format:
-{sentence1}
-{sentence2}
-{sentence3}
+Example sentences:
+[sentence1]
+[sentence2]
+[sentence3]
 
 Your sentences:
 """
@@ -51,13 +51,20 @@ class Feature:
     n_acts: Tensor = None
     location: Location = None
 
+@dataclass
+class State:
+    agent: List
+    self_reflector: str
+    evaluator: Union[int, bool]
+
 def gen(model, messages, remote=False):
     prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt")
 
     with model.generate(prompt, max_new_tokens=100, remote=remote, scan=False, validate=False):
         tokens = model.generator.output.save()
-
-    return model.tokenizer.decode(tokens[0])
+    
+    new_tokens = tokens[0][len(prompt[0]):]
+    return model.tokenizer.decode(new_tokens)
     
 def flatten_conversation(conversation):
     flattended = ""
@@ -74,55 +81,68 @@ class Environment:
 
     def __init__(self, model, dictionaries):
         self.model = model
-
         self.mem = []
-        self.trials = []
-    
-    def load(self):
 
-        self.self_reflector = SelfReflector(self.model)
-        self.reward_engine = Evaluator(self.model, self.dictionaries)
-        self.agent = Agent(self.model, self.reward_engine)
+        self.agent = Agent(self.model, self.mem)
+        self.self_reflector = SelfReflector(self.model, self.mem)
+        self.evaluator = Evaluator(self.model, dictionaries, self.mem)
 
-    def explain(self, feature: Feature):
+    def __call__(self, feature: Feature):
         
         success = False
 
         while not success:
+
+            s = State(
+                agent = [],
+                self_reflector = "",
+                evaluator = None,
+            )
+
+            self.mem.append(s)
+
             action = self.agent(feature)
 
-            
+            break
 
+        return action
 
 class Agent:
 
-    def __init__(self, model, reward_engine):
+    def __init__(self, model, mem):
         self.model = model
         self.tokenizer = model.tokenizer
 
-        self.reward_engine = reward_engine
-
-        self.scores = []
-        self.trials = []
+        self.mem = mem
 
     def explain(self, feature: Feature):
-        if not self.scores:
+
+        if len(self.mem) == 1:
+
             environment = {
                 "role" : "user",
                 "content" : self.generate_environment(feature)
             }
 
-            messages = [environment]
+            self.mem[-1].agent.append(environment)
         else: 
             re_explain = {
-                "role" : "system",
+                "role" : "user",
                 "content" : RE_EXPLAIN_PROMPT
             }
 
-            messages.append(re_explain)
+            self.mem[-1].agent.append(re_explain)
 
-        return gen(self.model, messages)
 
+        explaination = {
+            "role" : "assistant",
+            "content" : gen(self.model, self.mem[-1].agent)  
+        }
+        
+        self.mem[-1].agent.append(explaination)
+
+        # print(explaination)
+    
     def generate_environment(self, feature: Feature):
 
         formatted_tokens = [f"{t}   {a}" for t, a in zip(feature.tokens, feature.n_acts)]
@@ -130,41 +150,49 @@ class Agent:
 
         return SYSTEM_PROMPT.format(sentence=feature.prompt, activations=activations)
 
-    def action(self, messages: str, regenerate=False):
-        if regenerate:
-            messages = messages[:-1]
-
-        messages.append({
+    def action(self):
+        self.mem[-1].agent.append({
             "role" : "user",
             "content" : ACTION_PROMPT
         })
 
-        return gen(self.model, messages)
+        generated_action = gen(self.model, self.mem[-1].agent)
+        
+        while not self.parse_action(generated_action):
+            generated_action = gen(self.model, self.mem[-1].agent)
+
+        action = {
+            "role" : "assistant",
+            "content" : generated_action
+        }
+
+        self.mem[-1].agent.append(action)
+
+        return generated_action
 
     def parse_action(self, phrase):
-        pattern = r"\{(.+?)\}"
-        parsed_phrase = re.findall(pattern, phrase)
-        if not parsed_phrase:
-            return False
-        return parsed_phrase
+        pattern = r'\[(.*?)\]'
+        matches = re.findall(pattern, phrase)
+
+        print(phrase)
+        print(matches)
+        print(len(matches))
         
-    def __call__(self, feature: Feature):
+        if len(matches) != 3:
+            return False
+        return matches
+        
+    def __call__(self, feature):
 
-        explaination = self.explain(feature)
+        self.explain(feature)
+        return self.action()
 
-        action = self.action(explaination)
-        parsed_phrase = self.parse_action(action)
-
-        while (not parsed_phrase):
-            action = self.action(explaination, regenerate=True)
-            parsed_phrase = self.parse_action(action)
-
-        return parsed_phrase
 
 class SelfReflector:
 
-    def __init__(self, model):
+    def __init__(self, model, mem):
         self.model = model
+        self.mem = mem
 
     def reflect(self, messages):
         return gen(self.model, messages)
@@ -172,30 +200,28 @@ class SelfReflector:
 
 class Evaluator:
 
-    def __init__(self, model, dictionaries, threshold=8):
+    def __init__(self, model, dictionaries, mem):
         self.model = model
         self.dictionaries = dictionaries
 
-    def evaluate(self, trials):
+        self.mem = mem
 
-        flattened = flatten_conversation(trials[-1])
+    def __call__(self, actions, location):
+        scores = []
+        for a in actions:
+            acts = self.get_activation(
+                a, 
+                location.layer, 
+                location.index
+            )
+            score = torch.argmax(acts)
+            scores.append(score)
 
-        prompt = REFLECTION_PROMPT.format(trial=flattened)
+        return scores
+    
+    def get_activation(self, action, layer, index): 
 
-        return gen(self.model, prompt)
-
-    def score(self, feature, parsed_phrase):
-        acts = self.get_activation(feature.location)
-
-        # TODO: SOME SCORING
-        return 0
-
-    def get_activation(self, location, phrase): 
-
-        layer = location.layer
-        index = location.index
-
-        with self.model.trace(phrase):
+        with self.model.trace(action):
             activations = self.model.transformer.h[layer].output[0]
 
             _, feature_acts, _, _, _, _ = self.dictionaries[layer](activations)
