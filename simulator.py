@@ -3,11 +3,7 @@ from torch import Tensor
 import torch
 from dataclasses import dataclass
 import re
-
-SYSTEM_PROMPT = ""
-ACTION_PROMPT = "Given your explaination, please output a phrase that maximizes activations. You should only output the phrase, and nothing else before or after it. Surround your phrase with brackets {YOUR_PHRASE}"
-RE_EXPLAIN_PROMPT = "Given the self reflections..."
-REFLECTION_PROMPT = "Given the score..."
+from prompts import SYSTEM_PROMPT, ACTION_PROMPT, RE_EXPLAIN_PROMPT, REFLECTION_PROMPT
 
 @dataclass 
 class Location:
@@ -23,10 +19,12 @@ class Feature:
     location: Location = None
 
 def gen(model, messages, remote=False):
-    with model.generate(messages, max_new_tokens=100, remote=remote):
+    prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt")
+
+    with model.generate(prompt, max_new_tokens=100, remote=remote, scan=False, validate=False):
         tokens = model.generator.output.save()
 
-    return model.tokenizer.decode(tokens)
+    return model.tokenizer.decode(tokens[0])
 
 class Agent:
 
@@ -37,7 +35,7 @@ class Agent:
         self.reward_engine = reward_engine
 
         self.scores = []
-        self.trials = {}
+        self.trials = []
 
     def explain(self, feature: Feature):
         """Generate a detailed explaination of feature activations
@@ -79,7 +77,7 @@ class Agent:
         formatted_tokens = [f"{t}   {a}" for t, a in zip(feature.tokens, feature.acts)]
         activations = "\n".join(formatted_tokens)
 
-        return SYSTEM_PROMPT + activations
+        return SYSTEM_PROMPT.format(sentence="abacdqei", activations=activations)
 
     def action(self, messages: str, regenerate=False):
         """Given some explaination, generate phrases which maximize activations
@@ -125,30 +123,47 @@ class Agent:
         Returns:
             None
         """
-        pass
 
+        flattened = flatten_conversation(self.trails[-1])
+
+        return REFLECTION_PROMPT.format(trial=flattened)
+        
+        
     def __call__(self, feature: Feature):
 
         # LOOP THIS
         explaination = self.explain(feature)
 
-        action = self.action(explaination)
-        parsed_phrase = self.parse_action(action)
+        return explaination
 
-        while (not parsed_phrase):
-            action = self.action(explaination, regenerate=True)
-            parsed_phrase = self.parse_action(action)
+        # action = self.action(explaination)
+        # parsed_phrase = self.parse_action(action)
 
-        reward = self.reward_engine.score(feature, parsed_phrase)
-        self.scores.append(reward)
+        # while (not parsed_phrase):
+        #     action = self.action(explaination, regenerate=True)
+        #     parsed_phrase = self.parse_action(action)
 
-        reflection = self.reflect(reward)
+        # reward = self.reward_engine.score(feature, parsed_phrase)
+        # self.scores.append(reward)
 
-        self.trial[0] = reflection
+        # reflection = self.reflect(reward)
+
+        # self.trials.append(reflection)
+
+def flatten_conversation(conversation):
+    flattended = ""
+
+    for message in conversation:
+        if message["role"] == "user":
+            flattended += f"(USER)\n{message['content']}\n\n"
+        else:
+            flattended += f"(MODEL)\n{message['content']}\n\n"
+
+    return flattended[:-2]
 
 class RewardEngine:
 
-    def __init__(self, model, dictionaries):
+    def __init__(self, model, dictionaries, threshold=8):
         self.model = model
         self.dictionaries = dictionaries
 
@@ -158,9 +173,13 @@ class RewardEngine:
         # TODO: SOME SCORING
         return 0
 
-    def get_activation(self, location): 
+    def get_activation(self, location, phra): 
 
-        with torch.no_grad():
-            acts = self.model.get_activation(location.layer)
+        # with torch.no_grad():
+
+        #     with self.model.invoke()
         
-        return acts[location.index]
+        # return acts[location.index]
+
+        pass
+
