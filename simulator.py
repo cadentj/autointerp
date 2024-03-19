@@ -60,7 +60,7 @@ class Feature:
     location: Location = None
 
 
-@dataclass
+@dataclass(repr=True)
 class State:
     agent: List
     self_reflector: str
@@ -115,7 +115,7 @@ class Environment:
 
         action = self.agent(features)    
         scores = self.evaluator(action, location)
-
+        print(s)
         return scores
 
 
@@ -137,7 +137,8 @@ class Agent:
                     samples = self.build_activations(features)
                 )
             }
-            
+
+            print(environment["content"])            
             self.mem[-1].agent.append(environment)
         else: 
             re_explain = {
@@ -148,6 +149,7 @@ class Agent:
                 )
             }
 
+            print(re_explain["content"])
             self.mem[-1].agent.append(re_explain)
 
         explaination = {
@@ -155,6 +157,7 @@ class Agent:
             "content" : gen(self.model, self.mem[-1].agent)  
         }
         
+        print(explaination["content"])
         self.mem[-1].agent.append(explaination)
 
     def get_reflections(self):
@@ -195,12 +198,12 @@ class Agent:
 
         action = {
             "role" : "assistant",
-            "content" : generated_action
+            "content" : self.parse_action(generated_action)
         }
 
         self.mem[-1].agent.append(action)
 
-        return generated_action
+        return self.parse_action(generated_action)
 
     def parse_action(self, phrase):
         pattern = r'\[(.*?)\]'
@@ -224,8 +227,10 @@ class SelfReflector:
 
     def reflect(self):
         reflection = REFLECTION_PROMPT.format(results=self.mem[-1].agent[0]["content"])
+        print(reflection)
 
         self.mem[-1].self_reflector = gen(self.model, reflection)
+        print(self.mem[-1].self_reflector)
 
     def list_scores(self):
         scores = self.mem[-1].evaluator
@@ -245,16 +250,12 @@ class Evaluator:
 
     def __call__(self, actions, location):
         
-        print(actions)
-        print(type(actions))
         for a in actions:
-            print(a)
             acts = self.get_activation(
                 a, 
                 location.layer, 
                 location.index
             )
-            print(acts)
             score = torch.argmax(acts)
 
             self.mem[-1].evaluator[a] = score
@@ -268,5 +269,9 @@ class Evaluator:
             
             acts = feature_acts[:,:,index][0].save()
 
-        return acts.value
+        acts = acts.value
+
+        # Have to set the first act to zero bc I dont have a full context.
+        acts[0] = 0.
+        return acts
         
