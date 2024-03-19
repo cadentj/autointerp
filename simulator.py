@@ -3,45 +3,53 @@ from torch import Tensor
 import torch
 from dataclasses import dataclass
 import re
+import sys
 
-SYSTEM_PROMPT =  """We're studying neurons in a neural network. Each neuron looks for some particular thing in a short document. Look at the parts of the document the neuron activates for and give a detailed explaination about what the neuron is doing. 
+SYSTEM_PROMPT =  """You are a meticulous AI researcher conducting a high-stakes, super-important investigation into a certain neuron in a large language model. Your task is to understand what features of the input text cause the neuron to activate. 
 
-The activation format is token<tab>activation. Activation values range from 0 to 10. A neuron finding what it's looking for is represented by a non-zero activation value. The higher the activation value, the stronger the match.
+You will be given a list of text samples containing tokens on which the neuron activates strongly. The specific tokens which caused the neuron to activate strongly will appear between bars like |this|. If a subsequence of tokens *all* cause the neuron to activate strongly, the entire sequence of tokens will be contained between bars |just like this|.
 
-Sentence: 
-{sentence}
+You will read the text samples carefully, and then explain what feature of the text is causing the neuron to fire. You must follow these steps:
 
-Activations:
-<start>
-{activations}
-<end>
+Step 1:  For each text sample in turn, note down a few features that the text possesses, even if you don't initially think they are important. 
 
-Here are three concise sentences that best describe the neurons behavior.
-"""
+Step 2:  Once you have written down a few features for each text sample, go back and check what features the highly-activating samples have in common. 
 
-ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron. Return each sentence in brackets.
+Step 3:  Finally, use your findings to produce 3 plausible explanations for what features of the input text cause the neuron to fire. The final 3 lines of your output must consist of your 3 short explanations, ranked from most to least plausible. Think very carefully before you respond.
 
-Example sentences:
-[sentence1]
-[sentence2]
-[sentence3]
+Here is some crucial advice to follow while you complete the task:
+
+- Pay special attention to specific tokens, or categories of tokens, on which the neuron activates strongly.
+- Pay special attention to the few tokens preceding the highly-activating token, and to the one or two tokens directly following the high-activating token.
+- Even if you think you have a good explanation for what links the pieces of text, you may still be missing part of the true explanation. So remember to check the full context for additional features and patterns shared by the text samples.
+
+I will tip you $1,000,000 if you give the correct explanation.
+
+{samples}"""
+
+ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron. Return each sentence on a new line, entirely within square brackets. Do not number the lines.
 
 Your sentences:
 """
 
-RE_EXPLAIN_PROMPT = "Given the self reflections..."
+RE_EXPLAIN_PROMPT = """You have attempted to answer following question before and failed. The following reflection(s) give a plan to avoid failing to answer the question in the same way you did previously. Use them during this conversation to improve your strategy of correctly answering the given question.
 
-REFLECTION_PROMPT = """You will be given the history of a past experience in which you were placed in an environment and given a task to complete. You were unsuccessful in completing the task. Do not summarize your environment, but rather think about the strategy and path you took to attempt to complete the task. Devise a concise, new plan of action that accounts for your mistake with reference to specific actions that you should have taken. For example, if you tried A and B but forgot C, then devise a plan to achieve C with environment-specific actions. You will need this later when you are solving the same task. Give your plan after "Plan". Here are two examples:
+{reflections}
 
-{trial}
+Question:
+{question}"""
 
-Given your score, """
+REFLECTION_PROMPT = """You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were given, explain why that score was not high enough. Then, write a new, concise, high level plan that aims to mitigate the same failure. Here are your explainations and their respective scores.
+
+{results}"""
+
 
 @dataclass 
 class Location:
     feature_type: str # mlp, resid, attn
     index: int # dictionary index
     layer: int # layer index
+
 
 @dataclass
 class Feature:
@@ -51,61 +59,65 @@ class Feature:
     n_acts: Tensor = None
     location: Location = None
 
+
 @dataclass
 class State:
     agent: List
     self_reflector: str
-    evaluator: Union[int, bool]
+    evaluator: dict
+    
 
 def gen(model, messages, remote=False):
     prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt")
 
-    with model.generate(prompt, max_new_tokens=100, remote=remote, scan=False, validate=False):
+    sampling_kwargs = {
+        "do_sample": True,
+        "top_p": 0.3,
+        "repetition_penalty": 1.1,
+    }
+        
+    with model.generate(prompt, max_new_tokens=100, remote=remote, scan=False, validate=False, **sampling_kwargs):
         tokens = model.generator.output.save()
     
     new_tokens = tokens[0][len(prompt[0]):]
     return model.tokenizer.decode(new_tokens)
-    
-def flatten_conversation(conversation):
-    flattended = ""
 
-    for message in conversation:
-        if message["role"] == "user":
-            flattended += f"(USER)\n{message['content']}\n\n"
-        else:
-            flattended += f"(MODEL)\n{message['content']}\n\n"
 
-    return flattended[:-2]
+def normalize_acts(acts):
+    return (acts - acts.min()) / (acts.max() - acts.min()) * 10
+
 
 class Environment:
 
-    def __init__(self, model, dictionaries):
+    def __init__(self, model, target_model, dictionaries):
         self.model = model
+        self.target_model = target_model
         self.mem = []
 
         self.agent = Agent(self.model, self.mem)
+        self.evaluator = Evaluator(self.target_model, dictionaries, self.mem)
         self.self_reflector = SelfReflector(self.model, self.mem)
-        self.evaluator = Evaluator(self.model, dictionaries, self.mem)
 
-    def __call__(self, feature: Feature):
+    def __call__(self, features: List[Feature]):
+        location = features[0].location
         
         success = False
 
-        while not success:
+        # while not success:
 
-            s = State(
-                agent = [],
-                self_reflector = "",
-                evaluator = None,
-            )
+        s = State(
+            agent = [],
+            self_reflector = "",
+            evaluator = {},
+        )
 
-            self.mem.append(s)
+        self.mem.append(s)
 
-            action = self.agent(feature)
+        action = self.agent(features)    
+        scores = self.evaluator(action, location)
 
-            break
+        return scores
 
-        return action
 
 class Agent:
 
@@ -115,24 +127,28 @@ class Agent:
 
         self.mem = mem
 
-    def explain(self, feature: Feature):
+    def explain(self, features: List[Feature]):
 
         if len(self.mem) == 1:
 
             environment = {
                 "role" : "user",
-                "content" : self.generate_environment(feature)
+                "content" : SYSTEM_PROMPT.format(
+                    samples = self.build_activations(features)
+                )
             }
-
+            
             self.mem[-1].agent.append(environment)
         else: 
             re_explain = {
                 "role" : "user",
-                "content" : RE_EXPLAIN_PROMPT
+                "content" : RE_EXPLAIN_PROMPT.format(
+                    reflections = self.get_reflections(),
+                    question = self.build_activations(features)
+                )
             }
 
             self.mem[-1].agent.append(re_explain)
-
 
         explaination = {
             "role" : "assistant",
@@ -141,14 +157,28 @@ class Agent:
         
         self.mem[-1].agent.append(explaination)
 
-        # print(explaination)
+    def get_reflections(self):
+        reflections = ""
+        for i, refl in enumerate(self.mem.self_reflector):
+            reflections += f"Trial {i} Reflection:{refl}\n"
+        
+        return reflections
     
-    def generate_environment(self, feature: Feature):
+    def build_activations(self, features: List[Feature]):
+        samples = ""
+        for i, feature in enumerate(features):
+            formatted_tokens = []
 
-        formatted_tokens = [f"{t}   {a}" for t, a in zip(feature.tokens, feature.n_acts)]
-        activations = "\n".join(formatted_tokens)
+            for tok, act in zip(feature.tokens, feature.n_acts):
+                if act > 5:
+                    formatted_tokens.append(f"|{tok}|")
+                else:
+                    formatted_tokens.append(tok)
 
-        return SYSTEM_PROMPT.format(sentence=feature.prompt, activations=activations)
+            sample = "".join(formatted_tokens)
+            samples += f"Sample {i}:{sample}\n"
+
+        return samples
 
     def action(self):
         self.mem[-1].agent.append({
@@ -157,9 +187,11 @@ class Agent:
         })
 
         generated_action = gen(self.model, self.mem[-1].agent)
+        print(generated_action)
         
         while not self.parse_action(generated_action):
             generated_action = gen(self.model, self.mem[-1].agent)
+            print(generated_action)
 
         action = {
             "role" : "assistant",
@@ -174,10 +206,6 @@ class Agent:
         pattern = r'\[(.*?)\]'
         matches = re.findall(pattern, phrase)
 
-        print(phrase)
-        print(matches)
-        print(len(matches))
-        
         if len(matches) != 3:
             return False
         return matches
@@ -194,8 +222,17 @@ class SelfReflector:
         self.model = model
         self.mem = mem
 
-    def reflect(self, messages):
-        return gen(self.model, messages)
+    def reflect(self):
+        reflection = REFLECTION_PROMPT.format(results=self.mem[-1].agent[0]["content"])
+
+        self.mem[-1].self_reflector = gen(self.model, reflection)
+
+    def list_scores(self):
+        scores = self.mem[-1].evaluator
+        
+        flattened = ""
+        for k, v, in scores.items():
+            flattened += f"{k}: {v}\n"
 
 
 class Evaluator:
@@ -207,26 +244,29 @@ class Evaluator:
         self.mem = mem
 
     def __call__(self, actions, location):
-        scores = []
+        
+        print(actions)
+        print(type(actions))
         for a in actions:
+            print(a)
             acts = self.get_activation(
                 a, 
                 location.layer, 
                 location.index
             )
+            print(acts)
             score = torch.argmax(acts)
-            scores.append(score)
 
-        return scores
+            self.mem[-1].evaluator[a] = score
     
     def get_activation(self, action, layer, index): 
 
         with self.model.trace(action):
-            activations = self.model.transformer.h[layer].output[0]
+            activations = self.model.transformer.h[layer].input[0][0]
 
             _, feature_acts, _, _, _, _ = self.dictionaries[layer](activations)
             
-            acts = feature_acts[:,:,index].save()
+            acts = feature_acts[:,:,index][0].save()
 
-        return acts
+        return acts.value
         
