@@ -5,29 +5,17 @@ from dataclasses import dataclass
 import re
 import sys
 
-SYSTEM_PROMPT =  """You are a meticulous AI researcher conducting a high-stakes, super-important investigation into a certain neuron in a large language model. Your task is to understand what features of the input text cause the neuron to activate. 
+SYSTEM_PROMPT =  """You are a meticulous AI researcher conducting a high-stakes investigation on neurons in a large language model. Your task is to understand what features of the input text cause a specific neuron to activate. 
 
-You will be given a list of text samples containing tokens on which the neuron activates strongly. The specific tokens which caused the neuron to activate strongly will appear between bars like |this|. If a subsequence of tokens *all* cause the neuron to activate strongly, the entire sequence of tokens will be contained between bars |just like this|.
+You will be given a list of text samples containing tokens on which the neuron activates strongly. The specific tokens which caused the neuron to activate strongly will appear between bars like | this|. If multiple tokens cause the neuron to activate strongly, the entire sequence will be contained between bars | just like this|.
 
-You will read the text samples carefully, and then explain what feature of the text is causing the neuron to fire. You must follow these steps:
+You will be given multiple samples on which a neuron activates strongly. For each sample in turn, note down a few features that the text possesses, even if you don't initially think they are important. 
 
-Step 1:  For each text sample in turn, note down a few features that the text possesses, even if you don't initially think they are important. 
-
-Step 2:  Once you have written down a few features for each text sample, go back and check what features the highly-activating samples have in common. 
-
-Step 3:  Finally, use your findings to produce 3 plausible explanations for what features of the input text cause the neuron to fire. The final 3 lines of your output must consist of your 3 short explanations, ranked from most to least plausible. Think very carefully before you respond.
-
-Here is some crucial advice to follow while you complete the task:
-
-- Pay special attention to specific tokens, or categories of tokens, on which the neuron activates strongly.
-- Pay special attention to the few tokens preceding the highly-activating token, and to the one or two tokens directly following the high-activating token.
-- Even if you think you have a good explanation for what links the pieces of text, you may still be missing part of the true explanation. So remember to check the full context for additional features and patterns shared by the text samples.
-
-I will tip you $1,000,000 if you give the correct explanation.
+Once you have written down a few notes for each text sample, summarize what highly-activating samples have in common. Finally, use your findings to produce a plausible explaination for what causes the neuron to fire.
 
 {samples}"""
 
-ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron. Return each sentence on a new line, entirely within square brackets. Do not number the lines.
+ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron. Return each sentence on a new line. Surround the sentence with square brackets. Do not number the lines.
 
 Your sentences:
 """
@@ -39,7 +27,7 @@ RE_EXPLAIN_PROMPT = """You have attempted to answer following question before an
 Question:
 {question}"""
 
-REFLECTION_PROMPT = """You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were given, explain why that score was not high enough. Then, write a new, concise, high level plan that aims to mitigate the same failure. Here are your explainations and their respective scores.
+REFLECTION_PROMPT = """You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were given, explain why that score was not high enough. Then, write a new, concise, high level plan that aims to mitigate the same failure. Here are your explainations and their respective scores. Scores range from 0-10, with scores at 10 being better than scores at 0.
 
 {results}"""
 
@@ -65,7 +53,6 @@ class State:
     agent: List
     self_reflector: str
     evaluator: dict
-    
 
 def gen(model, messages, remote=False):
     prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt")
@@ -76,7 +63,7 @@ def gen(model, messages, remote=False):
         "repetition_penalty": 1.1,
     }
         
-    with model.generate(prompt, max_new_tokens=100, remote=remote, scan=False, validate=False, **sampling_kwargs):
+    with model.generate(prompt, max_new_tokens=300, remote=remote, scan=False, validate=False, **sampling_kwargs):
         tokens = model.generator.output.save()
     
     new_tokens = tokens[0][len(prompt[0]):]
@@ -98,26 +85,35 @@ class Environment:
         self.evaluator = Evaluator(self.target_model, dictionaries, self.mem)
         self.self_reflector = SelfReflector(self.model, self.mem)
 
-    def __call__(self, features: List[Feature]):
+    def render_state(self):
+
+        for i, m in enumerate(self.mem):
+            print(f"Trial {i} Agent: {m.agent}")
+            print(f"Trial {i} Self Reflector: {m.self_reflector}")
+            print(f"Trial {i} Evaluator: {m.evaluator}")
+
+    def __call__(self, features: List[Feature], max_trials=3):
         location = features[0].location
         
-        success = False
 
-        # while not success:
+        for _ in max_trials:
+            s = State(
+                agent = [],
+                self_reflector = "",
+                evaluator = {},
+            )
 
-        s = State(
-            agent = [],
-            self_reflector = "",
-            evaluator = {},
-        )
+            self.mem.append(s)
 
-        self.mem.append(s)
+            action = self.agent(features)    
+            scores = self.evaluator(action, location)
 
-        action = self.agent(features)    
-        scores = self.evaluator(action, location)
-        print(s)
-        return scores
+            if self.self_reflector():
+                break
 
+            self.render_state()
+
+        return self.mem
 
 class Agent:
 
@@ -137,8 +133,7 @@ class Agent:
                     samples = self.build_activations(features)
                 )
             }
-
-            print(environment["content"])            
+         
             self.mem[-1].agent.append(environment)
         else: 
             re_explain = {
@@ -149,7 +144,6 @@ class Agent:
                 )
             }
 
-            print(re_explain["content"])
             self.mem[-1].agent.append(re_explain)
 
         explaination = {
@@ -157,12 +151,12 @@ class Agent:
             "content" : gen(self.model, self.mem[-1].agent)  
         }
         
-        print(explaination["content"])
         self.mem[-1].agent.append(explaination)
 
     def get_reflections(self):
         reflections = ""
-        for i, refl in enumerate(self.mem.self_reflector):
+        for i, m in enumerate(self.mem):
+            refl = m.self_reflector
             reflections += f"Trial {i} Reflection:{refl}\n"
         
         return reflections
@@ -190,11 +184,9 @@ class Agent:
         })
 
         generated_action = gen(self.model, self.mem[-1].agent)
-        print(generated_action)
         
         while not self.parse_action(generated_action):
             generated_action = gen(self.model, self.mem[-1].agent)
-            print(generated_action)
 
         action = {
             "role" : "assistant",
@@ -225,12 +217,29 @@ class SelfReflector:
         self.model = model
         self.mem = mem
 
-    def reflect(self):
-        reflection = REFLECTION_PROMPT.format(results=self.mem[-1].agent[0]["content"])
-        print(reflection)
+    def __call__(self):
+        if self.check_success():
+            return True
+        else:
+            reflection = {
+                "role" : "user",
+                "content" : REFLECTION_PROMPT.format(
+                    results = self.list_scores()
+                )
+            }
 
-        self.mem[-1].self_reflector = gen(self.model, reflection)
-        print(self.mem[-1].self_reflector)
+            messages = self.mem[-1].agent + [reflection]
+
+            self.mem[-1].self_reflector = gen(self.model, messages)
+
+            return False
+
+    def check_success(self):
+        scores = list(self.mem[-1].evaluator.values())
+        avg_score = sum(scores) / len(scores)
+
+        if avg_score > 7:
+            return True
 
     def list_scores(self):
         scores = self.mem[-1].evaluator
@@ -238,6 +247,8 @@ class SelfReflector:
         flattened = ""
         for k, v, in scores.items():
             flattened += f"{k}: {v}\n"
+
+        return flattened
 
 
 class Evaluator:
@@ -273,5 +284,5 @@ class Evaluator:
 
         # Have to set the first act to zero bc I dont have a full context.
         acts[0] = 0.
-        return acts
+        return normalize_acts(acts)
         
