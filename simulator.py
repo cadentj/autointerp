@@ -5,6 +5,10 @@ from dataclasses import dataclass
 import re
 import sys
 
+from rich.console import Console
+from rich.table import Table
+from rich.markdown import Markdown
+
 SYSTEM_PROMPT =  """You are a meticulous AI researcher conducting a high-stakes investigation on neurons in a large language model. Your task is to understand what features of the input text cause a specific neuron to activate. 
 
 You will be given a list of text samples containing tokens on which the neuron activates strongly. The specific tokens which caused the neuron to activate strongly will appear between bars like | this|. If multiple tokens cause the neuron to activate strongly, the entire sequence will be contained between bars | just like this|.
@@ -27,7 +31,7 @@ RE_EXPLAIN_PROMPT = """You have attempted to answer following question before an
 Question:
 {question}"""
 
-REFLECTION_PROMPT = """You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were given, explain why that score was not high enough. Then, write a new, concise, high level plan that aims to mitigate the same failure. Here are your explainations and their respective scores. Scores range from 0-10, with scores at 10 being better than scores at 0.
+REFLECTION_PROMPT = """You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were given, explain why that score was not high enough. Then, after evaluating all samples, write a new, concise, high level plan that aims to mitigate the same failure. Here are your explainations and their respective scores. Scores range from 0-10, with scores at 10 being better than scores at 0.
 
 {results}"""
 
@@ -51,10 +55,39 @@ class Feature:
 @dataclass(repr=True)
 class State:
     agent: List
-    self_reflector: str
+    self_reflector: List
     evaluator: dict
 
-def gen(model, messages, remote=False):
+
+def log_conversation(conversation, log_file_path):
+    """
+    Logs a conversation to a specified log file using rich for formatting.
+    The conversation is expected to be a list of dictionaries with 'role' and 'content' keys.
+
+    :param conversation: A list of dictionaries, each containing 'role' and 'content'
+    :param log_file_path: Path to the log file
+    """
+    # Create a console object for outputting to the file
+    console = Console(record=True, width=120)
+
+    # Create a table with two columns: Role and Content
+    table = Table(show_header=True, header_style="bold magenta")
+    table.add_column("Role", style="bold cyan")
+    table.add_column("Content", justify="left")
+
+    # Add each message to the table
+    for message in conversation:
+        role = message["role"].capitalize()  # Capitalize the role for better appearance
+        content = message["content"]
+        table.add_row(role, content)
+
+    # Print the table to the console (which is recording)
+    console.print(table)
+
+    # Save the output to a log file
+    console.save_text(log_file_path)
+
+def gen(model, messages, remote=False, max_new_tokens=300):
     prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt")
 
     sampling_kwargs = {
@@ -63,10 +96,11 @@ def gen(model, messages, remote=False):
         "repetition_penalty": 1.1,
     }
         
-    with model.generate(prompt, max_new_tokens=300, remote=remote, scan=False, validate=False, **sampling_kwargs):
+    with model.generate(prompt, max_new_tokens=max_new_tokens, remote=remote, scan=False, validate=False, **sampling_kwargs):
         tokens = model.generator.output.save()
     
     new_tokens = tokens[0][len(prompt[0]):]
+    torch.cuda.empty_cache()
     return model.tokenizer.decode(new_tokens)
 
 
@@ -85,28 +119,36 @@ class Environment:
         self.evaluator = Evaluator(self.target_model, dictionaries, self.mem)
         self.self_reflector = SelfReflector(self.model, self.mem)
 
+        self.past_key_values = None
+
     def render_state(self):
 
         for i, m in enumerate(self.mem):
-            print(f"Trial {i} Agent: {m.agent}")
-            print(f"Trial {i} Self Reflector: {m.self_reflector}")
-            print(f"Trial {i} Evaluator: {m.evaluator}")
+            
+            path = f"./logs/trial_{i}.log"
+            conversation = m.agent
+            conversation.append(m.self_reflector[-1])
+
+            log_conversation(conversation, path)
 
     def __call__(self, features: List[Feature], max_trials=3):
         location = features[0].location
         
 
-        for _ in max_trials:
+        for trial in range(max_trials):
+            print(f"Trial {trial}")
+
             s = State(
                 agent = [],
-                self_reflector = "",
+                self_reflector = [],
                 evaluator = {},
             )
 
             self.mem.append(s)
 
-            action = self.agent(features)    
-            scores = self.evaluator(action, location)
+            action = self.agent(features)  
+
+            self.evaluator(action, location)
 
             if self.self_reflector():
                 break
@@ -124,23 +166,26 @@ class Agent:
         self.mem = mem
 
     def explain(self, features: List[Feature]):
+        question = SYSTEM_PROMPT.format(
+            samples = self.build_activations(features)
+        )
 
         if len(self.mem) == 1:
 
             environment = {
                 "role" : "user",
-                "content" : SYSTEM_PROMPT.format(
-                    samples = self.build_activations(features)
-                )
+                "content" : question
             }
          
             self.mem[-1].agent.append(environment)
         else: 
+            
+
             re_explain = {
                 "role" : "user",
                 "content" : RE_EXPLAIN_PROMPT.format(
                     reflections = self.get_reflections(),
-                    question = self.build_activations(features)
+                    question = question
                 )
             }
 
@@ -155,9 +200,9 @@ class Agent:
 
     def get_reflections(self):
         reflections = ""
-        for i, m in enumerate(self.mem):
-            refl = m.self_reflector
-            reflections += f"Trial {i} Reflection:{refl}\n"
+        for i, m in enumerate(self.mem[:-1]):
+            refl = m.self_reflector[-1]["content"]
+            reflections += f"Trial {i} Reflection:\n{refl}\n"
         
         return reflections
     
@@ -188,12 +233,10 @@ class Agent:
         while not self.parse_action(generated_action):
             generated_action = gen(self.model, self.mem[-1].agent)
 
-        action = {
+        self.mem[-1].agent.append({
             "role" : "assistant",
-            "content" : self.parse_action(generated_action)
-        }
-
-        self.mem[-1].agent.append(action)
+            "content" : generated_action
+        })
 
         return self.parse_action(generated_action)
 
@@ -228,9 +271,15 @@ class SelfReflector:
                 )
             }
 
-            messages = self.mem[-1].agent + [reflection]
+            self.mem[-1].agent.append(reflection)
 
-            self.mem[-1].self_reflector = gen(self.model, messages)
+            self.mem[-1].self_reflector = [
+                reflection,
+                {
+                    "role" : "assistant",
+                    "content" : gen(self.model, self.mem[-1].agent, max_new_tokens=300)
+                }
+            ]
 
             return False
 
@@ -284,5 +333,7 @@ class Evaluator:
 
         # Have to set the first act to zero bc I dont have a full context.
         acts[0] = 0.
+        
+        torch.cuda.empty_cache()
         return normalize_acts(acts)
         
