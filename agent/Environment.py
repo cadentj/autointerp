@@ -3,7 +3,7 @@ from typing import List
 from .Agent import Agent
 from .Evaluator import Evaluator
 from .SelfReflector import SelfReflector
-from .utils import log_conversation, State, Feature
+from .utils import log_conversation, State, Feature, normalize_acts, Location
 
 class Environment:
 
@@ -11,14 +11,22 @@ class Environment:
         self.model = model
         self.target_model = target_model
         self.mem = []
+        
+        self.dictionaries = dictionaries
 
         self.agent = Agent(self.model, self.mem)
         self.evaluator = Evaluator(self.target_model, dictionaries, self.mem)
         self.self_reflector = SelfReflector(self.model, self.mem)
 
-        self.past_key_values = None
+    def render_state(self) -> None:
+        """Render the current state to a .log file.
 
-    def render_state(self):
+        Args:
+            None
+        
+        Returns:
+            None
+        """
 
         for i, m in enumerate(self.mem):
             
@@ -27,8 +35,65 @@ class Environment:
             conversation.append(m.self_reflector[-1])
 
             log_conversation(conversation, path)
+            
+    def __call__(
+        self,
+        prompts: List[str],
+        layer: int,
+        index: int,
+        feature_type: str = "resid"
+    ):
+        location = Location(
+            feature_type = feature_type,
+            layer = layer,
+            index = 6536
+        )
+        tokenizer = self.target_model.tokenizer
+        features = []
+        for prompt in prompts:
+        
+            prompt = tokenizer.bos_token + prompt
+            tokens = tokenizer.encode(prompt)
+            str_tokens = [tokenizer.decode(t) for t in tokens]
 
-    def __call__(self, features: List[Feature], max_trials=3):
+            with self.target_model.trace(tokens):
+                activations = self.target_model.h[layer].input[0][0].save()
+
+                middle = self.dictionaries[layer](activations)
+
+                acts = middle[1][:,:,index][0].save()
+
+            acts[0] = 0.
+            acts = acts.value
+
+            f = Feature(
+                prompt = prompt,
+                tokens = str_tokens,
+                acts = acts,
+                n_acts = normalize_acts(acts),
+                location = location,
+            )
+
+            features.append(f)
+
+        return self.run(features)
+
+
+    def run(
+            self, 
+            features: List[Feature], 
+            max_trials=3
+        ) -> List[State]:
+        """Run autointerp on a neuron, given a set of example Features.
+
+        Args:
+            features (List[Feature]): List of Features
+            max_trials (int): Maximum number of trials to run
+        
+        Returns:
+            List[State]: List of States
+        """
+
         location = features[0].location
 
         for trial in range(max_trials):
@@ -52,3 +117,4 @@ class Environment:
             self.render_state()
 
         return self.mem
+

@@ -21,8 +21,7 @@ class Feature:
     n_acts: Tensor = None
     location: Location = None
 
-
-@dataclass(repr=True)
+@dataclass()
 class State:
     agent: List
     self_reflector: List
@@ -106,3 +105,4 @@ def normalize_acts(acts: Tensor) -> Tensor:
     """
 
     return (acts - acts.min()) / (acts.max() - acts.min()) * 10
+
