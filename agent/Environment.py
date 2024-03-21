@@ -1,8 +1,9 @@
 from typing import List
 
-from utils import log_conversation, State, Feature
-from agent import Agent
-
+from .Agent import Agent
+from .Evaluator import Evaluator
+from .SelfReflector import SelfReflector
+from .utils import log_conversation, State, Feature
 
 class Environment:
 

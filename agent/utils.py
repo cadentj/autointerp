@@ -13,7 +13,6 @@ class Location:
     index: int # dictionary index
     layer: int # layer index
 
-
 @dataclass
 class Feature:
     prompt: str
@@ -29,13 +28,19 @@ class State:
     self_reflector: List
     evaluator: dict
 
-def log_conversation(conversation, log_file_path):
-    """
-    Logs a conversation to a specified log file using rich for formatting.
+def log_conversation(
+        conversation: List[dict], 
+        log_file_path: str
+    ) -> None:
+    """Logs a conversation to a specified log file using rich for formatting.
     The conversation is expected to be a list of dictionaries with 'role' and 'content' keys.
 
-    :param conversation: A list of dictionaries, each containing 'role' and 'content'
-    :param log_file_path: Path to the log file
+    Args:
+        conversation (List[dict]): A list of dictionaries, each containing 'role' and 'content'
+        log_file_path (str): Path to the log file
+
+    Returns:
+        None
     """
     # Create a console object for outputting to the file
     console = Console(record=True, width=120)
@@ -57,7 +62,24 @@ def log_conversation(conversation, log_file_path):
     # Save the output to a log file
     console.save_text(log_file_path)
 
-def gen(model, messages, remote=False, max_new_tokens=300):
+def gen(
+        model, 
+        messages: List[dict], 
+        remote: bool = False, 
+        max_new_tokens : int =300
+    ) -> str:
+    """Generate some tokens with nnsight and return new tokens.
+
+    Args:
+        model (LanguageModel): NNsight LanguageModel 
+        messages (List[str]): Conversation history
+        remote (bool, optional): Whether to use NDIF. Defaults to False.
+        max_new_tokens (int, optional): How many new tokens to generate. Defaults to 300.
+    
+    Returns:
+        str: New tokens.
+    """
+    
     prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt")
 
     sampling_kwargs = {
@@ -73,6 +95,14 @@ def gen(model, messages, remote=False, max_new_tokens=300):
     torch.cuda.empty_cache()
     return model.tokenizer.decode(new_tokens)
 
+def normalize_acts(acts: Tensor) -> Tensor:
+    """Normalize activations to a scale of 0 to 10.
 
-def normalize_acts(acts):
+    Args:
+        acts (Tensor): Activations to normalize
+
+    Returns:
+        Tensor: Normalized activations
+    """
+
     return (acts - acts.min()) / (acts.max() - acts.min()) * 10

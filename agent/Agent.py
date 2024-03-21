@@ -1,14 +1,16 @@
-from typing import List
-import torch
 import re
+from typing import List
 
-from utils import gen, normalize_acts, Feature
-from prompts import SYSTEM_PROMPT, ACTION_PROMPT, RE_EXPLAIN_PROMPT, REFLECTION_PROMPT
-
+from .utils import gen, Feature
+from .prompts import SYSTEM_PROMPT, ACTION_PROMPT, RE_EXPLAIN_PROMPT
 
 class Agent:
 
-    def __init__(self, model, mem):
+    def __init__(
+            self, 
+            model, 
+            mem: List,
+        ):
         self.model = model
         self.tokenizer = model.tokenizer
 
@@ -165,87 +167,3 @@ class Agent:
         self.explain(features)
         return self.action()
 
-
-class SelfReflector:
-
-    def __init__(self, model, mem):
-        self.model = model
-        self.mem = mem
-
-    def __call__(self):
-        if self.check_success():
-            return True
-        else:
-            reflection = {
-                "role" : "user",
-                "content" : REFLECTION_PROMPT.format(
-                    results = self.list_scores()
-                )
-            }
-
-            self.mem[-1].agent.append(reflection)
-
-            self.mem[-1].self_reflector = [
-                reflection,
-                {
-                    "role" : "assistant",
-                    "content" : gen(self.model, self.mem[-1].agent, max_new_tokens=300)
-                }
-            ]
-
-            return False
-
-    def check_success(self):
-        scores = list(self.mem[-1].evaluator.values())
-        avg_score = sum(scores) / len(scores)
-
-        if avg_score > 7:
-            return True
-
-    def list_scores(self):
-        scores = self.mem[-1].evaluator
-        
-        flattened = ""
-        for k, v, in scores.items():
-            flattened += f"{k}: {v}\n"
-
-        return flattened
-
-
-class Evaluator:
-
-    def __init__(self, model, dictionaries, mem):
-        self.model = model
-        self.dictionaries = dictionaries
-
-        self.mem = mem
-
-    def __call__(self, actions, location):
-        
-        for a in actions:
-            acts = self.get_activation(
-                a, 
-                location.layer, 
-                location.index
-            )
-            score = torch.argmax(acts)
-
-            self.mem[-1].evaluator[a] = score
-    
-    def get_activation(self, action, layer, index): 
-
-        with self.model.trace(action):
-            activations = self.model.transformer.h[layer].input[0][0]
-
-            _, feature_acts, _, _, _, _ = self.dictionaries[layer](activations)
-            
-            acts = feature_acts[:,:,index][0].save()
-
-        acts = acts.value
-
-        # Have to set the first act to zero bc I dont have a full context.
-        acts[0] = 0.
-        
-        torch.cuda.empty_cache()
-        return normalize_acts(acts)
-        

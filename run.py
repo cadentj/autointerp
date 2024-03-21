@@ -49,13 +49,13 @@ mixtral = LanguageModel("mistralai/Mistral-7B-Instruct-v0.2", device_map="cuda:0
 
 print("Loaded Mixtral in 4bit")
 
-import autointerp.agent as agent
+import autointerp.agent.Agent as Agent
 import importlib 
-importlib.reload(agent)
+importlib.reload(Agent)
 
-env = agent.Environment(mixtral, gpt, sae_list)
+env = Agent.Environment(mixtral, gpt, sae_list)
 
-location = agent.Location(
+location = Agent.Location(
     feature_type = "resid",
     layer = 10,
     index = 12307
@@ -83,11 +83,11 @@ for prompt in prompts:
     acts[0] = 0.
     acts = acts.value
 
-    f = agent.Feature(
+    f = Agent.Feature(
         prompt=prompt,
         tokens=str_tokens,
         acts=acts,
-        n_acts=agent.normalize_acts(acts),
+        n_acts=Agent.normalize_acts(acts),
         location=location
     )
 
