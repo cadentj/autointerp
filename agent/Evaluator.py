@@ -68,7 +68,8 @@ class Evaluator:
 
         acts = acts.value
 
-        # Have to set the first act to zero bc I dont have a full context.
+        # Discard the first token activation
+        # Without a full context, this gets often receives high activations
         acts[0] = 0.
         
         torch.cuda.empty_cache()

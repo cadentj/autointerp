@@ -41,28 +41,36 @@ class Environment:
         prompts: List[str],
         layer: int,
         index: int,
-        feature_type: str = "resid"
+        feature_type: str = "resid" # Other features not yet implemented
     ):
         location = Location(
             feature_type = feature_type,
             layer = layer,
-            index = 6536
+            index = index
         )
+
         tokenizer = self.target_model.tokenizer
+
         features = []
+
         for prompt in prompts:
-        
+            
+            # Without the full context, the first token often has high activations
+            # I append a bos_token and remove it later to discard the high outlier
             prompt = tokenizer.bos_token + prompt
             tokens = tokenizer.encode(prompt)
             str_tokens = [tokenizer.decode(t) for t in tokens]
 
             with self.target_model.trace(tokens):
-                activations = self.target_model.h[layer].input[0][0].save()
+                activations = self.target_model.transformer.h[layer].input[0][0].save()
 
                 middle = self.dictionaries[layer](activations)
 
+                # See mats_sae_training/sae_training/spase_autoencoder.py
+                # sae_out, feature_acts, loss, mse_loss, l1_loss, mse_loss_ghost_resid
                 acts = middle[1][:,:,index][0].save()
 
+            # Bos token activation discarded
             acts[0] = 0.
             acts = acts.value
 
@@ -75,6 +83,8 @@ class Environment:
             )
 
             features.append(f)
+
+        print("Loaded features")
 
         return self.run(features)
 

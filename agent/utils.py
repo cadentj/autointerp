@@ -65,7 +65,7 @@ def gen(
         model, 
         messages: List[dict], 
         remote: bool = False, 
-        max_new_tokens : int =300
+        max_new_tokens : int =500
     ) -> str:
     """Generate some tokens with nnsight and return new tokens.
 
@@ -73,7 +73,7 @@ def gen(
         model (LanguageModel): NNsight LanguageModel 
         messages (List[str]): Conversation history
         remote (bool, optional): Whether to use NDIF. Defaults to False.
-        max_new_tokens (int, optional): How many new tokens to generate. Defaults to 300.
+        max_new_tokens (int, optional): How many new tokens to generate. Defaults to 500.
     
     Returns:
         str: New tokens.

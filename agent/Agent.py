@@ -94,7 +94,7 @@ class Agent:
 
             for tok, act in zip(feature.tokens, feature.n_acts):
                 if act > 5:
-                    formatted_tokens.append(f"|{tok}|")
+                    formatted_tokens.append(f"**{tok}**")
                 else:
                     formatted_tokens.append(tok)
 
@@ -142,6 +142,8 @@ class Agent:
         Returns:
             List[str]: Parsed phrases
         """
+
+        print(phrase)
 
         pattern = r'\[(.*?)\]'
         matches = re.findall(pattern, phrase)

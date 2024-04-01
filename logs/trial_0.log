@@ -5,9 +5,9 @@
 │           │ model. Your task is to understand what features of the input text cause a specific neuron to activate.   │
 │           │                                                                                                          │
 │           │ You will be given a list of text samples containing tokens on which the neuron activates strongly. The   │
-│           │ specific tokens which caused the neuron to activate strongly will appear between bars like | this|. If   │
+│           │ specific tokens which caused the neuron to activate strongly will appear between bars like ** this**. If │
 │           │ multiple tokens cause the neuron to activate strongly, the entire sequence will be contained between     │
-│           │ bars | just like this|.                                                                                  │
+│           │ bars ** just like this**.                                                                                │
 │           │                                                                                                          │
 │           │ You will be given multiple samples on which a neuron activates strongly. For each sample in turn, note   │
 │           │ down a few features that the text possesses, even if you don't initially think they are important.       │
@@ -16,72 +16,88 @@
 │           │ have in common. Finally, use your findings to produce a plausible explaination for what causes the       │
 │           │ neuron to fire.                                                                                          │
 │           │                                                                                                          │
-│           │ Sample 0:<|endoftext|> (getting back 87 cents on the| dollar| in| 2010|.) In comparison, the average     │
+│           │ Sample 0:<|endoftext|> (getting back 87 cents on the** dollar** in** 2010**.) In comparison, the average │
 │           │ state gets                                                                                               │
-│           │ Sample 1:<|endoftext|> Dungeons and Dragons figurines off the kitchen table).����The other day I noteds  │
-│           │ Sample 2:<|endoftext|>, (appears to be in much the same| boat|.) Yes, our political leaders are          │
+│           │ Sample 1:<|endoftext|> (Dungeons and Dragons figurines off the** kitchen**** table**).����The other day  │
+│           │ I noteds                                                                                                 │
+│           │ Sample 2:<|endoftext|>, (appears to be in much the same** boat**.) Yes, our political leaders are        │
 │           │ perfectly                                                                                                │
 │           │                                                                                                          │
-│ Assistant │ Sample 0: This text contains numbers (87, 2010) and currency terms ("dollar," "getting back," "on the    │
-│           │ dollar"). It also includes comparative phrases ("in comparison," "the average state gets").              │
+│ Assistant │ Sample 0: This text contains the phrases "getting back 87 cents on the dollar" and "in 2010." The neuron │
+│           │ seems to respond to currency-related expressions and specific years.                                     │
 │           │                                                                                                          │
-│           │ Sample 1: This text mentions a specific brand name ("Dungeons and Dragons") and an object ("figurines"). │
-│           │ It also includes a past tense verb ("noted") and a comparative phrase ("The other day I noted...").      │
+│           │ Sample 1: The text mentions "kitchen table" and "Dungeons and Dragons figurines." The neuron may react   │
+│           │ to objects being placed on tables or references to games or hobbies.                                     │
 │           │                                                                                                          │
-│           │ Sample 2: This text contains colloquial expressions ("perfectly," "in much the same boat") and           │
-│           │ comparative phrases ("Yes, our political leaders are perfectly... Yes, our political leaders are in much │
-│           │ the same boat.").                                                                                        │
+│           │ Sample 2: The phrase "appears to be in much the same boat" was highlighted. The neuron might respond to  │
+│           │ idioms or colloquial expressions related to being in similar situations.                                 │
 │           │                                                                                                          │
-│           │ Commonalities: All three texts contain comparative phrases. Two out of three texts mention numbers or    │
-│           │ currency. One text mentions a specific brand name, while another text uses colloquial language.          │
+│           │ Commonalities: All three samples contain idiomatic expressions. Two of them involve objects being placed │
+│           │ on tables. One sample includes a reference to currency and a specific year.                              │
 │           │                                                                                                          │
-│           │ Explanation: Based on these observations, it seems that the neuron may respond to comparisons, numbers   │
-│           │ or currency, and colloquial language. However, further analysis would be needed to confirm this          │
-│           │ hypothesis and rule out other possible factors.</s>                                                      │
+│           │ Explanation: It appears that the neuron responds to idiomatic expressions, objects being placed on       │
+│           │ tables, and specific references to currency and years. This could indicate that the neuron has learned   │
+│           │ to recognize certain linguistic patterns or concepts associated with these features.</s>                 │
 │ User      │ Given your observations, write three different sentences that would maximize the activations of the      │
 │           │ neuron. Return each sentence on a new line. Surround the sentence with square brackets. Do not number    │
 │           │ the lines.                                                                                               │
 │           │                                                                                                          │
 │           │ Your sentences:                                                                                          │
 │           │                                                                                                          │
-│ Assistant │ [Comparing my savings account balance from last month to this month, I noticed I got 93% of my money     │
-│           │ back.]                                                                                                   │
-│           │ [Using colloquial language, let me tell you, our political leaders are in the exact same boat as us      │
-│           │ common folk.]                                                                                            │
-│           │ [While shopping at the mall, I found a great deal on a Dungeons & Dragons miniature figure, paying only  │
-│           │ 75 cents of its original price.]</s>                                                                     │
+│ Assistant │ [I found myself getting back 95% of my investment's value in the year 2015.]                             │
+│           │ [My friend's Dungeons and Dragons figurines were scattered across the living room table.]                │
+│           │ [Politicians seem to be in the same financial situation as us regular people, despite their wealth       │
+│           │ appearing much larger.]</s>                                                                              │
 │ User      │ You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were      │
 │           │ given, explain why that score was not high enough. Then, after evaluating all samples, write a new,      │
 │           │ concise, high level plan that aims to mitigate the same failure. Here are your explainations and their   │
 │           │ respective scores. Scores range from 0-10, with scores at 10 being better than scores at 0.              │
 │           │                                                                                                          │
-│           │ Comparing my savings account balance from last month to this month, I noticed I got 93% of my money      │
-│           │ back.: 0                                                                                                 │
-│           │ Using colloquial language, let me tell you, our political leaders are in the exact same boat as us       │
-│           │ common folk.: 0                                                                                          │
-│           │ While shopping at the mall, I found a great deal on a Dungeons & Dragons miniature figure, paying only   │
-│           │ 75 cents of its original price.: 0                                                                       │
+│           │ I found myself getting back 95% of my investment's value in the year 2015.: 0                            │
+│           │ My friend's Dungeons and Dragons figurines were scattered across the living room table.: 0               │
+│           │ Politicians seem to be in the same financial situation as us regular people, despite their wealth        │
+│           │ appearing much larger.: 9                                                                                │
 │           │                                                                                                          │
-│ Assistant │ The reason none of the provided sentences received a high activation score from the neuron is because    │
-│           │ they do not share sufficient similarity with the training data. While they contain some elements that    │
-│           │ were observed in the active neuron samples (comparisons, colloquial language, numbers), they lack the    │
-│           │ specific combination and context of those elements that led to strong activations in the original        │
-│           │ samples.                                                                                                 │
+│ Assistant │ Sample 1 ("I found myself getting back 95% of my investment's value in the year 2015.") received a score │
+│           │ of 0 because it did not contain any of the features identified in the previous analysis, such as         │
+│           │ idiomatic expressions, objects on tables, or references to currency and years.                           │
 │           │                                                                                                          │
-│           │ To create more effective sentences, a more comprehensive understanding of the neuron's response patterns │
-│           │ is required. This could involve analyzing larger datasets of active neuron samples, identifying common   │
-│           │ linguistic features, and experimenting with various combinations of those features to create sentences   │
-│           │ that closely mimic the training data. Additionally, fine-tuning the language model on a larger corpus of │
-│           │ text specifically related to the domain of the neuron (e.g., finance, politics, gaming) might help       │
-│           │ improve the model's ability to generate sentences that activate the neuron.                              │
+│           │ Sample 2 ("My friend's Dungeons and Dragons figurines were scattered across the living room table.")     │
+│           │ also scored 0 since it lacked the idiomatic expressions and specific references to currency and years    │
+│           │ that seemed to influence the neuron's activation.                                                        │
 │           │                                                                                                          │
-│           │ A high-level plan to mitigate this failure would include:                                                │
+│           │ Sample 3 ("Politicians seem to be in the same financial situation as us regular people, despite their    │
+│           │ wealth appearing much larger.") received a higher score of 9 due to the presence of the idiom "seem to   │
+│           │ be" and the comparison between politicians' wealth and that of regular people. However, it did not       │
+│           │ include the other features identified in the initial analysis.                                           │
 │           │                                                                                                          │
-│           │ 1. Analyze a larger dataset of active neuron samples to identify common linguistic features and          │
-│           │ contexts.                                                                                                │
-│           │ 2. Experiment with generating sentences that closely mimic the training data by combining identified     │
-│           │ features in various ways.                                                                                │
-│           │ 3. Fine-tune the language model on a larger corpus of text specifically related to the domain of the     │
-│           │ neuron.                                                                                                  │
-│           │ 4. Continuously evaluate and refine the generated sentences based on their activation scores             │
+│           │ To create a more comprehensive explanation, we need to expand our search for features that might         │
+│           │ influence the neuron's activation. We should consider additional linguistic patterns, such as            │
+│           │ comparisons, metaphors, and rhetorical questions. Additionally, we can explore how the context of the    │
+│           │ surrounding text might impact the neuron's behavior.                                                     │
+│           │                                                                                                          │
+│           │ A new, high-level plan would be:                                                                         │
+│           │                                                                                                          │
+│           │ 1. Expand the feature set to include comparisons,                                                        │
+│ Assistant │ Sample 1 ("I found myself getting back 95% of my investment's value in the year 2015.") received a score │
+│           │ of 0 because it did not contain any of the features identified in the previous analysis, such as         │
+│           │ idiomatic expressions, objects on tables, or references to currency and years.                           │
+│           │                                                                                                          │
+│           │ Sample 2 ("My friend's Dungeons and Dragons figurines were scattered across the living room table.")     │
+│           │ also scored 0 since it lacked the idiomatic expressions and specific references to currency and years    │
+│           │ that seemed to influence the neuron's activation.                                                        │
+│           │                                                                                                          │
+│           │ Sample 3 ("Politicians seem to be in the same financial situation as us regular people, despite their    │
+│           │ wealth appearing much larger.") received a higher score of 9 due to the presence of the idiom "seem to   │
+│           │ be" and the comparison between politicians' wealth and that of regular people. However, it did not       │
+│           │ include the other features identified in the initial analysis.                                           │
+│           │                                                                                                          │
+│           │ To create a more comprehensive explanation, we need to expand our search for features that might         │
+│           │ influence the neuron's activation. We should consider additional linguistic patterns, such as            │
+│           │ comparisons, metaphors, and rhetorical questions. Additionally, we can explore how the context of the    │
+│           │ surrounding text might impact the neuron's behavior.                                                     │
+│           │                                                                                                          │
+│           │ A new, high-level plan would be:                                                                         │
+│           │                                                                                                          │
+│           │ 1. Expand the feature set to include comparisons,                                                        │
 └───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
