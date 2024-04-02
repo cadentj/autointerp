@@ -26,20 +26,27 @@ class SelfReflector:
         if self.check_success():
             return True
         else:
-            reflection = {
+            reflect = {
                 "role" : "user",
                 "content" : REFLECTION_PROMPT.format(
                     results = self.list_scores()
                 )
             }
 
-            self.mem[-1].agent.append(reflection)
+            self.mem[-1].agent.append(reflect)
+
+            reflection = gen_update(self)
+            
+            self.mem[-1].agent.append({
+                "role" : "assistant",
+                "content" : reflection
+            })
 
             self.mem[-1].self_reflector = [
                 reflection,
                 {
                     "role" : "assistant",
-                    "content" : gen_update(self)
+                    "content" : reflection
                 }
             ]
 

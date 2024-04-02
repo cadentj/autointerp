@@ -3,6 +3,7 @@ from typing import List
 from .Agent import Agent
 from .Evaluator import Evaluator
 from .SelfReflector import SelfReflector
+from .Explainer import Explainer
 from .utils import log_conversation, State, Feature, normalize_acts, Location
 
 class Environment:
@@ -17,6 +18,7 @@ class Environment:
         self.agent = Agent(self.model, self.mem)
         self.evaluator = Evaluator(self.target_model, dictionaries, self.mem)
         self.self_reflector = SelfReflector(self.model, self.mem)
+        self.explainer = Explainer(self.target_model, self.mem)
 
     def render_state(self) -> None:
         """Render the current state to a .log file.
@@ -106,28 +108,30 @@ class Environment:
 
         location = features[0].location
 
-        for trial in range(max_trials):
-            print(f"Trial {trial}")
+        s = State(
+            agent = [],
+            self_reflector = [],
+            evaluator = {},
+            kv = None,
+        )
 
-            s = State(
-                agent = [],
-                self_reflector = [],
-                evaluator = {},
-                kv = None,
-            )
+        self.mem.append(s)
 
-            self.mem.append(s)
+        action = self.agent(features)  
 
-            action = self.agent(features)  
+        print(action)
 
-            print(action)
+        self.evaluator(action, location)
 
-            self.evaluator(action, location)
+        self.self_reflector()
 
-            if self.self_reflector():
-                break
+        s.kv = None
 
-            self.render_state()
+        result = self.explainer()
+        
+        self.render_state()
 
-        return self.mem
+        del s, self.mem
+
+        return result
 

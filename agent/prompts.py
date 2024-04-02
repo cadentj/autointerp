@@ -20,3 +20,6 @@ Question:
 REFLECTION_PROMPT = """You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were given, explain why that score was not high enough. Then, after evaluating all samples, write a new, concise, high level plan that aims to mitigate the same failure. Here are your explainations and their respective scores. Scores range from 0-10, with scores at 10 being better than scores at 0.
 
 {results}"""
+
+EXPLAIN_PROMPT = """Given your observations, write an explaination for what causes the neuron to fire."""
+

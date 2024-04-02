@@ -66,7 +66,7 @@ def gen(
         model, 
         messages: List[dict], 
         remote: bool = False, 
-        max_new_tokens : int =500
+        max_new_tokens : int =300
     ) -> str:
     """Generate some tokens with nnsight and return new tokens.
 
@@ -96,7 +96,7 @@ def gen(
     return model.tokenizer.decode(new_tokens)
 
 
-def cached_gen(model, messages, past_key_values=None, remote=False, max_new_tokens=500, device="cuda"):
+def cached_gen(model, messages, past_key_values=None, remote=False, max_new_tokens=300, device="cuda"):
     prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt").to(device)
     
     sampling_kwargs = {
