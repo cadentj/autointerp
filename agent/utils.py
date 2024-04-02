@@ -96,11 +96,8 @@ def gen(
     return model.tokenizer.decode(new_tokens)
 
 
-def cached_gen(model, messages, past_key_values=None, remote=False, max_new_tokens=200, device="cuda"):
-    # Apply the chat template
+def cached_gen(model, messages, past_key_values=None, remote=False, max_new_tokens=500, device="cuda"):
     prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt").to(device)
-    
-    # Generate a response using past key-value pairs
     
     sampling_kwargs = {
         "do_sample": True,
@@ -119,7 +116,6 @@ def cached_gen(model, messages, past_key_values=None, remote=False, max_new_toke
                         remote=remote,
                         **sampling_kwargs):
 
-        # for _ in range()
         output = model.generator.output.save()
 
     generated_token_ids = output.value.sequences
