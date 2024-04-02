@@ -30,39 +30,39 @@
 │           │ to objects being placed on tables or references to games or hobbies.                                     │
 │           │                                                                                                          │
 │           │ Sample 2: The phrase "appears to be in much the same boat" was highlighted. The neuron might respond to  │
-│           │ idioms or expressions related to similar situations.                                                     │
+│           │ idioms or colloquial expressions related to being in similar situations.                                 │
 │           │                                                                                                          │
-│           │ Commonalities: All three samples contain idiomatic expressions ("getting back X on the dollar," "in the  │
-│           │ same boat") and specific numbers (87 cents, 2010, and an unspecified number in "much the same boat").    │
-│           │ Additionally, two out of three samples mention objects being located on a table.                         │
-│           │                                                                                                          │
-│           │ Explanation: It appears that the neuron responds to idiomatic expressions involving money, numbers, and  │
-│           │ objects located on tables. These features could potentially trigger the neuron to fire.                  │
+│           │ Commonalities: All three samples contain idiomatic expressions.                                          │
 │ User      │ Given your observations, write three different sentences that would maximize the activations of the      │
 │           │ neuron based on the following schema:                                                                    │
-│ Assistant │ ['I received 92 cents back on my purchase in 2015.', '100 figurines are scattered on the living room     │
-│           │ table.', 'Both parties seem to be facing identical financial challenges, as evidenced by their debts.']  │
+│ Assistant │ ['1. Getting back 90 cents on the dollar in 2012.', '2. Kitchen table is filled with Dungeons and        │
+│           │ Dragons figurines.', '3. They seem to be in the same financial situation as us.']                        │
 │ User      │ You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were      │
 │           │ given, explain why that score was not high enough. Then, after evaluating all samples, write a new,      │
 │           │ concise, high level plan that aims to mitigate the same failure. Here are your explainations and their   │
 │           │ respective scores. Scores range from 0-10, with scores at 10 being better than scores at 0.              │
 │           │                                                                                                          │
-│           │ I received 92 cents back on my purchase in 2015.: 0                                                      │
-│           │ 100 figurines are scattered on the living room table.: 0                                                 │
-│           │ Both parties seem to be facing identical financial challenges, as evidenced by their debts.: 5           │
+│           │ 1. Getting back 90 cents on the dollar in 2012.: 0                                                       │
+│           │ 2. Kitchen table is filled with Dungeons and Dragons figurines.: 0                                       │
+│           │ 3. They seem to be in the same financial situation as us.: 0                                             │
 │           │                                                                                                          │
+│ Assistant │ Explanations:                                                                                            │
+│           │ 1. The neuron did not activate strongly to "Getting back 90 cents on the dollar in 2012." because it     │
+│           │ required the exact phrase "getting back 87 cents on the dollar" for strong activation. Replacing the     │
+│           │ number of cents or the year slightly altered the input.                                                  │
+│           │ 2. The neuron did not respond to "Kitchen table is filled with Dungeons and Dragons figurines" because   │
+│           │ it seemed to focus more on currency-related expressions and specific years rather than objects on tables │
+│           │ or hobbies.                                                                                              │
+│           │ 3. The neuron did not activate to "They seem to be in the same financial situation as us" due to the     │
+│           │ lack of a                                                                                                │
 │ User      │ Given your observations, write an explaination for what causes the neuron to fire.                       │
-│ Assistant │ Explanation for Sample 1 (score = 0): The neuron did not respond to "figurines are scattered on the      │
-│           │ living room table" because it does not contain any idiomatic expressions, specific numbers, or           │
-│           │ currency-related terms.                                                                                  │
-│           │                                                                                                          │
-│           │ Explanation for Sample 2 (score = 5): Although the phrase "identical financial challenges" contains an   │
-│           │ idiomatic expression, it did not receive a higher score due to the absence of specific numbers or        │
-│           │ currency-related terms.                                                                                  │
-│           │                                                                                                          │
-│           │ New Plan: To create sentences that maximally activate the neuron, we should incorporate idiomatic        │
-│           │ expressions related to money, specific numbers, and currency-related terms while also including objects  │
-│           │ located on tables. An example sentence could be: "After selling his old car, John managed to get 95% of  │
-│           │ its value back in cash during the sale in 2016. Meanwhile, various collectibles cluttered the dining     │
-│           │ room table."                                                                                             │
+│ Assistant │ Explanations:                                                                                            │
+│           │ 1. The neuron did not activate strongly to "Getting back 90 cents on the dollar in 2012." because it     │
+│           │ required the exact phrase "getting back 87 cents on the dollar" for strong activation. Replacing the     │
+│           │ number of cents or the year slightly altered the input.                                                  │
+│           │ 2. The neuron did not respond to "Kitchen table is filled with Dungeons and Dragons figurines" because   │
+│           │ it seemed to focus more on currency-related expressions and specific years rather than objects on tables │
+│           │ or hobbies.                                                                                              │
+│           │ 3. The neuron did not activate to "They seem to be in the same financial situation as us" due to the     │
+│           │ lack of a                                                                                                │
 └───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘

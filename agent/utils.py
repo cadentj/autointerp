@@ -96,7 +96,7 @@ def gen(
     return model.tokenizer.decode(new_tokens)
 
 
-def cached_gen(model, messages, past_key_values=None, remote=False, max_new_tokens=300, device="cuda"):
+def cached_gen(model, messages, past_key_values=None, remote=False, max_new_tokens=150, device="cuda"):
     prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt").to(device)
     
     sampling_kwargs = {
