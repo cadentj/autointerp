@@ -26,6 +26,7 @@ class State:
     agent: List
     self_reflector: List
     evaluator: dict
+    kv: List[List[Tensor]]
 
 def log_conversation(
         conversation: List[dict], 
@@ -93,6 +94,52 @@ def gen(
     new_tokens = tokens[0][len(prompt[0]):]
     torch.cuda.empty_cache()
     return model.tokenizer.decode(new_tokens)
+
+
+def cached_gen(model, messages, past_key_values=None, remote=False, max_new_tokens=200, device="cuda"):
+    # Apply the chat template
+    prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt").to(device)
+    
+    # Generate a response using past key-value pairs
+    
+    sampling_kwargs = {
+        "do_sample": True,
+        "top_p": 0.3,
+        "repetition_penalty": 1.1,
+    }
+
+    with model.generate(prompt, 
+                        scan=False,
+                        validate=False,
+                        max_new_tokens=max_new_tokens, 
+                        pad_token_id=model.tokenizer.eos_token_id, 
+                        use_cache=True, 
+                        past_key_values=past_key_values, 
+                        return_dict_in_generate=True,
+                        remote=remote,
+                        **sampling_kwargs):
+
+        # for _ in range()
+        output = model.generator.output.save()
+
+    generated_token_ids = output.value.sequences
+    new_past_key_values = output.value.past_key_values
+
+    del output
+    # # Decode the generated token ids to a string, removing the last user input
+    response = model.tokenizer.decode(generated_token_ids[0, prompt.size(1):], skip_special_tokens=True)
+    
+    return response, new_past_key_values
+
+
+def gen_update(obj) -> str:
+
+    response, new_key_values = cached_gen(obj.model, obj.mem[-1].agent, past_key_values=obj.mem[-1].kv) 
+
+    obj.mem[-1].kv = new_key_values
+
+    return response
+    
 
 def normalize_acts(acts: Tensor) -> Tensor:
     """Normalize activations to a scale of 0 to 10.

@@ -1,7 +1,7 @@
 import re
 from typing import List
 
-from .utils import gen, Feature
+from .utils import gen_update, Feature
 from .prompts import SYSTEM_PROMPT, ACTION_PROMPT, RE_EXPLAIN_PROMPT
 
 class Agent:
@@ -53,7 +53,7 @@ class Agent:
 
         explaination = {
             "role" : "assistant",
-            "content" : gen(self.model, self.mem[-1].agent)  
+            "content" : gen_update(self)
         }
         
         self.mem[-1].agent.append(explaination)
@@ -118,10 +118,10 @@ class Agent:
             "content" : ACTION_PROMPT
         })
 
-        generated_action = gen(self.model, self.mem[-1].agent)
+        generated_action = gen_update(self)
         
-        while not self.parse_action(generated_action):
-            generated_action = gen(self.model, self.mem[-1].agent)
+        # while not self.parse_action(generated_action):
+        #     generated_action = gen_update(self)
 
         self.mem[-1].agent.append({
             "role" : "assistant",

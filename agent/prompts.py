@@ -8,7 +8,12 @@ Once you have written down a few notes for each text sample, summarize what high
 
 {samples}"""
 
-ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron. Return each sentence on a new line. Surround the sentence with square brackets. Do not number the lines.
+ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron. Return each sentence on a new line. Surround the sentence with square brackets. Do not number the lines. 
+
+Example sentences:
+[This is the first sentence...]
+[This is the second sentence...]
+[This is the third sentence...]
 
 Your sentences:
 """

@@ -1,7 +1,7 @@
 from typing import List
 
 from .prompts import REFLECTION_PROMPT
-from .utils import gen
+from .utils import gen_update
 
 class SelfReflector:
 
@@ -39,7 +39,7 @@ class SelfReflector:
                 reflection,
                 {
                     "role" : "assistant",
-                    "content" : gen(self.model, self.mem[-1].agent, max_new_tokens=300)
+                    "content" : gen_update(self)
                 }
             ]
 

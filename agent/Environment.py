@@ -113,11 +113,14 @@ class Environment:
                 agent = [],
                 self_reflector = [],
                 evaluator = {},
+                kv = None,
             )
 
             self.mem.append(s)
 
             action = self.agent(features)  
+
+            print(action)
 
             self.evaluator(action, location)
 
