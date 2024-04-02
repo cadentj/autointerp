@@ -131,7 +131,7 @@ class Environment:
         
         self.render_state()
 
-        del s, self.mem
+        del s.kv
 
         return result
 
