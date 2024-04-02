@@ -27,7 +27,7 @@ class Jsonformer:
         max_array_length: int = 10,
         max_number_tokens: int = 6,
         temperature: float = 1.0,
-        max_string_token_length: int = 10,
+        max_string_token_length: int = 100,
     ):
         self.model = model
         self.tokenizer = tokenizer
@@ -245,8 +245,6 @@ class Jsonformer:
         return obj
 
     def get_prompt(self):
-        # template = """{prompt}\nOutput result in the following JSON schema format:\n{schema}\nResult: {progress}"""
-
         template = """Outputting result in the following JSON schema format:\n{schema}\nResult: {progress}"""
 
         progress = json.dumps(self.value)

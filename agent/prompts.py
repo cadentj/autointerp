@@ -8,15 +8,7 @@ Once you have written down a few notes for each text sample, summarize what high
 
 {samples}"""
 
-ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron. Return each sentence on a new line. Surround the sentence with square brackets. Do not number the lines. 
-
-Example sentences:
-[This is the first sentence...]
-[This is the second sentence...]
-[This is the third sentence...]
-
-Your sentences:
-"""
+ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron based on the following schema:"""
 
 RE_EXPLAIN_PROMPT = """You have attempted to answer following question before and failed. The following reflection(s) give a plan to avoid failing to answer the question in the same way you did previously. Use them during this conversation to improve your strategy of correctly answering the given question.
 

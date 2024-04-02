@@ -1,5 +1,6 @@
 import re
 from typing import List
+from .jsonformer import Jsonformer
 
 from .utils import gen_update, Feature
 from .prompts import SYSTEM_PROMPT, ACTION_PROMPT, RE_EXPLAIN_PROMPT
@@ -113,46 +114,33 @@ class Agent:
             List[str]: List of phrases
         """
 
-        self.mem[-1].agent.append({
+        json_schema = {
+                "type": "object",
+                "properties": {
+                    "s_one": {"type": "string"},
+                    "s_two": {"type": "string"},
+                    "s_three": {"type": "string"},
+                }
+        }
+
+        former = Jsonformer(self.model, self.model.tokenizer, self.mem, json_schema, ACTION_PROMPT)
+        response = former()
+        response = list(response.values())
+
+        interaction = [{
             "role" : "user",
             "content" : ACTION_PROMPT
-        })
-
-        generated_action = gen_update(self)
-        
-        # while not self.parse_action(generated_action):
-        #     generated_action = gen_update(self)
-
-        self.mem[-1].agent.append({
+        },
+        {
             "role" : "assistant",
-            "content" : generated_action
-        })
+            "content" : str(response)
+        }
+        ]
 
-        return self.parse_action(generated_action)
+        self.mem[-1].agent.extend(interaction)
 
-    def parse_action(
-            self, 
-            phrase: str
-        ) -> List[str]:
-        """Parse phrases from model.
+        return response
 
-        Args:
-            phrase (str): Phrase to parse
-
-        Returns:
-            List[str]: Parsed phrases
-        """
-
-        print(phrase)
-
-        pattern = r'\[(.*?)\]'
-        matches = re.findall(pattern, phrase)
-
-        if len(matches) != 3:
-            return []
-        
-        return matches
-        
     def __call__(
             self, 
             features: List[Feature]
