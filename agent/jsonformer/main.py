@@ -8,6 +8,7 @@ from .logits_processors import (
 from termcolor import cprint
 from transformers import PreTrainedModel, PreTrainedTokenizer
 import json
+import torch
 
 GENERATION_MARKER = "|GENERATION|"
 
@@ -74,19 +75,21 @@ class Jsonformer:
             scan=False,
             validate=False,
 
+            return_dict_in_generate=True,
             use_cache=True, 
             past_key_values=self.mem[-1].kv, 
             # remote=remote,
         ):
             
-            response = self.model.generator.output.save()
+            output = self.model.generator.output.save()
 
+        response = output.value.sequences
+        self.mem[-1].kv = output.value.past_key_values
 
         response = self.tokenizer.decode(response.value[0,input_tokens.size(1):], skip_special_tokens=True)
 
-        # response = response[len(prompt) :]
-        # response = response.strip().rstrip(".")
         self.debug("[generate_number]", response)
+        del output
         try:
             return float(response)
         except ValueError:
@@ -100,8 +103,14 @@ class Jsonformer:
         self.debug("[generate_boolean]", prompt, is_prompt=True)
 
         input_tensor = self.tokenizer.apply_chat_template(prompt, return_tensors="pt")
-        output = self.model.trace(input_tensor.to(self.model.device), trace=False, scan=False, validate=False)
+        output = self.model.trace(
+            input_tensor.to(self.model.device), 
+            use_cache=True, 
+            past_key_values=self.mem[-1].kv, 
+            trace=False, scan=False, validate=False)
         logits = output.logits[0, -1]
+
+        self.mem[-1].kv = output.past_key_values
 
         # todo: this assumes that "true" and "false" are both tokenized to a single token
         # this is probably not true for all tokenizers
@@ -136,13 +145,16 @@ class Jsonformer:
             scan=False,
             validate=False,
 
+            return_dict_in_generate=True,
             use_cache=True, 
             past_key_values=self.mem[-1].kv, 
             # remote=remote,
         ):
             
-            response = self.model.generator.output.save()
+            output = self.model.generator.output.save()
 
+        response = output.value.sequences
+        self.mem[-1].kv = output.value.past_key_values
 
         # Some models output the prompt as part of the response
         # This removes the prompt from the response if it is present
@@ -157,7 +169,7 @@ class Jsonformer:
         response = self.tokenizer.decode(response, skip_special_tokens=True)
 
         self.debug("[generate_string]", "|" + response + "|")
-
+        del output
         if response.count('"') < 1:
             return response
 
