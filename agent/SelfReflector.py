@@ -1,7 +1,7 @@
 from typing import List
 
 from .prompts import REFLECTION_PROMPT
-from .utils import gen_update
+from .utils import gen_update, print_content
 
 class SelfReflector:
 
@@ -25,23 +25,24 @@ class SelfReflector:
 
         if self.check_success():
             return True
+        
         else:
-            reflection = {
+
+            self.mem[-1].agent.append({
                 "role" : "user",
                 "content" : REFLECTION_PROMPT.format(
                     results = self.list_scores()
                 )
-            }
+            })
 
-            self.mem[-1].agent.append(reflection)
+            reflection = gen_update(self)
+            
+            self.mem[-1].agent.append({
+                "role" : "assistant",
+                "content" : reflection
+            })
 
-            self.mem[-1].self_reflector = [
-                reflection,
-                {
-                    "role" : "assistant",
-                    "content" : gen_update(self)
-                }
-            ]
+            self.mem[-1].self_reflector = reflection
 
             return False
 

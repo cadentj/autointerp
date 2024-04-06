@@ -4,13 +4,11 @@
 
 import sys
 import torch
-from tqdm import tqdm
 from nnsight import LanguageModel
 
 sys.path.append("./mats_sae_training")
 
 from sae_training.sparse_autoencoder import SparseAutoencoder
-from transformer_lens import utils
 
 torch.set_grad_enabled(False)
 
@@ -33,7 +31,6 @@ for layer in range(n_layers):
 
 print("Loaded dictionaries")
 
-
 gpt = LanguageModel("openai-community/gpt2", device_map="cuda:0", dispatch=True)
 
 print("Loaded GPT")
@@ -49,54 +46,25 @@ mixtral = LanguageModel("mistralai/Mistral-7B-Instruct-v0.2", device_map="cuda:0
 
 print("Loaded Mixtral in 4bit")
 
-import autointerp.agent.Agent as Agent
 import importlib 
-importlib.reload(Agent)
+import agent.Environment
 
-env = Agent.Environment(mixtral, gpt, sae_list)
+importlib.reload(agent.Environment)
 
-location = Agent.Location(
-    feature_type = "resid",
-    layer = 10,
-    index = 12307
-)
+env = agent.Environment.Environment(mixtral, gpt, sae_list)
+
+
+layer = 10
+index = 6536
 
 prompts = [
-    " broadcast.ĊĊWhile the episode will mark C.K.'s debut as an",
-    "ĊĊIf implemented, this project would mark a turning point in the growing cooperation between",
-    " States.ĊĊThis year,which marks Fort RossâĢĻ bicentennial,"
+    " (getting back 87 cents on the dollar in 2010.) In comparison, the average state gets",
+    " (Dungeons and Dragons figurines off the kitchen table).ĊĊThe other day I noteds",
+    ", (appears to be in much the same boat.) Yes, our political leaders are perfectly",
 ]
 
-features = []
-
-for prompt in prompts:
-    tokens = gpt.tokenizer.encode(prompt)
-    str_tokens = [gpt.tokenizer.decode([t]) for t in tokens]
-
-    with gpt.trace(tokens):
-        activations = gpt.transformer.h[10].input[0][0].save()
-
-        _, feature_acts, _, _, _, _ = sae_list[10](activations)
-
-        acts = feature_acts[:,:,12307][0].save()
-
-    acts[0] = 0.
-    acts = acts.value
-
-    f = Agent.Feature(
-        prompt=prompt,
-        tokens=str_tokens,
-        acts=acts,
-        n_acts=Agent.normalize_acts(acts),
-        location=location
-    )
-
-    features.append(f)
-
-import sys
-
-with open('./logs/running.log', 'w') as log_file:
-    sys.stdout = log_file
-    sys.stderr = log_file
-    out = env(features)
-    sys.stdout = sys.__stdout__ 
+env(
+    prompts = prompts,
+    layer = layer,
+    index = index
+)

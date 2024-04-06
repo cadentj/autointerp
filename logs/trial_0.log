@@ -29,46 +29,36 @@
 │           │ Sample 1: The text mentions "kitchen table" and "Dungeons and Dragons figurines." The neuron may react   │
 │           │ to objects being placed on tables or references to games or hobbies.                                     │
 │           │                                                                                                          │
-│           │ Sample 2: The phrase "appears to be in much the same boat" was highlighted. The neuron might respond to  │
-│           │ idioms or colloquial expressions related to being in similar situations.                                 │
-│           │                                                                                                          │
-│           │ Commonalities: All three samples contain idiomatic expressions. Two of them involve money or financial   │
-│           │ concepts, while one includes an object being placed on a table.                                          │
-│           │                                                                                                          │
-│           │ Explanation: It appears that the neuron responds to idiomatic expressions, particularly those involving  │
-│           │ money or objects being located on tables. These features could potentially trigger the neuron to         │
-│           │ activate.                                                                                                │
+│           │ Sample 2: The phrase                                                                                     │
 │ User      │ Given your observations, write three different sentences that would maximize the activations of the      │
 │           │ neuron based on the following schema:                                                                    │
-│ Assistant │ ["I'm getting 90% refund on my purchase from last year.", 'He left his toy car on the living room        │
-│           │ table', 'They seem to be facing the same financial challenges as us']                                    │
+│           │                                                                                                          │
+│           │ {'type': 'object', 'properties': {'s_one': {'type': 'string'}, 's_two': {'type': 'string'}, 's_three':   │
+│           │ {'type': 'string'}}}                                                                                     │
+│ Assistant │ Result: {'s_one': '1. Getting back 90 cents on the table in 2011.', 's_two': '2. Kitchen table adorned   │
+│           │ with Dungeons and Dragons figurines', 's_three': '3. Comparable situation in 2012, returning 88 cents on │
+│           │ investment'}                                                                                             │
 │ User      │ You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were      │
 │           │ given, explain why that score was not high enough. Then, after evaluating all samples, write a new,      │
 │           │ concise, high level plan that aims to mitigate the same failure. Here are your explainations and their   │
 │           │ respective scores. Scores range from 0-10, with scores at 10 being better than scores at 0.              │
 │           │                                                                                                          │
-│           │ I'm getting 90% refund on my purchase from last year.: 11                                                │
-│           │ He left his toy car on the living room table: 9                                                          │
-│           │ They seem to be facing the same financial challenges as us: 0                                            │
+│           │ 1. Getting back 90 cents on the table in 2011.: 0                                                        │
+│           │ 2. Kitchen table adorned with Dungeons and Dragons figurines: 0                                          │
+│           │ 3. Comparable situation in 2012, returning 88 cents on investment: 0                                     │
 │           │                                                                                                          │
-│ Assistant │ Outputting result in the following JSON schema format:                                                   │
-│           │ {"type": "object", "properties": {"s\_one": {"type": "string"}, "s\_two": {"type": "string"},            │
-│           │ "s\_three": {"type": "string"}}}                                                                         │
-│           │ Result: {                                                                                                │
-│           │ "s\_one": "She received a full refund for her item bought in 2019.",                                     │
-│           │ "s\_two": "The chess pieces were spread across the dining table.",                                       │
-│           │ "s\_three": "Our neighbors share the same financial struggles as we do."                                 │
-│           │ Scores: 11, 10, 11                                                                                       │
+│ Assistant │ Explanation for Sample 0 (Score: 0): The neuron did not activate strongly because the text "Getting back │
+│           │ 90 cents on the table in 2011" does not contain the exact phrases or tokens that were observed in the    │
+│           │ original strong-activating samples. While it includes the concept of getting money back and a year       │
+│           │ reference, it doesn't match the specific phrases ("dollar," "getting back," and "in a year") that were   │
+│ User      │ Given your observations, write an explaination for what causes the neuron to fire.                       │
+│ Assistant │ Based on the provided text samples, the neuron appears to respond most strongly when it encounters the   │
+│           │ following features:                                                                                      │
 │           │                                                                                                          │
-│           │ Note: Scores are provided as examples and may vary depending on the specific neuron and context.         │
-│ Assistant │ Outputting result in the following JSON schema format:                                                   │
-│           │ {"type": "object", "properties": {"s\_one": {"type": "string"}, "s\_two": {"type": "string"},            │
-│           │ "s\_three": {"type": "string"}}}                                                                         │
-│           │ Result: {                                                                                                │
-│           │ "s\_one": "She received a full refund for her item bought in 2019.",                                     │
-│           │ "s\_two": "The chess pieces were spread across the dining table.",                                       │
-│           │ "s\_three": "Our neighbors share the same financial struggles as we do."                                 │
-│           │ Scores: 11, 10, 11                                                                                       │
+│           │ 1. Expressions related to currency or monetary transactions, such as "getting back on the dollar" or     │
+│           │ "returning cents on investment."                                                                         │
+│           │ 2. Specific years mentioned in the context.                                                              │
 │           │                                                                                                          │
-│           │ Note: Scores are provided as examples and may vary depending on the specific neuron and context.         │
+│           │ A possible explanation for the neuron's behavior could be that it has learned to associate these         │
+│           │ features with certain concepts or categories during its training. When it encounters                     │
 └───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘

@@ -257,7 +257,7 @@ class Jsonformer:
         return obj
 
     def get_prompt(self):
-        template = """Outputting result in the following JSON schema format:\n{schema}\nResult: {progress}"""
+        template = """Result: {progress}"""
 
         progress = json.dumps(self.value)
         gen_marker_index = progress.find(f'"{self.generation_marker}"')

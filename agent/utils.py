@@ -24,7 +24,7 @@ class Feature:
 @dataclass()
 class State:
     agent: List
-    self_reflector: List
+    self_reflector: str
     evaluator: dict
     kv: List[List[Tensor]]
 
@@ -96,7 +96,7 @@ def gen(
     return model.tokenizer.decode(new_tokens)
 
 
-def cached_gen(model, messages, past_key_values=None, remote=False, max_new_tokens=500, device="cuda"):
+def cached_gen(model, messages, past_key_values=None, remote=False, max_new_tokens=100, device="cuda"):
     prompt = model.tokenizer.apply_chat_template(messages, return_tensors="pt").to(device)
     
     sampling_kwargs = {
@@ -149,3 +149,7 @@ def normalize_acts(acts: Tensor) -> Tensor:
 
     return (acts - acts.min()) / (acts.max() - acts.min()) * 10
 
+def print_content(messages):
+
+    for message in messages:
+        print(f"{message['role'].capitalize()}: {message['content']}\n")

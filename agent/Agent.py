@@ -2,7 +2,7 @@ import re
 from typing import List
 from .jsonformer import Jsonformer
 
-from .utils import gen_update, Feature
+from .utils import gen_update, Feature, print_content
 from .prompts import SYSTEM_PROMPT, ACTION_PROMPT, RE_EXPLAIN_PROMPT
 
 class Agent:
@@ -71,8 +71,7 @@ class Agent:
 
         reflections = ""
         for i, m in enumerate(self.mem[:-1]):
-            refl = m.self_reflector[-1]["content"]
-            reflections += f"Trial {i} Reflection:\n{refl}\n"
+            reflections += f"Trial {i} Reflection:\n{m.self_reflector}\n"
         
         return reflections
     
@@ -115,31 +114,31 @@ class Agent:
         """
 
         json_schema = {
-                "type": "object",
-                "properties": {
-                    "s_one": {"type": "string"},
-                    "s_two": {"type": "string"},
-                    "s_three": {"type": "string"},
-                }
+            "type": "object",
+            "properties": {
+                "s_one": {"type": "string"},
+                "s_two": {"type": "string"},
+                "s_three": {"type": "string"},
+            }
         }
 
-        former = Jsonformer(self.model, self.model.tokenizer, self.mem, json_schema, ACTION_PROMPT)
+        action_prompt = ACTION_PROMPT.format(schema=json_schema)
+
+        former = Jsonformer(self.model, self.model.tokenizer, self.mem, json_schema, action_prompt)
         response = former()
-        response = list(response.values())
 
         interaction = [{
             "role" : "user",
-            "content" : ACTION_PROMPT
+            "content" : action_prompt
         },
         {
             "role" : "assistant",
-            "content" : str(response)
-        }
-        ]
+            "content" : "Result: " + str(response)
+        }]
 
         self.mem[-1].agent.extend(interaction)
 
-        return response
+        return list(response.values())
 
     def __call__(
             self, 

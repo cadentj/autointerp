@@ -3,20 +3,23 @@ from typing import List
 from .Agent import Agent
 from .Evaluator import Evaluator
 from .SelfReflector import SelfReflector
+from .Explainer import Explainer
 from .utils import log_conversation, State, Feature, normalize_acts, Location
 
 class Environment:
 
-    def __init__(self, model, target_model, dictionaries):
+    def __init__(self, model, target_model, dictionaries, do_trials=False):
         self.model = model
         self.target_model = target_model
         self.mem = []
         
         self.dictionaries = dictionaries
+        self.do_trials = do_trials
 
         self.agent = Agent(self.model, self.mem)
         self.evaluator = Evaluator(self.target_model, dictionaries, self.mem)
         self.self_reflector = SelfReflector(self.model, self.mem)
+        self.explainer = Explainer(self.model, self.mem)
 
     def render_state(self) -> None:
         """Render the current state to a .log file.
@@ -32,7 +35,6 @@ class Environment:
             
             path = f"./logs/trial_{i}.log"
             conversation = m.agent
-            conversation.append(m.self_reflector[-1])
 
             log_conversation(conversation, path)
             
@@ -92,7 +94,6 @@ class Environment:
     def run(
             self, 
             features: List[Feature], 
-            max_trials=3
         ) -> List[State]:
         """Run autointerp on a neuron, given a set of example Features.
 
@@ -104,6 +105,16 @@ class Environment:
             List[State]: List of States
         """
 
+        if not self.do_trials:
+            return self.single_pass(features)
+        else:
+            return self.trials(features)
+
+    def trials(
+        self,
+        features,
+        max_trials=3
+    ):
         location = features[0].location
 
         for trial in range(max_trials):
@@ -111,7 +122,7 @@ class Environment:
 
             s = State(
                 agent = [],
-                self_reflector = [],
+                self_reflector = "",
                 evaluator = {},
                 kv = None,
             )
@@ -130,4 +141,36 @@ class Environment:
             self.render_state()
 
         return self.mem
+    
+    def single_pass(
+        self,
+        features: List[Feature]
+    ):
+        location = features[0].location
 
+        s = State(
+            agent = [],
+            self_reflector = [],
+            evaluator = {},
+            kv = None,
+        )
+
+        self.mem.append(s)
+
+        action = self.agent(features)  
+
+        print(action)
+
+        self.evaluator(action, location)
+
+        self.self_reflector()
+
+        # self.mem[-1].kv = None
+
+        result = self.explainer()
+        
+        self.render_state()
+
+        del s.kv
+
+        return result

@@ -8,7 +8,9 @@ Once you have written down a few notes for each text sample, summarize what high
 
 {samples}"""
 
-ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron based on the following schema:"""
+ACTION_PROMPT = """Given your observations, write three different sentences that would maximize the activations of the neuron based on the following schema:
+
+{schema}"""
 
 RE_EXPLAIN_PROMPT = """You have attempted to answer following question before and failed. The following reflection(s) give a plan to avoid failing to answer the question in the same way you did previously. Use them during this conversation to improve your strategy of correctly answering the given question.
 
@@ -20,3 +22,5 @@ Question:
 REFLECTION_PROMPT = """You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were given, explain why that score was not high enough. Then, after evaluating all samples, write a new, concise, high level plan that aims to mitigate the same failure. Here are your explainations and their respective scores. Scores range from 0-10, with scores at 10 being better than scores at 0.
 
 {results}"""
+
+EXPLAIN_PROMPT = """Given your observations, write an explaination for what causes the neuron to fire."""
