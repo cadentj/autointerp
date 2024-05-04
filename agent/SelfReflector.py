@@ -1,6 +1,6 @@
 from typing import List
 
-from .prompts import REFLECTION_PROMPT
+from .prompts import REFLECTION_PROMPT, SUCCESS_PROMPT
 from .utils import gen_update, print_content
 
 class SelfReflector:
@@ -23,28 +23,27 @@ class SelfReflector:
             bool: True if the trial was successful, False if not
         """
 
-        if self.check_success():
-            return True
+        success = self.check_success()
+        prompt = SUCCESS_PROMPT if success \
+            else REFLECTION_PROMPT
         
-        else:
+        self.mem[-1].agent.append({
+            "role" : "user",
+            "content" : prompt.format(
+                results = self.list_scores()
+            )
+        })
 
-            self.mem[-1].agent.append({
-                "role" : "user",
-                "content" : REFLECTION_PROMPT.format(
-                    results = self.list_scores()
-                )
-            })
+        reflection = gen_update(self)
+        
+        self.mem[-1].agent.append({
+            "role" : "assistant",
+            "content" : reflection
+        })
 
-            reflection = gen_update(self)
-            
-            self.mem[-1].agent.append({
-                "role" : "assistant",
-                "content" : reflection
-            })
+        self.mem[-1].self_reflector = reflection
 
-            self.mem[-1].self_reflector = reflection
-
-            return False
+        return success
 
     def check_success(self) -> bool:
         """Check if the trial was successful.

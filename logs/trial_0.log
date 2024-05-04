@@ -23,42 +23,33 @@
 │           │ Sample 2:<|endoftext|>, (appears to be in much the same** boat**.) Yes, our political leaders are        │
 │           │ perfectly                                                                                                │
 │           │                                                                                                          │
-│ Assistant │ Sample 0: This text contains the phrases "getting back 87 cents on the dollar" and "in 2010." The neuron │
-│           │ seems to respond to currency-related expressions and specific years.                                     │
+│ Assistant │ Sample 0 features:                                                                                       │
 │           │                                                                                                          │
-│           │ Sample 1: The text mentions "kitchen table" and "Dungeons and Dragons figurines." The neuron may react   │
-│           │ to objects being placed on tables or references to games or hobbies.                                     │
+│           │ * The presence of the currency-related term "dollar" and a numerical value "87 cents".                   │
+│           │ * The usage of a year "2010".                                                                            │
 │           │                                                                                                          │
-│           │ Sample 2: The phrase                                                                                     │
+│           │ Sample 1 features:                                                                                       │
+│           │                                                                                                          │
+│           │ * The inclusion of an activity related to removing items from a specific location ("off the kitchen      │
+│           │ table").                                                                                                 │
+│           │ * The mention of a brand name or game ("Dungeons and Dragons").                                          │
+│           │                                                                                                          │
+│           │ Sample 2 features:                                                                                       │
+│           │                                                                                                          │
+│           │ * A                                                                                                      │
 │ User      │ Given your observations, write three different sentences that would maximize the activations of the      │
 │           │ neuron based on the following schema:                                                                    │
 │           │                                                                                                          │
 │           │ {'type': 'object', 'properties': {'s_one': {'type': 'string'}, 's_two': {'type': 'string'}, 's_three':   │
 │           │ {'type': 'string'}}}                                                                                     │
-│ Assistant │ Result: {'s_one': '1. Getting back 90 cents on the table in 2011.', 's_two': '2. Kitchen table adorned   │
-│           │ with Dungeons and Dragons figurines', 's_three': '3. Comparable situation in 2012, returning 88 cents on │
-│           │ investment'}                                                                                             │
-│ User      │ You were unsuccessful in providing an accurate explaination of the neuron. For each sample you were      │
-│           │ given, explain why that score was not high enough. Then, after evaluating all samples, write a new,      │
-│           │ concise, high level plan that aims to mitigate the same failure. Here are your explainations and their   │
-│           │ respective scores. Scores range from 0-10, with scores at 10 being better than scores at 0.              │
-│           │                                                                                                          │
-│           │ 1. Getting back 90 cents on the table in 2011.: 0                                                        │
-│           │ 2. Kitchen table adorned with Dungeons and Dragons figurines: 0                                          │
-│           │ 3. Comparable situation in 2012, returning 88 cents on investment: 0                                     │
-│           │                                                                                                          │
-│ Assistant │ Explanation for Sample 0 (Score: 0): The neuron did not activate strongly because the text "Getting back │
-│           │ 90 cents on the table in 2011" does not contain the exact phrases or tokens that were observed in the    │
-│           │ original strong-activating samples. While it includes the concept of getting money back and a year       │
-│           │ reference, it doesn't match the specific phrases ("dollar," "getting back," and "in a year") that were   │
+│ Assistant │ Result: {'s_one': '(found **three dollars** in **2022** at the **bank** ).', 's_two': '(the **kitchen**  │
+│           │ table holds **Dungeons & Dragons** figurines).s_three', 's_three': '(the **captain** is in the **same    │
+│           │ boat**)'}                                                                                                │
 │ User      │ Given your observations, write an explaination for what causes the neuron to fire.                       │
-│ Assistant │ Based on the provided text samples, the neuron appears to respond most strongly when it encounters the   │
-│           │ following features:                                                                                      │
+│ Assistant │ Based on the analysis of the provided text samples, it appears that the neuron fires when the input text │
+│           │ contains certain features. These features include references to specific objects, time indicators such   │
+│           │ as years, locations, and monetary values. Here are some possible explanations for the neuron activation: │
 │           │                                                                                                          │
-│           │ 1. Expressions related to currency or monetary transactions, such as "getting back on the dollar" or     │
-│           │ "returning cents on investment."                                                                         │
-│           │ 2. Specific years mentioned in the context.                                                              │
-│           │                                                                                                          │
-│           │ A possible explanation for the neuron's behavior could be that it has learned to associate these         │
-│           │ features with certain concepts or categories during its training. When it encounters                     │
+│           │ 1. Object reference: The neuron may be associated with recognizing the presence of specific objects      │
+│           │ mentioned in the text, such as "dollars," "kitchen table," or "D                                         │
 └───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘

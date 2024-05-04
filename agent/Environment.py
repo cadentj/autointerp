@@ -165,8 +165,6 @@ class Environment:
 
         self.self_reflector()
 
-        # self.mem[-1].kv = None
-
         result = self.explainer()
         
         self.render_state()
