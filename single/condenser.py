@@ -1,14 +1,19 @@
 from utils import gen
 from prompting import get_condenser_template
+from config import CondenserConfig
+
+CONFIG = CondenserConfig()
 
 def condense(explanation_list, return_output=False):
-    prompt = {
-        "prompt":  '',
-        "prompt_template": get_condenser_template(explanation_list),
-        "max_tokens" : 2000,
-        "temperature" : 0.0
+    generation_kwargs = {
+        "max_tokens" : CONFIG.max_tokens,
+        "temperature" : CONFIG.temperature
     }
-    output = gen(prompt)
+    
+    output = gen(
+        get_condenser_template(explanation_list),
+        generation_kwargs=generation_kwargs
+    )
 
     output_str = ''
     for i in output:

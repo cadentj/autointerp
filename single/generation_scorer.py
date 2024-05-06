@@ -1,15 +1,8 @@
-from dataclasses import dataclass
-
 from utils import gen, log
 from prompting import get_gen_scorer_template, get_simple_gen_scorer_template
+from config import GenerationScorerConfig
 
-
-@dataclass
-class GenerationScorerConfig:
-    n_examples : int = 10
-    layer : int = 10
-    verbose : bool = True
-
+CONFIG = GenerationScorerConfig()
 
 class GenerationScorer:
 
@@ -17,15 +10,9 @@ class GenerationScorer:
         self,
         model,
         state,
-        cfg: GenerationScorerConfig = None
     ):
         self.model = model
         self.state = state
-    
-        if cfg is None:
-            cfg = GenerationScorerConfig()
-        self.cfg = cfg
-
 
     def get_llm_examples(self, explanation):
 
@@ -38,7 +25,7 @@ class GenerationScorer:
         }
 
         output = gen(
-            get_gen_scorer_template(explanation, self.cfg.n_examples), 
+            get_gen_scorer_template(explanation, CONFIG.n_examples), 
             generation_kwargs=generation_kwargs
         )
 
@@ -56,7 +43,7 @@ class GenerationScorer:
         scores_list = []
 
         log(self, "section", "Running generation scoring.")
-        log(self, "user", get_simple_gen_scorer_template("<EXPLANATION>", self.cfg.n_examples))
+        log(self, "user", get_simple_gen_scorer_template("<EXPLANATION>", CONFIG.n_examples))
 
         for explanation in explanation_list:
             log(self, "system", f"Running on explanation: {explanation}")

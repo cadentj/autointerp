@@ -1,11 +1,38 @@
 import torch as t
+import openai
 import replicate
 from rich.console import Console
 from rich.table import Table
 from transformers import AutoTokenizer
 
+from config import PROVIDER
+
+
+if PROVIDER == "openai":
+    print("Using OpenAI API")
+    client = openai.OpenAI(api_key="<YOUR KEY HERE>")
+
+
 def gen(prompt, generation_kwargs={}):
-    tokenizer = AutoTokenizer.from_pretrained("gradientai/Llama-3-70B-Instruct-Gradient-262k")
+    if PROVIDER == "openai":
+        return gen_openai(prompt, generation_kwargs)
+    elif PROVIDER == "replicate":
+        return gen_replicate(prompt, generation_kwargs)
+    
+
+def gen_openai(prompt, generation_kwargs={}):
+    output = client.chat.completions.create(
+        model="gpt-4-turbo-2024-04-09",
+        messages=prompt,
+        temperature = generation_kwargs.get("temperature", 1.0),
+        max_tokens = generation_kwargs.get("max_tokens", 1000),
+    )
+
+    return output.choices[0].message.content
+
+
+def gen_replicate(prompt, generation_kwargs={}):
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-70B-Instruct")
 
     prompt_str = tokenizer.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True)
 

@@ -53,7 +53,7 @@ def get_simple_gen_scorer_template(explanation, n_examples):
 def get_gen_scorer_template(explanation, n_examples):
 
     prompt = [
-        {"role": "system", "content": {GSCORER_SYSTEM_PROMPT.format(n_examples)}},
+        {"role": "system", "content": GSCORER_SYSTEM_PROMPT.format(n_examples)},
         {"role": "user", "content": GSCORER_EXAMPLE},
         {"role": "assistant", "content": GSCORER_RESPONSE},
         {"role": "user", "content": f"Description of text feature: {explanation}"}

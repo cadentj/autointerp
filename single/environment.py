@@ -7,21 +7,12 @@ from datasets import load_dataset, Dataset
 from transformer_lens import utils
 
 from utils import topk
-from explainer import Explainer, ExplainerConfig
-from detection_scorer import DetectionScorer, DetectionScorerConfig
-from generation_scorer import GenerationScorer, GenerationScorerConfig
+from config import EnvConfig
+from explainer import Explainer
+from detection_scorer import DetectionScorer
+from generation_scorer import GenerationScorer
 
-
-@dataclass
-class EnvConfig:
-    num_batches: int = 2_000
-    minibatch_size: int = 150
-    seed: int = 22
-    batch_len: int = 128
-    n_examples = 40
-    l_ctx: int = 15
-    r_ctx: int = 4
-
+CONFIG = EnvConfig()
 
 @dataclass
 class State:
@@ -48,24 +39,16 @@ class Environment:
         self,
         layer: int, # sae layer
         feature_id: int, # index of feature
-        cfg: EnvConfig = None,
-        explainer_cfg: ExplainerConfig = None,
-        detection_cfg: DetectionScorerConfig = None,
-        generation_cfg: GenerationScorerConfig = None,
     ):
-        if cfg is None:
-            cfg = EnvConfig()
+        self.seed = CONFIG.seed
 
-        self.cfg = cfg
-        self.seed = cfg.seed
-
-        tokenized_data = self.load_webtext(cfg.batch_len)
+        tokenized_data = self.load_webtext(CONFIG.batch_len)
 
         tok_cache, act_cache = self.load_features(
             tokenized_data,
             layer,
-            num_batches=cfg.num_batches,
-            minibatch_size=cfg.minibatch_size
+            num_batches=CONFIG.num_batches,
+            minibatch_size=CONFIG.minibatch_size
         )
 
         examples, max_act = self.get_top_examples(act_cache, tok_cache, feature_id)
@@ -80,9 +63,9 @@ class Environment:
             feature_id=feature_id
         )
 
-        self.explainer = Explainer(self.model, self.state, cfg=explainer_cfg)
-        self.d_scorer = DetectionScorer(self.model, self.state, cfg=detection_cfg)
-        self.gen_scorer = GenerationScorer(self.model, self.state, cfg=generation_cfg)
+        self.explainer = Explainer(self.model, self.state)
+        self.d_scorer = DetectionScorer(self.model, self.state)
+        self.gen_scorer = GenerationScorer(self.model, self.state)
         
 
     def load_webtext(self, batch_len) -> Dataset:
@@ -110,14 +93,14 @@ class Environment:
     ):
         examples_list = []
 
-        top_acts, top_inds = topk(act_cache[:,:, feature_id], self.cfg.n_examples)
+        top_acts, top_inds = topk(act_cache[:,:, feature_id], CONFIG.n_examples)
         max_act = top_acts[0]
 
-        batch_len = self.cfg.batch_len
+        batch_len = CONFIG.batch_len
 
         for batch, pos in top_inds:
-            start_pos = max(0, pos - self.cfg.l_ctx)
-            end_pos = min(batch_len, pos + self.cfg.r_ctx + 1)
+            start_pos = max(0, pos - CONFIG.l_ctx)
+            end_pos = min(batch_len, pos + CONFIG.r_ctx + 1)
             example_toks = tok_cache[batch, start_pos : end_pos]
             example_acts = act_cache[batch, start_pos : end_pos, feature_id]
 
