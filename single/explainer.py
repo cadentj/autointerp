@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from utils import topk
 from tqdm import tqdm
 from utils import gen
-from explainer_prompts import get_explainer_template
+from prompting import get_explainer_template
 
 @dataclass
 class ExplainerConfig:
@@ -18,8 +18,6 @@ class ExplainerConfig:
     right_ctx: int = 2
     activation_threshold: float = 0.4
 
-    verbose: bool = False
-
 # delimiters
 l = '<<'
 r = '>>'
@@ -32,14 +30,16 @@ class Explainer:
         state, 
         cfg: ExplainerConfig = None
     ):  
-        
-        self.state = state
-        self.model = model
-
         if cfg is None:
             cfg = ExplainerConfig()
 
         self.cfg = cfg
+
+        self.state = state
+        self.model = model
+
+        # n_exampels should be less than or equal to the number that we cached
+        assert(cfg.batch_size * cfg.n_batches <= len(self.state.examples))
 
         self.n_examples = cfg.batch_size * cfg.n_batches
 
@@ -48,26 +48,19 @@ class Explainer:
         string = string.replace("{", "{{").replace("}", "}}")
         return string
 
-    def generate_top_examples(self, feature_id):
-
-        top_acts, top_inds = topk(self.state.act_cache[:,:, feature_id], self.n_examples)
-        max_act = top_acts[0]
+    def prepare_top_examples(self):
 
         top_examples_list = []
 
-        batch_size = self.state.tok_cache.size(1)
+        examples = self.state.examples[:self.n_examples]
 
-        for (batch, tok) in top_inds:
+        for example in examples:
 
-            start = max(0, tok - self.cfg.left_ctx)
-            end = min(batch_size, tok + self.cfg.right_ctx)
-
-            example_toks = self.state.tok_cache[batch, start:end]
-            example_acts = self.state.act_cache[batch, start:end, feature_id]
+            example_toks, example_acts = example
 
             delimited_string = ''
             for pos in range(example_toks.size(0)):
-                if example_acts[pos] > (self.cfg.activation_threshold * max_act):
+                if example_acts[pos] > (self.cfg.activation_threshold * self.state.max_act):
                     delimited_string += l + self.model.tokenizer.decode(example_toks[pos]) + r
                 else:
                     delimited_string += self.model.tokenizer.decode(example_toks[pos])
@@ -78,8 +71,8 @@ class Explainer:
 
         return top_examples_list
 
-    def explain(self, feature_id):
-        top_examples_list = self.generate_top_examples(feature_id)
+    def explain(self):
+        top_examples_list = self.prepare_top_examples()
 
         explanation_list = []
 
@@ -94,22 +87,27 @@ class Explainer:
 
                 for _ in range(self.cfg.runs_per_batch):
 
-                    prompt = {
-                        "prompt": examples_str,
-                        "prompt_template": get_explainer_template(examples_str),
-                        "max_tokens" : self.cfg.max_tokens,
-                        "temperature" : self.cfg.temperature
-                    }
-
-                    output = gen(prompt)
-
-                    output_str = ''
-                    for i in output:
-                        output_str += i
-
-                    two_explanations = output_str.split("Step 4")[-1].split("1")[-1].split("2")  # this is janky as fuck, change this
-                    two_explanations = [e.strip(".): ") for e in two_explanations]
+                    two_explanations = self.query(examples_str)
                     
                     explanation_list.append(two_explanations)
 
         return explanation_list
+
+    def query(self, examples_str):
+        prompt = {
+            "prompt": examples_str,
+            "prompt_template": get_explainer_template(examples_str),
+            "max_tokens" : self.cfg.max_tokens,
+            "temperature" : self.cfg.temperature
+        }
+
+        output = gen(prompt)
+
+        output_str = ''
+        for i in output:
+            output_str += i
+
+        two_explanations = output_str.split("Step 4")[-1].split("1")[-1].split("2")  # this is janky as fuck, change this
+        two_explanations = [e.strip(".): ") for e in two_explanations]
+
+        return two_explanations

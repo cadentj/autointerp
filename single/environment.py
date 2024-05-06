@@ -5,6 +5,7 @@ import torch as t
 from datasets import load_dataset, Dataset
 from transformer_lens import utils
 from detection_scorer import DetectionScorer
+from utils import topk
 
 from explainer import Explainer
 
@@ -14,12 +15,18 @@ class EnvConfig:
     minibatch_size: int = 150
     seed: int = 22
     batch_len: int = 128
+    n_examples = 20
+    l_ctx: int = 15
+    r_ctx: int = 2
 
 @dataclass
 class State:
     act_cache: Tensor
     tok_cache: Tensor
     history: list
+    examples: list
+    max_act: float
+    layer: int
 
 class Environment: 
     def __init__(
@@ -30,7 +37,6 @@ class Environment:
         self.model = model
         self.sae_list = sae_list
     
-
     def load(
         self,
         layer, # sae layer
@@ -40,6 +46,7 @@ class Environment:
         if cfg is None:
             cfg = EnvConfig()
 
+        self.cfg = cfg
         self.seed = cfg.seed
 
         tokenized_data = self.load_webtext(cfg.batch_len)
@@ -51,10 +58,15 @@ class Environment:
             minibatch_size=cfg.minibatch_size
         )
 
+        examples, max_act = self.get_top_examples(act_cache, tok_cache, feature_id)
+
         self.state = State(
             act_cache=act_cache,
             tok_cache=tok_cache,
-            history=[]
+            history=[],
+            examples=examples,
+            max_act=max_act,
+            layer = layer
         )
 
         self.explainer = Explainer(self.model, self.state)
@@ -77,6 +89,30 @@ class Environment:
         tokenized_data = tokenized_data.shuffle(batch_len)
         return tokenized_data
 
+    def get_top_examples(
+        self,
+        act_cache,
+        tok_cache,
+        feature_id, 
+    ):
+        examples_list = []
+
+        top_acts, top_inds = topk(act_cache[:,:, feature_id], self.cfg.n_examples)
+        max_act = top_acts[0]
+
+        batch_len = self.cfg.batch_len
+
+        for batch, pos in top_inds:
+            start_pos = max(0, pos - self.cfg.l_ctx)
+            end_pos = min(batch_len, pos + self.cfg.r_ctx + 1)
+            example_toks = tok_cache[batch, start_pos : end_pos]
+            example_acts = act_cache[batch, start_pos : end_pos, feature_id]
+
+            example = (example_toks, example_acts)
+            
+            examples_list.append(example)
+
+        return examples_list, max_act
 
     def load_features(
         self,
