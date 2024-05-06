@@ -4,53 +4,62 @@ from tqdm import tqdm
 import torch as t
 from datasets import load_dataset, Dataset
 from transformer_lens import utils
+from detection_scorer import DetectionScorer
+
+from explainer import Explainer
 
 @dataclass
 class EnvConfig:
-    num_batches: int
-    minibatch_size: int
-    seed: int
-    batch_len: int
+    num_batches: int = 2_000
+    minibatch_size: int = 150
+    seed: int = 22
+    batch_len: int = 128
 
 @dataclass
 class State:
-    layer: int
-    feature_id: int
     act_cache: Tensor
     tok_cache: Tensor
+    history: list
 
 class Environment: 
     def __init__(
         self,
         model, 
         sae_list,
-        layer,
-        feature_id,
-        cfg: EnvConfig
     ):  
-        
         self.model = model
         self.sae_list = sae_list
+    
+
+    def load(
+        self,
+        layer, # sae layer
+        feature_id: int, # index of feature
+        cfg: EnvConfig = None
+    ):
+        if cfg is None:
+            cfg = EnvConfig()
+
         self.seed = cfg.seed
 
         tokenized_data = self.load_webtext(cfg.batch_len)
 
         tok_cache, act_cache = self.load_features(
-            model, 
-            sae_list,
             tokenized_data,
             layer,
-            cfg.num_batches,
-            cfg.minibatch_size
+            num_batches=cfg.num_batches,
+            minibatch_size=cfg.minibatch_size
         )
 
         self.state = State(
-            layer=layer,
-            feature_id=feature_id,
             act_cache=act_cache,
-            tok_cache=tok_cache
+            tok_cache=tok_cache,
+            history=[]
         )
 
+        self.explainer = Explainer(self.model, self.state)
+        self.d_scorer = DetectionScorer(self.model, self.state)
+        
 
     def load_webtext(self, batch_len) -> Dataset:
         """Load OpenWebText. Uses `tokenize_and_concatenate` to split
@@ -67,6 +76,7 @@ class Environment:
         tokenized_data = utils.tokenize_and_concatenate(data, self.model.tokenizer, max_length=128)
         tokenized_data = tokenized_data.shuffle(batch_len)
         return tokenized_data
+
 
     def load_features(
         self,
@@ -112,4 +122,7 @@ class Environment:
         print("Activation Cache Size:", feature_acts.size())
 
         return toks, feature_acts
+
+    def run(self):
+        self.explainer.generate_top_examples(7000)
         

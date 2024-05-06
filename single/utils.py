@@ -1,5 +1,14 @@
-def gen(history):
-    pass
+import torch as t
+import replicate
+
+def gen(prompt):
+    output = replicate.run(
+        "meta/meta-llama-3-70b-instruct",
+        input=prompt
+    )
+
+    return output
+
 
 def unravel_index(flat_index, shape):
 
@@ -18,3 +27,4 @@ def topk(tensor, k):
     original_indices = [unravel_index(idx.item(), tensor.size()) for idx in flat_indices]
 
     return top_values.tolist(), original_indices
+
