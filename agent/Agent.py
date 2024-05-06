@@ -1,6 +1,6 @@
 import re
 from typing import List
-from .jsonformer import Jsonformer
+from .custom_jsonformer import Jsonformer
 
 from .utils import gen_update, Feature, print_content
 from .prompts import SYSTEM_PROMPT, ACTION_PROMPT, RE_EXPLAIN_PROMPT
