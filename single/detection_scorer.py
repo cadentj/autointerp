@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from tqdm import tqdm
 import torch as t
 from utils import gen
-from prompting import get_detection_template
+from prompting import get_detection_template, get_simple_detection_template
 
 import re
 
@@ -70,7 +70,6 @@ class DetectionScorer:
             for i in range(self.cfg.n_real):
                 mixed_examples_list[batch*self.cfg.batch_size + self.cfg.real_ids[i]] = true_examples_list[batch*self.cfg.n_real + i]
 
-        self.mixed = mixed_examples_list
         mixed_examples_list = self.model.tokenizer.batch_decode(mixed_examples_list)
         mixed_examples_list = [example.replace("{", "{{").replace("}", "}}") for example in mixed_examples_list]
 
@@ -80,26 +79,31 @@ class DetectionScorer:
         mixed_examples_list = self.get_mixed_examples_list()
         score_list = []
 
+        self.state.history.append({"role": "section", "message": f"Running detection scoring."}) 
+        self.state.history.append({"role": "user", "message": get_simple_detection_template("<MIXED EXAMPLES>", "<EXPLANATION>")}) 
+
         for explanation in tqdm(explanation_list):
             summed_detection_rate = 0.0
             summed_false_pos_rate = 0.0
 
-        for b in range(self.cfg.n_batches):
+            self.state.history.append({"role": "system", "message": f"Running on explanation: {explanation}"}) 
 
-            mixed_examples_list = self.mixed_examples_list[b*2*self.cfg.n_real : (b+1)*2*self.cfg.n_real]
-            mixed_examples_str = ''
-            for i in range(len(mixed_examples_list)):
-                mixed_examples_str += f'Example {i+1}: {mixed_examples_list[i]}\n'
+            for b in range(self.cfg.n_batches):
+                self.state.history.append({"role": "system", "message": f"Processing batch {b+1} of {self.cfg.n_batches}"}) 
 
+                mixed_examples = mixed_examples_list[b*2*self.cfg.n_real : (b+1)*2*self.cfg.n_real]
+                mixed_examples_str = ''
+                for i in range(len(mixed_examples)):
+                    mixed_examples_str += f'Example {i+1}: {mixed_examples[i]}\n'
 
-            detection_rate, false_pos_rate = self.query(explanation, mixed_examples_str)
+                detection_rate, false_pos_rate = self.query(explanation, mixed_examples_str)
 
-            summed_detection_rate += detection_rate
-            summed_false_pos_rate += false_pos_rate
+                summed_detection_rate += detection_rate
+                summed_false_pos_rate += false_pos_rate
 
-        detection_rate = summed_detection_rate /  self.cfg.n_batches
-        false_pos_rate = summed_false_pos_rate /  self.cfg.n_batches
-        score_list.append((detection_rate, false_pos_rate))
+            detection_rate = summed_detection_rate /  self.cfg.n_batches
+            false_pos_rate = summed_false_pos_rate /  self.cfg.n_batches
+            score_list.append((detection_rate, false_pos_rate))
 
         return score_list
 
@@ -110,8 +114,10 @@ class DetectionScorer:
             "max_tokens" : 1000,
             "temperature" : 0.0
         }
-
+  
         output = gen(prompt)
+
+        self.state.history.append({"role": "assistant", "message": "".join(output)})    
 
         output_str = ''
         for i in output:
@@ -125,7 +131,7 @@ class DetectionScorer:
         return detection_rate, false_pos_rate
 
 
-    def extract_numbers_from_string(s):
+    def extract_numbers_from_string(self, s):
         # Use regex to find all occurrences of numbers between square brackets
         match = re.search(r'\[(.*?)\]', s)
         if not match:

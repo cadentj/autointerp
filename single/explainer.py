@@ -75,7 +75,9 @@ class Explainer:
         top_examples_list = self.prepare_top_examples()
 
         explanation_list = []
-
+        
+        self.state.history.append({"role": "section", "message": f"Running explainer."})
+        self.state.history.append({"role": "user", "message": get_simple_explainer_template("<EXAMPLES>")})
         for batch in tqdm(range(self.cfg.n_batches), desc="Processing batches"):
 
             self.state.history.append({"role": "system", "message": f"Processing batch {batch+1} of {self.cfg.n_batches}"})
@@ -87,11 +89,10 @@ class Explainer:
             for i in range(len(examples_list)):
                 examples_str += "Example " + str(i+1) + ": " + examples_list[i] + "\n"
 
-            self.state.history.append({"role": "user", "message": get_simple_explainer_template(examples_str)})
-
             for trial in tqdm(range(self.cfg.runs_per_batch), desc="Running queries", leave=False):
 
                 self.state.history.append({"role": "system", "message": f"Query {trial+1} of {self.cfg.runs_per_batch}"})
+                self.state.history.append({"role": "system", "message": f"Running on examples:\n{examples_str}"}) 
 
                 two_explanations = self.query(examples_str)
                 

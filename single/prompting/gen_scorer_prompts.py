@@ -32,6 +32,24 @@ Example 9: He's boxing like Mike Tyson in his prime.
 Example 10: Top scorer of all time: Lionel Messi.
 """
 
+def get_simple_gen_scorer_template(explanation, n_examples):
+    template =  f"""
+    <|begin_of_text|>
+
+    <|start_header_id|>system<|end_header_id|>
+    \n\n{GSCORER_SYSTEM_PROMPT.format(n_examples)}
+    <|eot_id|>
+    
+    <|start_header_id|>user<|end_header_id|>
+    \n\nDescription of text feature: {explanation}
+    <|eot_id|>
+
+    <|start_header_id|>assistant<|end_header_id|>
+    \n\n"""
+
+    return template
+
+
 def get_gen_scorer_template(explanation, n_examples):
     template =  f"""
     <|begin_of_text|>
