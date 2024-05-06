@@ -10,7 +10,6 @@ def condense(explanation_list, return_output=False):
     }
     output = gen(prompt)
 
-
     output_str = ''
     for i in output:
       output_str += i

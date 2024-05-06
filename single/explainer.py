@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from utils import topk
+
 from tqdm import tqdm
-from utils import gen
+
+from utils import gen, log
 from prompting import get_explainer_template, get_simple_explainer_template
+
 
 @dataclass
 class ExplainerConfig:
@@ -18,9 +20,11 @@ class ExplainerConfig:
     right_ctx: int = 4
     activation_threshold: float = 0.2
 
+
 # delimiters
 l = '<<'
 r = '>>'
+
 
 class Explainer:
 
@@ -43,10 +47,12 @@ class Explainer:
 
         self.n_examples = cfg.batch_size * cfg.n_batches
 
+
     def fix(self, string):
         string = string.replace(r+l, "")
         string = string.replace("{", "{{").replace("}", "}}")
         return string
+
 
     def prepare_top_examples(self):
 
@@ -71,16 +77,18 @@ class Explainer:
 
         return top_examples_list
 
+
     def explain(self):
         top_examples_list = self.prepare_top_examples()
 
         explanation_list = []
         
-        self.state.history.append({"role": "section", "message": f"Running explainer."})
-        self.state.history.append({"role": "user", "message": get_simple_explainer_template("<EXAMPLES>")})
+        log(self, "section", "Running explainer.")
+        log(self, "user", get_simple_explainer_template("<EXAMPLES>"))
+
         for batch in tqdm(range(self.cfg.n_batches), desc="Processing batches"):
 
-            self.state.history.append({"role": "system", "message": f"Processing batch {batch+1} of {self.cfg.n_batches}"})
+            log(self, "system", f"Processing batch {batch+1} of {self.cfg.n_batches}")
 
             # get batch of top examples, and convert to string
             examples_list = top_examples_list[batch*self.cfg.batch_size : (batch+1)*self.cfg.batch_size]
@@ -91,8 +99,8 @@ class Explainer:
 
             for trial in tqdm(range(self.cfg.runs_per_batch), desc="Running queries", leave=False):
 
-                self.state.history.append({"role": "system", "message": f"Query {trial+1} of {self.cfg.runs_per_batch}"})
-                self.state.history.append({"role": "system", "message": f"Running on examples:\n{examples_str}"}) 
+                log(self, "system", f"Query {trial+1} of {self.cfg.runs_per_batch}")
+                log(self, "system", f"Running on examples:\n{examples_str}")
 
                 two_explanations = self.query(examples_str)
                 
@@ -100,21 +108,21 @@ class Explainer:
 
         return explanation_list
 
+
     def query(self, examples_str):
-        prompt = {
-            "prompt": examples_str,
-            "prompt_template": get_explainer_template(examples_str),
-            "max_tokens" : self.cfg.max_tokens,
-            "temperature" : self.cfg.temperature
+
+        generation_kwargs = {
+            "max_tokens":self.cfg.max_tokens,
+            "temperature":self.cfg.temperature
         }
+        output = gen(
+            get_explainer_template(examples_str),
+            generation_kwargs=generation_kwargs
+        )
 
-        output = gen(prompt)
+        log(self, "assistant", "".join(output))
 
-        self.state.history.append({"role": "assistant", "message": "".join(output)})
-
-        output_str = ''
-        for i in output:
-            output_str += i
+        output_str = "".join(output)
 
         two_explanations = output_str.split("Step 4")[-1].split("1")[-1].split("2")  # this is janky as fuck, change this
         two_explanations = [e.strip(".): ") for e in two_explanations]

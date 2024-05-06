@@ -1,13 +1,22 @@
 import torch as t
-
+import replicate
 from rich.console import Console
 from rich.table import Table
-import replicate
+from transformers import AutoTokenizer
 
-def gen(prompt):
+def gen(prompt, generation_kwargs={}):
+    tokenizer = AutoTokenizer.from_pretrained("gradientai/Llama-3-70B-Instruct-Gradient-262k")
+
+    prompt_str = tokenizer.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True)
+
+    query = {
+        "prompt_template": prompt_str,
+        **generation_kwargs
+    }
+
     output = replicate.run(
         "meta/meta-llama-3-70b-instruct",
-        input=prompt
+        input=query
     )
 
     return output
@@ -21,6 +30,7 @@ def unravel_index(flat_index, shape):
         flat_index = flat_index // dim_size
     return tuple(reversed(indices))
 
+
 def topk(tensor, k):
 
     flat_tensor = tensor.flatten()
@@ -32,8 +42,13 @@ def topk(tensor, k):
     return top_values.tolist(), original_indices
 
 
-from rich.console import Console
-from rich.table import Table
+def log(
+    obj,
+    role: str,
+    message: str
+):
+    obj.state.history.append({"role": role, "message": message})
+
 
 def log_conversation(
         conversation, 

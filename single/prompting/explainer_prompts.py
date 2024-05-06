@@ -127,46 +127,19 @@ Step 1. ACTIVATING TOKENS:"""
 
 
 def get_explainer_template(examples):
-    template =  f"""
-    <|begin_of_text|>
 
-    <|start_header_id|>system<|end_header_id|>
-    \n\n{SYSTEM_PROMPT}
-    <|eot_id|>
+    prompt = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": EXAMPLE_1},
+        {"role": "assistant", "content": RESPONSE_1},
+        {"role": "user", "content": EXAMPLE_2},
+        {"role": "assistant", "content": RESPONSE_2},
+        {"role": "user", "content": EXAMPLE_3},
+        {"role": "assistant", "content": RESPONSE_3},
+        {"role": "user", "content": examples}
+    ]
 
-    <|start_header_id|>user<|end_header_id|>
-    \n\n{EXAMPLE_1}
-    <|eot_id|>
-
-    <|start_header_id|>assistant<|end_header_id|>
-    \n\n{RESPONSE_1}
-    <|eot_id|>
-
-    <|start_header_id|>user<|end_header_id|>
-    \n\n{EXAMPLE_2}
-    <|eot_id|>
-
-    <|start_header_id|>assistant<|end_header_id|>
-    \n\n{RESPONSE_2}
-    <|eot_id|>
-
-    <|start_header_id|>user<|end_header_id|>
-    \n\n{EXAMPLE_3}
-    <|eot_id|>
-
-    <|start_header_id|>assistant<|end_header_id|>
-    \n\n{RESPONSE_3}
-    <|eot_id|>
-
-    <|start_header_id|>user<|end_header_id|>
-    \n\n{examples}
-    <|eot_id|>
-
-    <|start_header_id|>assistant<|end_header_id|>
-    \n\n"""
-
-    return template
-
+    return prompt
 
 def get_simple_explainer_template(examples):
     template =  f"""

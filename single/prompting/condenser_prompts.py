@@ -33,29 +33,14 @@ def get_condenser_template(explanation_list):
     for i in range(len(explanation_list)):
         explanation_str += f"Feature {i+1}: {explanation_list[i]}\n"
 
-    template =  f"""
-    <|begin_of_text|>
+    prompt = [
+        {"role": "system", "content": CONDENSER_SYSTEM_PROMPT},
+        {"role": "user", "content": CONDENSER_EXAMPLE},
+        {"role": "assistant", "content": CONDENSER_RESPONSE},
+        {"role": "user", "content": explanation_str}
+    ]
 
-    <|start_header_id|>system<|end_header_id|>
-    \n\n{CONDENSER_SYSTEM_PROMPT}
-    <|eot_id|>
-
-    <|start_header_id|>user<|end_header_id|>
-    \n\n{CONDENSER_EXAMPLE}
-    <|eot_id|>
-
-    <|start_header_id|>assistant<|end_header_id|>
-    \n\n{CONDENSER_RESPONSE}
-    <|eot_id|>
-
-    <|start_header_id|>user<|end_header_id|>
-    \n\n{explanation_str}
-    <|eot_id|>
-
-    <|start_header_id|>assistant<|end_header_id|>
-    \n\n"""
-
-    return template
+    return prompt
 
 def get_simple_condenser_template(explanation_list):
     explanation_str = ''

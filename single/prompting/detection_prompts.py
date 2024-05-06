@@ -46,26 +46,12 @@ def get_simple_detection_template(examples, explanation):
   return template
 
 def get_detection_template(examples, explanation):
-  template =  f"""
-  <|begin_of_text|>
 
-  <|start_header_id|>system<|end_header_id|>
-  \n\n{DSCORER_SYSTEM_PROMPT}
-  <|eot_id|>
+  prompt = [
+    {"role": "system", "content": DSCORER_SYSTEM_PROMPT},
+    {"role": "user", "content": DSCORER_EXAMPLE},
+    {"role": "assistant", "content": DSCORER_RESPONSE},
+    {"role": "user", "content": f"Feature explanation: {explanation}\n\nText examples:\n\n{examples}"}
+  ]
 
-  <|start_header_id|>user<|end_header_id|>
-  \n\n{DSCORER_EXAMPLE}
-  <|eot_id|>
-
-  <|start_header_id|>assistant<|end_header_id|>
-  \n\n{DSCORER_RESPONSE}"
-  <|eot_id|>
-
-  <|start_header_id|>user<|end_header_id|>
-  \n\nFeature explanation: {explanation}\n\nText examples:\n\n{examples}
-  <|eot_id|>
-
-  <|start_header_id|>assistant<|end_header_id|>
-  \n\n"""
-
-  return template
+  return prompt

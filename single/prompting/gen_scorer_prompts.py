@@ -51,26 +51,12 @@ def get_simple_gen_scorer_template(explanation, n_examples):
 
 
 def get_gen_scorer_template(explanation, n_examples):
-    template =  f"""
-    <|begin_of_text|>
 
-    <|start_header_id|>system<|end_header_id|>
-    \n\n{GSCORER_SYSTEM_PROMPT.format(n_examples)}
-    <|eot_id|>
+    prompt = [
+        {"role": "system", "content": {GSCORER_SYSTEM_PROMPT.format(n_examples)}},
+        {"role": "user", "content": GSCORER_EXAMPLE},
+        {"role": "assistant", "content": GSCORER_RESPONSE},
+        {"role": "user", "content": f"Description of text feature: {explanation}"}
+    ]
 
-    <|start_header_id|>user<|end_header_id|>
-    \n\n{GSCORER_EXAMPLE}
-    <|eot_id|>
-
-    <|start_header_id|>assistant<|end_header_id|>
-    \n\n{GSCORER_RESPONSE}
-    <|eot_id|>
-
-    <|start_header_id|>user<|end_header_id|>
-    \n\nDescription of text feature: {explanation}
-    <|eot_id|>
-
-    <|start_header_id|>assistant<|end_header_id|>
-    \n\n"""
-
-    return template
+    return prompt

@@ -1,14 +1,16 @@
 from dataclasses import dataclass
+
+import torch as t
 from torch import Tensor
 from tqdm import tqdm
-import torch as t
 from datasets import load_dataset, Dataset
 from transformer_lens import utils
-from detection_scorer import DetectionScorer
-from utils import topk
 
-from generation_scorer import GenerationScorer
-from explainer import Explainer
+from utils import topk
+from explainer import Explainer, ExplainerConfig
+from detection_scorer import DetectionScorer, DetectionScorerConfig
+from generation_scorer import GenerationScorer, GenerationScorerConfig
+
 
 @dataclass
 class EnvConfig:
@@ -18,7 +20,8 @@ class EnvConfig:
     batch_len: int = 128
     n_examples = 40
     l_ctx: int = 15
-    r_ctx: int = 2
+    r_ctx: int = 4
+
 
 @dataclass
 class State:
@@ -30,6 +33,7 @@ class State:
     layer: int
     feature_id: int
 
+
 class Environment: 
     def __init__(
         self,
@@ -39,11 +43,15 @@ class Environment:
         self.model = model
         self.sae_list = sae_list
     
+
     def load(
         self,
         layer: int, # sae layer
         feature_id: int, # index of feature
-        cfg: EnvConfig = None
+        cfg: EnvConfig = None,
+        explainer_cfg: ExplainerConfig = None,
+        detection_cfg: DetectionScorerConfig = None,
+        generation_cfg: GenerationScorerConfig = None,
     ):
         if cfg is None:
             cfg = EnvConfig()
@@ -72,9 +80,9 @@ class Environment:
             feature_id=feature_id
         )
 
-        self.explainer = Explainer(self.model, self.state)
-        self.d_scorer = DetectionScorer(self.model, self.state)
-        self.gen_scorer = GenerationScorer(self.model, self.state)
+        self.explainer = Explainer(self.model, self.state, cfg=explainer_cfg)
+        self.d_scorer = DetectionScorer(self.model, self.state, cfg=detection_cfg)
+        self.gen_scorer = GenerationScorer(self.model, self.state, cfg=generation_cfg)
         
 
     def load_webtext(self, batch_len) -> Dataset:
@@ -92,6 +100,7 @@ class Environment:
         tokenized_data = utils.tokenize_and_concatenate(data, self.model.tokenizer, max_length=128)
         tokenized_data = tokenized_data.shuffle(batch_len)
         return tokenized_data
+
 
     def get_top_examples(
         self,
@@ -117,6 +126,7 @@ class Environment:
             examples_list.append(example)
 
         return examples_list, max_act
+
 
     def load_features(
         self,
@@ -162,6 +172,7 @@ class Environment:
         print("Activation Cache Size:", feature_acts.size())
 
         return toks, feature_acts
+
 
     def run(self):
         self.explainer.generate_top_examples(7000)

@@ -1,13 +1,12 @@
-from dataclasses import dataclass
+import re
+from dataclasses import dataclass, field
+
 from tqdm import tqdm
 import torch as t
-from utils import gen
+
+from utils import gen, log
 from prompting import get_detection_template, get_simple_detection_template
 
-import re
-
-
-from dataclasses import field
 
 @dataclass
 class DetectionScorerConfig:
@@ -41,6 +40,7 @@ class DetectionScorer:
             cfg = DetectionScorerConfig()
         self.cfg = cfg
 
+
     def get_mixed_examples_list(self):
 
         n_examples = self.cfg.n_real * self.cfg.n_batches
@@ -65,7 +65,6 @@ class DetectionScorer:
                 # Append the fake example to the list
                 mixed_examples_list.append(fake_example_toks)
 
-
         for batch in range(self.cfg.n_batches):
             for i in range(self.cfg.n_real):
                 mixed_examples_list[batch*self.cfg.batch_size + self.cfg.real_ids[i]] = true_examples_list[batch*self.cfg.n_real + i]
@@ -75,21 +74,22 @@ class DetectionScorer:
 
         return mixed_examples_list
 
+
     def score(self, explanation_list):
         mixed_examples_list = self.get_mixed_examples_list()
         score_list = []
 
-        self.state.history.append({"role": "section", "message": f"Running detection scoring."}) 
-        self.state.history.append({"role": "user", "message": get_simple_detection_template("<MIXED EXAMPLES>", "<EXPLANATION>")}) 
+        log(self, "section", "Running detection scoring.")
+        log(self, "user", get_simple_detection_template("<EXPLANATION>", "<MIXED EXAMPLES>"))
 
         for explanation in tqdm(explanation_list):
             summed_detection_rate = 0.0
             summed_false_pos_rate = 0.0
 
-            self.state.history.append({"role": "system", "message": f"Running on explanation: {explanation}"}) 
+            log(self, "system", f"Running on explanation: {explanation}")
 
             for b in range(self.cfg.n_batches):
-                self.state.history.append({"role": "system", "message": f"Processing batch {b+1} of {self.cfg.n_batches}"}) 
+                log(self, "system", f"Processing batch {b+1} of {self.cfg.n_batches}")
 
                 mixed_examples = mixed_examples_list[b*2*self.cfg.n_real : (b+1)*2*self.cfg.n_real]
                 mixed_examples_str = ''
@@ -107,21 +107,21 @@ class DetectionScorer:
 
         return score_list
 
+
     def query(self, explanation, mixed_examples_str):
-        prompt = {
-            "prompt": mixed_examples_str,
-            "prompt_template": get_detection_template(mixed_examples_str, explanation),
-            "max_tokens" : 1000,
-            "temperature" : 0.0
-        }
   
-        output = gen(prompt)
+        generation_kwargs = {
+            "max_tokens":self.cfg.max_tokens,
+            "temperature":self.cfg.temperature
+        }
+        output = gen(
+            get_detection_template(mixed_examples_str, explanation), 
+            generation_kwargs=generation_kwargs
+        )
+ 
+        log(self, "assistant", "".join(output))
 
-        self.state.history.append({"role": "assistant", "message": "".join(output)})    
-
-        output_str = ''
-        for i in output:
-            output_str += i
+        output_str = "".join(output)
 
         nums = self.extract_numbers_from_string(output_str)
 
