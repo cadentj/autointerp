@@ -7,6 +7,7 @@ from transformer_lens import utils
 from detection_scorer import DetectionScorer
 from utils import topk
 
+from generation_scorer import GenerationScorer
 from explainer import Explainer
 
 @dataclass
@@ -15,7 +16,7 @@ class EnvConfig:
     minibatch_size: int = 150
     seed: int = 22
     batch_len: int = 128
-    n_examples = 20
+    n_examples = 40
     l_ctx: int = 15
     r_ctx: int = 2
 
@@ -27,6 +28,7 @@ class State:
     examples: list
     max_act: float
     layer: int
+    feature_id: int
 
 class Environment: 
     def __init__(
@@ -39,7 +41,7 @@ class Environment:
     
     def load(
         self,
-        layer, # sae layer
+        layer: int, # sae layer
         feature_id: int, # index of feature
         cfg: EnvConfig = None
     ):
@@ -66,11 +68,13 @@ class Environment:
             history=[],
             examples=examples,
             max_act=max_act,
-            layer = layer
+            layer = layer,
+            feature_id=feature_id
         )
 
         self.explainer = Explainer(self.model, self.state)
         self.d_scorer = DetectionScorer(self.model, self.state)
+        self.gen_scorer = GenerationScorer(self.model, self.state)
         
 
     def load_webtext(self, batch_len) -> Dataset:

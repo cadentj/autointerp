@@ -56,3 +56,24 @@ def get_condenser_template(explanation_list):
     \n\n"""
 
     return template
+
+def get_simple_condenser_template(explanation_list):
+    explanation_str = ''
+    for i in range(len(explanation_list)):
+        explanation_str += f"Feature {i+1}: {explanation_list[i]}\n"
+
+    template =  f"""
+    <|begin_of_text|>
+
+    <|start_header_id|>system<|end_header_id|>
+    \n\n{CONDENSER_SYSTEM_PROMPT}
+    <|eot_id|>
+
+    <|start_header_id|>user<|end_header_id|>
+    \n\n{explanation_str}
+    <|eot_id|>
+
+    <|start_header_id|>assistant<|end_header_id|>
+    \n\n"""
+
+    return template

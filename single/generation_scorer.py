@@ -5,7 +5,6 @@ from utils import gen
 @dataclass
 class GenerationScorerConfig:
     n_examples : int = 10
-    point : str = "resid_pre"
     layer : int = 10
     verbose : bool = True
 
@@ -48,9 +47,9 @@ class GenerationScorer:
         return examples
 
 
-    def score(self, feature_id, explanation_list):
+    def score(self, explanation_list):
         scores_list = []
-        
+
         for explanation in explanation_list:
             examples = self.get_llm_examples(explanation)
 
@@ -62,7 +61,7 @@ class GenerationScorer:
                 feature_acts = middle[1]
                 feature_acts.save()
 
-            score_batch = feature_acts[:,:,feature_id].max(dim=1)[0]
+            score_batch = feature_acts[:,:,self.state.feature_id].max(dim=1)[0]
 
             scores_list.append( score_batch.mean() )
 

@@ -19,7 +19,12 @@ class DetectionScorerConfig:
     real_ids : list = field(default_factory=lambda: [0, 2, 5, 6, 9, 10, 11, 12, 18, 19])
 
     l_ctx: int = 15
-    r_ctx: int = 2
+    r_ctx: int = 4
+
+    @property
+    def batch_size(self):
+        return 2 * self.n_real
+
 
 class DetectionScorer:
 
@@ -36,39 +41,43 @@ class DetectionScorer:
             cfg = DetectionScorerConfig()
         self.cfg = cfg
 
-    def get_mixed_examples_list(self, feature_id):
-        batch_size = 2
+    def get_mixed_examples_list(self):
 
         n_examples = self.cfg.n_real * self.cfg.n_batches
 
         assert (len(self.cfg.real_ids) == self.cfg.n_real)
 
-        true_examples_list = self.state.examples[n_examples]
+        true_examples_list = [i[0] for i in self.state.examples[:n_examples]]
 
         mixed_examples_list = []
 
-        while len(mixed_examples_list) < n_examples:
-            b = t.randint(0, self.state.act_cache.size(0), [1]).squeeze()
-            s = t.randint(self.cfg.l_ctx, self.state.tok_cache.size(1) - self.cfg.r_ctx, [1]).squeeze()
+        while len(mixed_examples_list) < self.cfg.n_batches*self.cfg.batch_size:
+            # Choose a random batch and sequence position
+            batch = t.randint(0, self.state.act_cache.size(0), [1]).squeeze()
+            pos = t.randint(self.cfg.l_ctx, self.state.tok_cache.size(1) - self.cfg.r_ctx, [1]).squeeze()
 
-            fake_example_toks = self.state.tok_cache[b, s : s + self.cfg.r_ctx + 1]
-            fake_example_acts = self.state.act_cache[b, s : s + self.cfg.r_ctx + 1, feature_id]
+            # Extract the tokens and activations for the fake example
+            fake_example_toks = self.state.tok_cache[batch, pos - self.cfg.l_ctx : pos + self.cfg.r_ctx + 1]
+            fake_example_acts = self.state.act_cache[batch, pos - self.cfg.l_ctx : pos + self.cfg.r_ctx + 1, self.state.feature_id]
 
+            # Check the fake example does not activate the real one
             if sum(fake_example_acts) < 0.01:
+                # Append the fake example to the list
                 mixed_examples_list.append(fake_example_toks)
 
-        for b in range(self.cfg.n_batches):
+
+        for batch in range(self.cfg.n_batches):
             for i in range(self.cfg.n_real):
-                mixed_examples_list[b*batch_size + self.cfg.real_ids[i]] = true_examples_list[b*self.cfg.n_real + i]
+                mixed_examples_list[batch*self.cfg.batch_size + self.cfg.real_ids[i]] = true_examples_list[batch*self.cfg.n_real + i]
 
-
+        self.mixed = mixed_examples_list
         mixed_examples_list = self.model.tokenizer.batch_decode(mixed_examples_list)
         mixed_examples_list = [example.replace("{", "{{").replace("}", "}}") for example in mixed_examples_list]
 
         return mixed_examples_list
 
-    def score(self, feature_id, explanation_list):
-        self.get_mixed_examples_list(feature_id)
+    def score(self, explanation_list):
+        mixed_examples_list = self.get_mixed_examples_list()
         score_list = []
 
         for explanation in tqdm(explanation_list):

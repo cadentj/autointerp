@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from utils import topk
 from tqdm import tqdm
 from utils import gen
-from prompting import get_explainer_template
+from prompting import get_explainer_template, get_simple_explainer_template
 
 @dataclass
 class ExplainerConfig:
@@ -10,13 +10,13 @@ class ExplainerConfig:
     max_tokens : int = 2000
     temperature : float = 0.5
 
-    batch_size: int = 10
+    batch_size: int = 8
     n_batches : int = 2
     runs_per_batch: int = 1
 
     left_ctx: int = 15
-    right_ctx: int = 2
-    activation_threshold: float = 0.4
+    right_ctx: int = 4
+    activation_threshold: float = 0.2
 
 # delimiters
 l = '<<'
@@ -76,7 +76,9 @@ class Explainer:
 
         explanation_list = []
 
-        for batch in tqdm(range(self.cfg.n_batches)):
+        for batch in tqdm(range(self.cfg.n_batches), desc="Processing batches"):
+
+            self.state.history.append({"role": "system", "message": f"Processing batch {batch+1} of {self.cfg.n_batches}"})
 
             # get batch of top examples, and convert to string
             examples_list = top_examples_list[batch*self.cfg.batch_size : (batch+1)*self.cfg.batch_size]
@@ -85,11 +87,15 @@ class Explainer:
             for i in range(len(examples_list)):
                 examples_str += "Example " + str(i+1) + ": " + examples_list[i] + "\n"
 
-                for _ in range(self.cfg.runs_per_batch):
+            self.state.history.append({"role": "user", "message": get_simple_explainer_template(examples_str)})
 
-                    two_explanations = self.query(examples_str)
-                    
-                    explanation_list.append(two_explanations)
+            for trial in tqdm(range(self.cfg.runs_per_batch), desc="Running queries", leave=False):
+
+                self.state.history.append({"role": "system", "message": f"Query {trial+1} of {self.cfg.runs_per_batch}"})
+
+                two_explanations = self.query(examples_str)
+                
+                explanation_list.append(two_explanations)
 
         return explanation_list
 
@@ -102,6 +108,8 @@ class Explainer:
         }
 
         output = gen(prompt)
+
+        self.state.history.append({"role": "assistant", "message": "".join(output)})
 
         output_str = ''
         for i in output:
