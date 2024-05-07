@@ -1,0 +1,238 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │                                                                                                          │
+│           │     <|begin_of_text|>                                                                                    │
+│           │                                                                                                          │
+│           │     <|start_header_id|>system<|end_header_id|>                                                           │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │     <|eot_id|>                                                                                           │
+│           │                                                                                                          │
+│           │     <|start_header_id|>user<|end_header_id|>                                                             │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│           │     <|eot_id|>                                                                                           │
+│           │                                                                                                          │
+│           │     <|start_header_id|>assistant<|end_header_id|>                                                        │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  ACE��s recommendation, in strategic and effective ways.                                      │
+│           │                                                                                                          │
+│           │ Top<< Char>>ities                                                                                        │
+│           │                                                                                                          │
+│           │ Animal                                                                                                   │
+│           │ Example 2:  prestigious institute upholds.                                                               │
+│           │                                                                                                          │
+│           │ They said the protests were not only against Chauhan, but also                                           │
+│           │ Example 3: on Dungeon Bastard haranguing mocking your DM for his inability to KILL YOUR CHARACTER.       │
+│           │                                                                                                          │
+│           │ Example 4:  given that the Helmeted Woodpecker calls were most similar to several other Celeus species.  │
+│           │ Upon                                                                                                     │
+│           │ Example 5:  independently arrived at the same conclusions about the Helmeted Woodpecker belonging with   │
+│           │ Celeus, based on                                                                                         │
+│           │ Example 6:                                                                                               │
+│           │ Advertisement                                                                                            │
+│           │                                                                                                          │
+│           │ Photo: Heritage Auctions                                                                                 │
+│           │                                                                                                          │
+│           │ Cap'n Crunch cereal commercial production background (                                                   │
+│           │ Example 7:  cartridge that could be inserted and removed from a console unit repeatedly, and without     │
+│           │ electrically shocking the user                                                                           │
+│           │ Example 8:  knew we needed to examine its taxonomic status in the context of our recent Celeus study     │
+│           │ given that                                                                                               │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS: "Char", "Chauhan,", "CHARACTER.", "Celeus", "Celeus,", "Cap'n", "cartridge", "Celeus" │
+│           │ PREVIOUS TOKENS: "Top", "against", "to KILL YOUR", "other", "with", "Crunch cereal commercial production │
+│           │ background (", "from a console unit repeatedly, and", "our recent"                                       │
+│           │ NEXT TOKENS: "ities", "but also", "haranguing mocking your DM for his inability to KILL YOUR", "species. │
+│           │ Upon", "based on", "cereal commercial production background (", "that could be inserted and removed",    │
+│           │ "study given that"                                                                                       │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ The activating tokens are basically proper nouns or capitalized words related to names or titles.        │
+│           │ The previous tokens vary widely but do not seem to have any consistent linguistic or thematic            │
+│           │ connection.                                                                                              │
+│           │ The next tokens continue the sentence or phrase, often describing or elaborating on the activating       │
+│           │ token.                                                                                                   │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The activated tokens are predominantly proper nouns or capitalized words.                              │
+│           │ - Most of these instances appear in contexts providing information or descriptions related to the        │
+│           │ activated token.                                                                                         │
+│           │ - The activating tokens typically appear at crucial points in the text, either starting a new sentence   │
+│           │ or concept, or emphasizing an important element.                                                         │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The presence of proper nouns or capitalized words that are crucial to the context or theme of the     │
+│           │ text.                                                                                                    │
+│           │ 2. Capitalized words or names that introduce, describe, or elaborate on important concepts or objects    │
+│           │ within a text.                                                                                           │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  a bubble screen with Riley the intended reciever with 2 big TEs in Celek and Ertz            │
+│           │ Example 2:  the Mayhem code does bear several similarities to the Trololo_mod and Effusion families of   │
+│           │ malware                                                                                                  │
+│           │ Example 3: /WikiCommons)                                                                                 │
+│           │                                                                                                          │
+│           │ But in 1952, St. Bernard de Clairvaux finally found                                                      │
+│           │ Example 4: th century gate just wide enough for a small truck. Mary and Bernard of Clairvaux looked down │
+│           │ Example 5: uths on pointless wild goose chases. It��s difficult to discern with absolute certainty       │
+│           │ someone                                                                                                  │
+│           │ Example 6:  at her. Before, he��d immediately stop doing that having easily discerned the iconic Ford    │
+│           │ Example 7: It all started a year ago as the company was coming to market with the Illum. "We started     │
+│           │ Example 8: lin Bar and Grill: 5 accidents Huntington Beach Beer Company: 4 Black Bull Chop House: 4      │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│ Assistant │ For these examples, we need to analyze where the neuron activates without explicit delimiters provided.  │
+│           │ To infer where the neuron may be activating, we must look for common patterns or features within each    │
+│           │ sentence. Let's examine each example:                                                                    │
+│           │                                                                                                          │
+│           │ **Example Analyses:**                                                                                    │
+│           │                                                                                                          │
+│           │ 1. **Example 1**: Mentions specific names (Celek and Ertz) related to a context (American football).     │
+│           │ 2. **Example 2**: Discusses specific malware families (Trololo_mod and Effusion).                        │
+│           │ 3. **Example 3**: Names a specific historical figure (St. Bernard de Clairvaux) in a historical context. │
+│           │ 4. **Example 4**: Includes the name of a historical figure (Bernard of Clairvaux) in a descriptive       │
+│           │ context.                                                                                                 │
+│           │ 5. **Example 5**: Describes an action (wild goose chases) and features special characters (��).          │
+│           │ 6. **Example 6**: Describes a specific brand (Ford) with special characters (��).                        │
+│           │ 7. **Example 7**: Discusses a product (Illum) in a business context.                                     │
+│           │ 8. **Example 8**: Lists names of establishments (Black Bull Chop House, etc.) and associated statistics. │
+│           │                                                                                                          │
+│           │ **Step 2: Pattern Identification**                                                                       │
+│           │ - In examples 1, 2, 3, and 4, the text includes specific names or terms that are contextually            │
+│           │ significant (names of people, malware families, or football players).                                    │
+│           │ - Examples 5 and 6 include special characters (��) perhaps indicating an encoding issue.                 │
+│           │ - Examples 7 and 8 involve specific names (a product and establishments) relevant within their           │
+│           │ respective contexts.                                                                                     │
+│           │                                                                                                          │
+│           │ **Step 3: General Shared Features**                                                                      │
+│           │ - Many texts contain proper nouns or specific names that are significant within their context (whether   │
+│           │ it be historical, technical, or commercial).                                                             │
+│           │ - Some entries include uncommon characters or symbols.                                                   │
+│           │                                                                                                          │
+│           │ **Step 4: Two Explanations for Activation**                                                              │
+│           │ 1. The neuron activates on proper nouns or specific names that hold contextual significance, possibly    │
+│           │ helping the model identify and differentiate particular topics or entities.                              │
+│           │ 2. The neuron may also respond to encoding anomalies or special symbols within the text, potentially as  │
+│           │ a means to handle or flag irregularities in data input.                                                  │
+│ System    │ The presence of proper nouns or capitalized words that are crucial to the context or theme of the text.  │
+│           │                                                                                                          │
+│           │ Capitalized words or names that introduce, describe, or elaborate on important concepts or objects       │
+│           │ within a textThe neuron activates on proper nouns or specific names that hold contextual significance,   │
+│           │ possibly helping the model identify and differentiate particular topics or entities.                     │
+│           │                                                                                                          │
+│           │ The neuron may also respond to encoding anomalies or special symbols within the text, potentially as a   │
+│           │ means to handle or flag irregularities in data input                                                     │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │                                                                                                          │
+│           │     <|begin_of_text|>                                                                                    │
+│           │                                                                                                          │
+│           │     <|start_header_id|>system<|end_header_id|>                                                           │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │     <|eot_id|>                                                                                           │
+│           │                                                                                                          │
+│           │     <|start_header_id|>user<|end_header_id|>                                                             │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature 1: ['The presence of proper nouns or capitalized words that are crucial to the context or theme  │
+│           │ of the text.\n', 'Capitalized words or names that introduce, describe, or elaborate on important         │
+│           │ concepts or objects within a text']                                                                      │
+│           │ Feature 2: ['The neuron activates on proper nouns or specific names that hold contextual significance,   │
+│           │ possibly helping the model identify and differentiate particular topics or entities.\n', 'The neuron may │
+│           │ also respond to encoding anomalies or special symbols within the text, potentially as a means to handle  │
+│           │ or flag irregularities in data input']                                                                   │
+│           │                                                                                                          │
+│           │     <|eot_id|>                                                                                           │
+│           │                                                                                                          │
+│           │     <|start_header_id|>assistant<|end_header_id|>                                                        │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│ Assistant │ Here is the condensed list of distinct features:                                                         │
+│           │                                                                                                          │
+│           │ Feature 1: The presence of proper nouns or capitalized words that are crucial to the context or theme of │
+│           │ the text.                                                                                                │
+│           │ Feature 2: The neuron activates on proper nouns or specific names that hold contextual significance,     │
+│           │ possibly helping the model identify and differentiate particular topics or entities.                     │
+│           │ Feature 3: The neuron may also respond to encoding anomalies or special symbols within the text,         │
+│           │ potentially as a means to handle or flag irregularities in data input.                                   │
+│ System    │ Results:                                                                                                 │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.5, 0.6)                                                                              │
+│           │ Generation Score: 0.0                                                                                    │
+│           │ Explanation: The presence of proper nouns or capitalized words that are crucial to the context or theme  │
+│           │ of the text.                                                                                             │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.3, 0.6)                                                                              │
+│           │ Generation Score: 0.0                                                                                    │
+│           │ Explanation: The neuron activates on proper nouns or specific names that hold contextual significance,   │
+│           │ possibly helping the model identify and differentiate particular topics or entities.                     │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.5, 0.1)                                                                              │
+│           │ Generation Score: 0.0                                                                                    │
+│           │ Explanation: The neuron may also respond to encoding anomalies or special symbols within the text,       │
+│           │ potentially as a means to handle or flag irregularities in data input.                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘

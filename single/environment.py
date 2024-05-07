@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import threading
 import os
 
 import torch as t
@@ -7,66 +8,96 @@ from tqdm import tqdm
 from datasets import load_dataset, Dataset
 from transformer_lens import utils
 
-from utils import topk
-from config import EnvConfig
+from utils import topk, log, log_conversation
+from prompting import get_simple_condenser_template
+from config import EnvConfig, ExplainerConfig, CondenserConfig, DetectionScorerConfig, GenerationScorerConfig
 from explainer import Explainer
+from condenser import Condenser
 from detection_scorer import DetectionScorer
 from generation_scorer import GenerationScorer
 
-CONFIG = EnvConfig()
-
 @dataclass
-class State:
-    act_cache: Tensor
-    tok_cache: Tensor
+class ThreadState:
     history: list
     examples: list
+    random_examples: list
     max_act: float
     layer: int
     feature_id: int
-
 
 class Environment: 
     def __init__(
         self,
         model, 
         sae_list,
+        cfg: EnvConfig,
+        provider: str,
     ):  
         self.model = model
         self.sae_list = sae_list
-    
+        self.cfg = cfg
+        self.provider = provider
+        self.lock = threading.Lock()
 
-    def load(
+
+    def execute(
+        self, 
+        layer: int, 
+        feature_id: int, 
+        explainer_cfg: ExplainerConfig, 
+        condenser_cfg: CondenserConfig, 
+        d_scorer_cfg: DetectionScorerConfig, 
+        gen_scorer_cfg: GenerationScorerConfig
+    ):
+        with self.lock:
+            state = self.load_feature(feature_id, explainer_cfg, condenser_cfg, d_scorer_cfg, gen_scorer_cfg)
+
+        self.run_feature(state)
+        
+
+    def load_cache(
         self,
         layer: int, # sae layer
-        feature_id: int, # index of feature
     ):
-        self.seed = CONFIG.seed
+        self.seed = self.cfg.seed
+        self.layer = layer
 
-        tokenized_data = self.load_webtext(CONFIG.batch_len)
+        tokenized_data = self.load_webtext(self.cfg.batch_len)
 
-        tok_cache, act_cache = self.load_features(
+        self.tok_cache, self.act_cache = self.load_features(
             tokenized_data,
             layer,
-            num_batches=CONFIG.num_batches,
-            minibatch_size=CONFIG.minibatch_size
+            num_batches=self.cfg.num_batches,
+            minibatch_size=self.cfg.minibatch_size
         )
 
-        examples, max_act = self.get_top_examples(act_cache, tok_cache, feature_id)
+    def load_feature(
+        self,
+        feature_id: int, # index of feature
+        explainer_cfg: ExplainerConfig,
+        condenser_cfg: CondenserConfig,
+        d_scorer_cfg: DetectionScorerConfig,
+        gen_scorer_cfg: GenerationScorerConfig,
+    ):
 
-        self.state = State(
-            act_cache=act_cache,
-            tok_cache=tok_cache,
+        examples, max_act = self.get_top_examples(feature_id)
+        random_examples = self.generate_random_examples(feature_id, d_scorer_cfg)
+
+        state = ThreadState(
             history=[],
             examples=examples,
+            random_examples=random_examples,
             max_act=max_act,
-            layer = layer,
+            layer = self.layer,
             feature_id=feature_id
         )
 
-        self.explainer = Explainer(self.model, self.state)
-        self.d_scorer = DetectionScorer(self.model, self.state)
-        self.gen_scorer = GenerationScorer(self.model, self.state)
+        self.explainer = Explainer(self.model, state, cfg=explainer_cfg)
+        self.condenser = Condenser(cfg=condenser_cfg)
+        self.d_scorer = DetectionScorer(self.model, state, cfg=d_scorer_cfg)
+        self.gen_scorer = GenerationScorer(self.model, state, cfg=gen_scorer_cfg)
+
+        return state
         
 
     def load_webtext(self, batch_len) -> Dataset:
@@ -88,28 +119,46 @@ class Environment:
 
     def get_top_examples(
         self,
-        act_cache,
-        tok_cache,
         feature_id, 
     ):
         examples_list = []
 
-        top_acts, top_inds = topk(act_cache[:,:, feature_id], CONFIG.n_examples)
+        top_acts, top_inds = topk(self.act_cache[:,:, feature_id], self.cfg.n_examples)
         max_act = top_acts[0]
 
-        batch_len = CONFIG.batch_len
+        batch_len = self.cfg.batch_len
 
         for batch, pos in top_inds:
-            start_pos = max(0, pos - CONFIG.l_ctx)
-            end_pos = min(batch_len, pos + CONFIG.r_ctx + 1)
-            example_toks = tok_cache[batch, start_pos : end_pos]
-            example_acts = act_cache[batch, start_pos : end_pos, feature_id]
+            start_pos = max(0, pos - self.cfg.l_ctx)
+            end_pos = min(batch_len, pos + self.cfg.r_ctx + 1)
+            example_toks = self.tok_cache[batch, start_pos : end_pos]
+            example_acts = self.act_cache[batch, start_pos : end_pos, feature_id]
 
             example = (example_toks, example_acts)
             
             examples_list.append(example)
 
         return examples_list, max_act
+
+
+    def generate_random_examples(self, feature_id, d_scorer_cfg):
+        mixed_examples_list = []
+
+        while len(mixed_examples_list) < d_scorer_cfg.n_batches*d_scorer_cfg.batch_size:
+            # Choose a random batch and sequence position
+            batch = t.randint(0, self.act_cache.size(0), [1]).squeeze()
+            pos = t.randint(self.cfg.l_ctx, self.tok_cache.size(1) - self.cfg.r_ctx, [1]).squeeze()
+
+            # Extract the tokens and activations for the fake example
+            fake_example_toks = self.tok_cache[batch, pos - self.cfg.l_ctx : pos + self.cfg.r_ctx + 1]
+            fake_example_acts = self.act_cache[batch, pos - self.cfg.l_ctx : pos + self.cfg.r_ctx + 1, feature_id]
+
+            # Check the fake example does not activate the real one
+            if sum(fake_example_acts) < 0.01:
+                # Append the fake example to the list
+                mixed_examples_list.append(fake_example_toks)
+
+        return mixed_examples_list
 
 
     def load_features(
@@ -158,6 +207,39 @@ class Environment:
         return toks, feature_acts
 
 
-    def run(self):
-        self.explainer.generate_top_examples(7000)
-        
+    def run_feature(self, state: ThreadState):
+        long_explanation_list = self.explainer.explain()
+
+        log(state, "system", long_explanation_list)
+        print("Explainer completed.")
+
+        explanation_list, output = self.condenser.condense(long_explanation_list, return_output=True)
+
+        log(state, "section", "Running condenser.")
+        log(state, "user", get_simple_condenser_template(long_explanation_list))
+        log(state, "assistant", output)
+        print("Condenser completed.")
+
+        d_scores_list = self.d_scorer.score(explanation_list)
+        print("Detection Scorer completed.")
+
+        g_scores_list = self.gen_scorer.score(explanation_list, self.sae_list[state.layer])
+        print("Generation Scorer completed.")
+
+        results = ""
+
+        for i in range(len(explanation_list)):
+            results += f"Explanation {i}:\n"
+            results += f"Detection Score: {d_scores_list[i]}\n"
+            results += f"Generation Score: {g_scores_list[i]}\n"
+            results += f"Explanation: {explanation_list[i]}\n\n"
+
+        log(state, "section", "Results.")
+        log(state, "system", results)
+
+        save_path = f"./results/{self.provider}/{state.layer}_{state.feature_id}.txt"
+
+        log_conversation(state.history, save_path)
+
+
+

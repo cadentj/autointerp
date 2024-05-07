@@ -94,11 +94,11 @@ def topk(tensor, k):
 
 
 def log(
-    obj,
+    state,
     role: str,
     message: str
 ):
-    obj.state.history.append({"role": role, "message": message})
+    state.history.append({"role": role, "message": message})
 
 
 def log_conversation(

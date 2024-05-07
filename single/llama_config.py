@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 
-PROVIDER: str = "openai"
-
+PROVIDER: str = "replicate"
 
 @dataclass
 class EnvConfig:

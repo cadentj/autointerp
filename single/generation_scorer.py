@@ -2,35 +2,35 @@ from utils import gen, log
 from prompting import get_gen_scorer_template, get_simple_gen_scorer_template
 from config import GenerationScorerConfig
 
-CONFIG = GenerationScorerConfig()
-
 class GenerationScorer:
 
     def __init__(
         self,
         model,
         state,
+        cfg: GenerationScorerConfig
     ):
         self.model = model
         self.state = state
+        self.cfg = cfg
 
     def get_llm_examples(self, explanation):
 
         generation_kwargs = {
             "max_tokens" : 2000,
-            "temperature" : CONFIG.temperature,
+            "temperature" : self.cfg.temperature,
             "frequency_penalty" : 0.0,
             "presence_penalty" : 0.0,
             "top_p" : 1.0,
         }
 
         examples, output_str = gen(
-            get_gen_scorer_template(explanation, CONFIG.n_examples), 
+            get_gen_scorer_template(explanation, self.cfg.n_examples), 
             postprocess=self.strip_numbering,
             generation_kwargs=generation_kwargs
         )
 
-        log(self, "assistant", output_str)
+        log(self.state, "assistant", output_str)
 
         return examples
 
@@ -43,11 +43,11 @@ class GenerationScorer:
     def score(self, explanation_list, sae):
         scores_list = []
 
-        log(self, "section", "Running generation scoring.")
-        log(self, "user", get_simple_gen_scorer_template("<EXPLANATION>", CONFIG.n_examples))
+        log(self.state, "section", "Running generation scoring.")
+        log(self.state, "user", get_simple_gen_scorer_template("<EXPLANATION>", self.cfg.n_examples))
 
         for explanation in explanation_list:
-            log(self, "system", f"Running on explanation: {explanation}")
+            log(self.state, "system", f"Running on explanation: {explanation}")
 
             examples = self.get_llm_examples(explanation)
 
@@ -63,7 +63,7 @@ class GenerationScorer:
 
             scores_list.append( score_batch.mean() )
 
-            log(self, "system", f"Score: {scores_list[-1]}")
+            log(self.state, "system", f"Score: {scores_list[-1]}")
 
             del feature_acts
 
