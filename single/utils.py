@@ -6,32 +6,45 @@ from rich.table import Table
 from transformers import AutoTokenizer
 
 from config import PROVIDER
+from keys import OAI
 
-
-if PROVIDER == "openai":
-    print("Using OpenAI API")
-    client = openai.OpenAI(api_key="<YOUR KEY HERE>")
-
-
-def gen(prompt, generation_kwargs={}):
+def gen(
+        prompt, 
+        postprocess, 
+        generation_kwargs={},
+        verbose=True
+    ):
     if PROVIDER == "openai":
-        return gen_openai(prompt, generation_kwargs)
+        return gen_openai(prompt, postprocess, generation_kwargs, verbose)
     elif PROVIDER == "replicate":
-        return gen_replicate(prompt, generation_kwargs)
+        return gen_replicate(prompt, postprocess, generation_kwargs, verbose)
     
 
-def gen_openai(prompt, generation_kwargs={}):
+def gen_openai(prompt, postprocess, generation_kwargs={}, verbose=True):
+    client = openai.OpenAI(api_key=OAI)
+
     output = client.chat.completions.create(
         model="gpt-4-turbo-2024-04-09",
         messages=prompt,
         temperature = generation_kwargs.get("temperature", 1.0),
         max_tokens = generation_kwargs.get("max_tokens", 1000),
     )
+    
+    output = output.choices[0].message.content
 
-    return output.choices[0].message.content
+    try:
+        processed_output = postprocess(output)
+    except Exception as e:
+        print(f"Postprocessing failed: {e}")
+        processed_output = "FAILED"
+
+    if verbose:
+        return processed_output, output
+
+    return processed_output
 
 
-def gen_replicate(prompt, generation_kwargs={}):
+def gen_replicate(prompt, postprocess, generation_kwargs={}, verbose=True):
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-70B-Instruct")
 
     prompt_str = tokenizer.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True)
@@ -46,7 +59,18 @@ def gen_replicate(prompt, generation_kwargs={}):
         input=query
     )
 
-    return output
+    output_str = "".join(output)
+
+    try:
+        processed_output = postprocess(output_str)
+    except:
+        print("Postprocessing failed")
+        processed_output = "FAILED"
+
+    if verbose:
+        return processed_output, output
+
+    return processed_output
 
 
 def unravel_index(flat_index, shape):

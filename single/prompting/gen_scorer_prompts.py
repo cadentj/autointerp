@@ -9,7 +9,7 @@ Guidelines:
 - Unless the feature description explicitly refers to position within a sentence, you should make sure to vary the position in the sentence at which the feature appears. E.g. the word/token at which the feature appears should not always be at the start of the sentence.
 - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish the context at the start of each example. By the time the feature appears in the example, the context must already have been established.
 
-Think carefully first. Then output the list of examples, one per line.
+Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and so on.
 """
 
 GSCORER_EXAMPLE = """Description of text feature: male names in text to do with sports."""

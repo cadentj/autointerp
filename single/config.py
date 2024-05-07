@@ -19,11 +19,11 @@ class EnvConfig:
 @dataclass
 class ExplainerConfig:
     max_tokens : int = 2000
-    temperature : float = 0.5
+    temperature : float = 0.8
 
     batch_size: int = 8
     n_batches : int = 2
-    runs_per_batch: int = 1
+    runs_per_batch: int = 2
 
     activation_threshold: float = 0.2
 
@@ -36,12 +36,13 @@ class CondenserConfig:
     max_tokens : int = 1000
     temperature : float = 0.0
 
+
 @dataclass
 class DetectionScorerConfig:
     max_tokens: int = 1000
     temperature: float = 0.0
 
-    n_batches: int = 2
+    n_batches: int = 1
 
     real_ids : list = field(default_factory=lambda: [0, 2, 5, 6, 9, 10, 11, 12, 18, 19])
     @property
@@ -56,3 +57,4 @@ class DetectionScorerConfig:
 @dataclass
 class GenerationScorerConfig:
     n_examples : int = 10
+    temperature : float = 0.7

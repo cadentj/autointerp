@@ -98,16 +98,14 @@ class DetectionScorer:
             "max_tokens":CONFIG.max_tokens,
             "temperature":CONFIG.temperature
         }
-        output = gen(
+        
+        nums, output = gen(
             get_detection_template(mixed_examples_str, explanation), 
+            postprocess = self.extract_numbers_from_string,
             generation_kwargs=generation_kwargs
         )
  
-        log(self, "assistant", "".join(output))
-
-        output_str = "".join(output)
-
-        nums = self.extract_numbers_from_string(output_str)
+        log(self, "assistant", output)
 
         detection_rate = sum([num-1 in CONFIG.real_ids for num in nums]) / CONFIG.n_real
         false_pos_rate = sum([num-1 not in CONFIG.real_ids for num in nums]) / CONFIG.n_real

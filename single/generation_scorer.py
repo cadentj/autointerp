@@ -18,26 +18,27 @@ class GenerationScorer:
 
         generation_kwargs = {
             "max_tokens" : 2000,
-            "temperature" : 0.5,
+            "temperature" : CONFIG.temperature,
             "frequency_penalty" : 0.0,
             "presence_penalty" : 0.0,
             "top_p" : 1.0,
         }
 
-        output = gen(
+        examples, output_str = gen(
             get_gen_scorer_template(explanation, CONFIG.n_examples), 
+            postprocess=self.strip_numbering,
             generation_kwargs=generation_kwargs
         )
 
-        log(self, "assistant", "".join(output))
-
-        output_str = "".join(output)
-
-        examples = [e.strip("Example ").strip("1234567890").strip(": ") for e in output_str.split('\n') if e.startswith("Example")]
-        examples = [e for e in examples if len(e) > 0]
+        log(self, "assistant", output_str)
 
         return examples
 
+
+    def strip_numbering(self, s):
+        examples = [e.strip("Example ").strip("1234567890").strip(": ") for e in s.split('\n') if e.startswith("Example")]
+        return [e for e in examples if len(e) > 0]
+    
 
     def score(self, explanation_list, sae):
         scores_list = []
@@ -55,10 +56,10 @@ class GenerationScorer:
 
                 middle = sae(activations)
 
-                feature_acts = middle[1]
+                feature_acts = middle[1][:,:,self.state.feature_id]
                 feature_acts.save()
-
-            score_batch = feature_acts[:,:,self.state.feature_id].max(dim=1)[0]
+                
+            score_batch = feature_acts.max(dim=1)[0]
 
             scores_list.append( score_batch.mean() )
 

@@ -91,16 +91,18 @@ class Explainer:
             "temperature":CONFIG.temperature
         }
         
-        output = gen(
-            get_explainer_template(examples_str),
+        two_explanations, output = gen(
+            get_explainer_template(examples_str), 
+            postprocess = self.split_explanations,
             generation_kwargs=generation_kwargs
         )
 
-        log(self, "assistant", "".join(output))
+        log(self, "assistant", output)
 
-        output_str = "".join(output)
-
-        two_explanations = output_str.split("Step 4")[-1].split("1")[-1].split("2")  # this is janky as fuck, change this
+        return two_explanations
+    
+    def split_explanations(self, s):
+        two_explanations = s.split("Step 4")[-1].split("1")[-1].split("2")  # this is janky as fuck, change this
         two_explanations = [e.strip(".): ") for e in two_explanations]
 
         return two_explanations
