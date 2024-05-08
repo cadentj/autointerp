@@ -88,7 +88,7 @@ def generate_html():
             link = neuronpedia_link(layer, feature_id)
             html_content += f"<h2><a href='{link}'>Feature {feature_id}</a></h2>"
 
-            html_content += highlight_example(feature_id, info_rep["examples"], 5)
+            html_content += highlight_example(feature_id, info_rep["examples"], 15)
 
             html_content += f"<p><strong>Max Activation:</strong> {max_activation}</p>"
 
