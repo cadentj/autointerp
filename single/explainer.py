@@ -79,7 +79,7 @@ class Explainer:
 
                 two_explanations = self.query(examples_str)
                 
-                explanation_list.append(two_explanations)
+                explanation_list += two_explanations
 
         return explanation_list
 

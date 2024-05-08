@@ -1,0 +1,412 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: << the only ones to use>> computers for more than writing papers<<.>>                         │
+│           │ <<                                                                                                       │
+│           │ In the mid-1990's>>                                                                                      │
+│           │ Example 2:  call�� Read more                                                                             │
+│           │                                                                                                          │
+│           │ <<Did his>> more expansive<< interests>> outside cricket<< help him cope with failure>> better           │
+│           │ Example 3:  might pour in on a beam of sunshine<<. We>> waited, and,<< in our>> waiting, we were         │
+│           │ Example 4: << his>> premiership with the promise of constitutional renewal, and<< the initial popularity │
+│           │ he gained was>> more than just                                                                           │
+│           │ Example 5: << often the only ones to use>> computers for more than writing papers<<.>>                   │
+│           │ <<                                                                                                       │
+│           │ In the mid-1990>>                                                                                        │
+│           │ Example 6: << We>> waited, and,<< in our>> waiting, we were loud.                                        │
+│           │ <<                                                                                                       │
+│           │ My>> hunch is<< that>>                                                                                   │
+│           │ Example 7: << success, but I could also not>> keep up in a lot of<< situations. I remained open to       │
+│           │ things>>                                                                                                 │
+│           │ Example 8:  can learn from Glenn Beck and his appeal?                                                    │
+│           │                                                                                                          │
+│           │ This<< was the>> question<< that I was seeking>> to                                                      │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "the only ones to use", "Did his", "We", "his", "his", "We", "My", "This".            │
+│           │ PREVIOUS TOKENS: None, "call", None, "might", None, "often", "success", "can".                           │
+│           │ NEXT TOKENS: "computers", "more", "in", "with", "the", "in", "that", "was".                              │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are mostly pronouns ("his", "We", "My", "This") or phrases starting with pronouns  │
+│           │ ("the only ones to use", "Did his").                                                                     │
+│           │ The previous tokens are varied and don't show a clear pattern.                                           │
+│           │ The next tokens also vary, but some of them ("computers", "more", "in", "with") are related to phrases   │
+│           │ or clauses that provide additional information.                                                          │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples often involve pronouns or phrases starting with pronouns.                                 │
+│           │ - The activating tokens often introduce a phrase or clause that provides additional information.         │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The activating tokens often occur at the start of a sentence or clause.                                │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Pronouns or phrases starting with pronouns that introduce additional information in a sentence or     │
+│           │ clause.                                                                                                  │
+│           │ 2. Tokens that occur at the start of a sentence or clause, often providing context or setting the scene  │
+│           │ for the rest of the sentence.                                                                            │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  micro rather than focusing on strong fundamental understand<<ings>> of the matchups<<. It    │
+│           │ gave me a>> bit<< of success>>                                                                           │
+│           │ Example 2:  poop: New York museum acquires world's first set Read more                                   │
+│           │ <<                                                                                                       │
+│           │ While it>>��s                                                                                            │
+│           │ Example 3:  fat-cat donors to hear the major earthquake rumbling underground<<.>>                        │
+│           │ <<                                                                                                       │
+│           │ The demographic>> resh<<aping of>>                                                                       │
+│           │ Example 4: << was serious, and incompetence provoked>> roars of den<<unciation.>>                        │
+│           │ <<                                                                                                       │
+│           │ Somehow it all worked.>>                                                                                 │
+│           │ Example 5: << open to things, I>> knew<< that>> I had a lot to learn<<, and I tried>> my best to         │
+│           │ Example 6: asking and micro rather than focusing on strong fundamental understand<<ings>> of the         │
+│           │ matchups<<. It gave me a>> bit                                                                           │
+│           │ Example 7:  maritime piracy,<< one man>>'s pirate would be another man's privateer<<. In this shady>>    │
+│           │ world<<,>>                                                                                               │
+│           │ Example 8: << But once the kids knew>> I<< was>> onto<< them and once again in charge, they>> stopped    │
+│           │ half assing                                                                                              │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "ings", ".", "While", "it", "s", ".", "unciation", ".", "ings", ".", "knew", ".",     │
+│           │ "ings", ".", "one", "man", "s", "world", ".", "knew", "onto", "them".                                    │
+│           │ PREVIOUS TOKENS: "of", "read", "the", "the", "the", "and", "open", "and", "this", "but".                 │
+│           │ NEXT TOKENS: "a", "more", "the", "roars", "it", "that", "my", "a", "in", "they".                         │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are mostly punctuation marks, with a few instances of possessive "s" and words     │
+│           │ like "it" and "knew".                                                                                    │
+│           │ The previous tokens have nothing in common.                                                              │
+│           │ The next tokens have nothing in common.                                                                  │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples involve a mix of punctuation marks and short words.                                       │
+│           │ - The neuron seems to activate on, or near, punctuation marks, especially periods.                       │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The activating tokens often occur at the end of sentences or clauses.                                  │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Punctuation marks, especially periods, occurring at the end of sentences or clauses.                  │
+│           │ 2. Short words and possessive "s" in specific sentence structures.                                       │
+│ System    │ Pronouns or phrases starting with pronouns that introduce additional information in a sentence or        │
+│           │ clause.                                                                                                  │
+│           │                                                                                                          │
+│           │ Tokens that occur at the start of a sentence or clause, often providing context or setting the scene for │
+│           │ the rest of the sentence                                                                                 │
+│           │ Punctuation marks, especially periods, occurring at the end of sentences or clauses.                     │
+│           │                                                                                                          │
+│           │ Short words and possessive "s" in specific sentence structures                                           │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: Pronouns or phrases starting with pronouns that introduce additional information in a         │
+│           │ sentence or clause.                                                                                      │
+│           │                                                                                                          │
+│           │ Feature 2: Tokens that occur at the start of a sentence or clause, often providing context or setting    │
+│           │ the scene for the rest of the sentence                                                                   │
+│           │ Feature 3: Punctuation marks, especially periods, occurring at the end of sentences or clauses.          │
+│           │                                                                                                          │
+│           │ Feature 4: Short words and possessive "s" in specific sentence structures                                │
+│           │                                                                                                          │
+│ Assistant │ After reviewing the list, I've removed the duplicates and condensed the features. Here is the resulting  │
+│           │ list:                                                                                                    │
+│           │                                                                                                          │
+│           │ Feature 1: Pronouns or phrases starting with pronouns that introduce additional information in a         │
+│           │ sentence or clause.                                                                                      │
+│           │                                                                                                          │
+│           │ Feature 2: Tokens that occur at the start of a sentence or clause, often providing context or setting    │
+│           │ the scene for the rest of the sentence                                                                   │
+│           │                                                                                                          │
+│           │ Feature 3: Punctuation marks, especially periods, occurring at the end of sentences or clauses.          │
+│           │                                                                                                          │
+│           │ Feature 4: Short words and possessive "s" in specific sentence structures                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Pronouns or phrases starting with pronouns that introduce additional information │
+│           │ in a sentence or clause.                                                                                 │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain pronouns or phrases starting with pronouns that introduce additional      │
+│           │ information in a sentence or clause:                                                                     │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 13, Example 15, Example 16,  │
+│           │ Example 18, Example 19.                                                                                  │
+│           │                                                                                                          │
+│           │ These examples contain phrases or clauses that start with pronouns (such as "In", "We", "I", "My",       │
+│           │ "This", "That", "While") that introduce additional information in a sentence or clause.                  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 13, 15, 16, 18, 19]                                                   │
+│ System    │ Running on explanation: Tokens that occur at the start of a sentence or clause, often providing context  │
+│           │ or setting the scene for the rest of the sentenc                                                         │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens that occur at the start of a sentence or clause, often providing   │
+│           │ context or setting the scene for the rest of the sentence:                                               │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 4, Example 5, Example 6, Example 7, Example 9, Example 10, Example 11,     │
+│           │ Example 12, Example 13, Example 15, Example 16, Example 18, Example 19, Example 20.                      │
+│           │                                                                                                          │
+│           │ These examples start with tokens such as "In", "Did", "who", "might", "his", "Any", "I", "We", "My",     │
+│           │ "This", "For", "Obama", "corporations", and "While", which provide context or set the scene for the rest │
+│           │ of the sentence.                                                                                         │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 18, 19, 20]                                  │
+│ System    │ Running on explanation: Punctuation marks, especially periods, occurring at the end of sentences or      │
+│           │ clauses.                                                                                                 │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain punctuation marks, especially periods, occurring at the end of sentences  │
+│           │ or clauses:                                                                                              │
+│           │                                                                                                          │
+│           │ Example 1, Example 5, Example 7, Example 9, Example 12, Example 15, Example 16, Example 18, Example 19.  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 5, 7, 9, 12, 15, 16, 18, 19]                                                           │
+│ System    │ Running on explanation: Short words and possessive "s" in specific sentence structures                   │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ After carefully examining the text examples, I have identified the ones that contain short words and     │
+│           │ possessive "s" in specific sentence structures:                                                          │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 4, Example 5, Example 6, Example 7, Example 9, Example 10, Example 11,     │
+│           │ Example 12, Example 13, Example 15, Example 16, Example 18, Example 19                                   │
+│           │                                                                                                          │
+│           │ These examples exhibit the feature of short words and possessive "s" in specific sentence structures.    │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 18, 19]                                      │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Pronouns or phrases starting with pronouns that introduce additional information │
+│           │ in a sentence or clause.                                                                                 │
+│ Assistant │ Here are 10 examples of short text samples containing pronouns or phrases starting with pronouns that    │
+│           │ introduce additional information in a sentence or clause.                                                │
+│           │                                                                                                          │
+│           │ Example 1: The new employee, who was very nervous, stumbled over his words during the presentation.      │
+│           │ Example 2: The company, which was founded in 2010, has grown exponentially since then.                   │
+│           │ Example 3: The tourists got lost in the city, and they had to ask for directions.                        │
+│           │ Example 4: The recipe, that I found online, requires some exotic spices.                                 │
+│           │ Example 5: The new policy, which was implemented last month, has already shown positive results.         │
+│           │ Example 6: The teacher, whom I respect greatly, gave us a lot of homework.                               │
+│           │ Example 7: The book, that I'm currently reading, is a real page-turner.                                  │
+│           │ Example 8: The new phone, which has an amazing camera, is very expensive.                                │
+│           │ Example 9: The concert, at which we saw our favorite band, was incredible.                               │
+│           │ Example 10: The professor, whose lecture was very engaging, received a standing ovation.                 │
+│           │                                                                                                          │
+│           │ In each example, the pronoun or phrase starting with a pronoun (e.g. "who", "which", "that", "whom")     │
+│           │ introduces additional information about the preceding noun or phrase.                                    │
+│ System    │ Score: 0.777191162109375                                                                                 │
+│ System    │ Running on explanation: Tokens that occur at the start of a sentence or clause, often providing context  │
+│           │ or setting the scene for the rest of the sentenc                                                         │
+│ Assistant │ Here are 10 examples of short text samples containing tokens that occur at the start of a sentence or    │
+│           │ clause, often providing context or setting the scene for the rest of the sentence.                       │
+│           │                                                                                                          │
+│           │ Example 1: Meanwhile, the party was getting out of hand.                                                 │
+│           │ Example 2: In the summer of 1969, Woodstock changed the music scene forever.                             │
+│           │ Example 3: After the storm, the city was left in ruins.                                                  │
+│           │ Example 4: Historically, the company had always been profitable.                                         │
+│           │ Example 5: On the other hand, the benefits of the new policy far outweighed the costs.                   │
+│           │ Example 6: During the meeting, the CEO announced a major restructuring.                                  │
+│           │ Example 7: Furthermore, the research showed a significant correlation between the two variables.         │
+│           │ Example 8: At the moment, the team is struggling to find its rhythm.                                     │
+│           │ Example 9: In addition to the new features, the software update also fixed several bugs.                 │
+│           │ Example 10: According to the report, the company's sales have been declining steadily over the past      │
+│           │ year.                                                                                                    │
+│           │                                                                                                          │
+│           │ In each example, the token at the start of the sentence or clause provides context or sets the scene for │
+│           │ the rest of the sentence, often indicating a contrast, a time or place, or a relationship to previous    │
+│           │ information.                                                                                             │
+│ System    │ Score: 1.696247935295105                                                                                 │
+│ System    │ Running on explanation: Punctuation marks, especially periods, occurring at the end of sentences or      │
+│           │ clauses.                                                                                                 │
+│ Assistant │ Here are 10 examples of short text samples that contain punctuation marks, especially periods, occurring │
+│           │ at the end of sentences or clauses.                                                                      │
+│           │                                                                                                          │
+│           │ Example 1: I love reading books. My favorite author is J.K. Rowling.                                     │
+│           │ Example 2: The capital of France is Paris. It's a beautiful city.                                        │
+│           │ Example 3: I'm going to the store. Do you need anything?                                                 │
+│           │ Example 4: The weather is nice today. We should go for a walk.                                           │
+│           │ Example 5: I've never seen that movie. Is it any good?                                                   │
+│           │ Example 6: The teacher asked the student to solve the math problem. The student replied, "I don't know." │
+│           │ Example 7: I love eating pizza. It's my favorite food. I could eat it every day.                         │
+│           │ Example 8: The company will be closed tomorrow. It's a national holiday.                                 │
+│           │ Example 9: I'm feeling tired. I think I'll go to bed early.                                              │
+│           │ Example 10: The concert was amazing. The band played all their hit songs.                                │
+│ System    │ Score: 0.18690125644207                                                                                  │
+│ System    │ Running on explanation: Short words and possessive "s" in specific sentence structures                   │
+│ Assistant │ Here are 10 examples of short text samples that contain short words (less than 5 letters) and possessive │
+│           │ "s" in specific sentence structures.                                                                     │
+│           │                                                                                                          │
+│           │ Example 1: The cat's toy is red.                                                                         │
+│           │ Example 2: My dog's name is Max.                                                                         │
+│           │ Example 3: The bus's wheels are big.                                                                     │
+│           │ Example 4: Her mom's car is old.                                                                         │
+│           │ Example 5: The kid's bike is broken.                                                                     │
+│           │ Example 6: The cat's eyes are green.                                                                     │
+│           │ Example 7: His dad's phone is ringing.                                                                   │
+│           │ Example 8: The boy's book is lost.                                                                       │
+│           │ Example 9: The girl's hat is pink.                                                                       │
+│           │ Example 10: The mom's keys are missing.                                                                  │
+│           │                                                                                                          │
+│           │ In each example, I've used short words (less than 5 letters) and possessive "s" in sentence structures   │
+│           │ that demonstrate the feature. I've varied the sentence structures and the short words used to provide a  │
+│           │ range of examples.                                                                                       │
+│ System    │ Score: 0.36052265763282776                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 7.204889297485352                                                                        │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.8, 0.3)                                                                              │
+│           │ Generation Score: 0.777191162109375                                                                      │
+│           │ Explanation: Pronouns or phrases starting with pronouns that introduce additional information in a       │
+│           │ sentence or clause.                                                                                      │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (1.0, 0.6)                                                                              │
+│           │ Generation Score: 1.696247935295105                                                                      │
+│           │ Explanation: Tokens that occur at the start of a sentence or clause, often providing context or setting  │
+│           │ the scene for the rest of the sentenc                                                                    │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.4, 0.5)                                                                              │
+│           │ Generation Score: 0.18690125644207                                                                       │
+│           │ Explanation: Punctuation marks, especially periods, occurring at the end of sentences or clauses.        │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (0.9, 0.6)                                                                              │
+│           │ Generation Score: 0.36052265763282776                                                                    │
+│           │ Explanation: Short words and possessive "s" in specific sentence structures                              │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 7.204889297485352
+
+Explanation 0:
+Detection Score: (0.8, 0.3)
+Generation Score: 0.777191162109375
+Explanation: Pronouns or phrases starting with pronouns that introduce additional information in a sentence or clause.
+
+Explanation 1:
+Detection Score: (1.0, 0.6)
+Generation Score: 1.696247935295105
+Explanation: Tokens that occur at the start of a sentence or clause, often providing context or setting the scene for 
+the rest of the sentenc
+
+Explanation 2:
+Detection Score: (0.4, 0.5)
+Generation Score: 0.18690125644207
+Explanation: Punctuation marks, especially periods, occurring at the end of sentences or clauses.
+
+Explanation 3:
+Detection Score: (0.9, 0.6)
+Generation Score: 0.36052265763282776
+Explanation: Short words and possessive "s" in specific sentence structures
+
+

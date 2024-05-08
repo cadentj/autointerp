@@ -1,0 +1,397 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: <|endoftext|> response as promptly as possible.��                                             │
+│           │                                                                                                          │
+│           │ Little said<< Pan>>etta was first briefed                                                                │
+│           │ Example 2: .��A New Jersey congressman wrote directly to Defense Secretary Leon E.<< Pan>>etta two       │
+│           │ Example 3:  first briefed on the issue Wednesday.                                                        │
+│           │                                                                                                          │
+│           │ At a news conference Thursday,<< Pan>>etta said he had                                                   │
+│           │ Example 4: ��I think that it happened back in the past,�� added<< Pan>>etta, who took                    │
+│           │ Example 5: . It��s the left to right breadth of the stereo field.<< Pan>>ning allows for sounds          │
+│           │ Example 6: , I take it apart. Otherwise I take pictures with it.                                         │
+│           │                                                                                                          │
+│           │ <<Pan>>asonic for the G                                                                                  │
+│           │ Example 7: Planning on panning                                                                           │
+│           │                                                                                                          │
+│           │ So what is panning?                                                                                      │
+│           │                                                                                                          │
+│           │ <<Pan>>ning helps you control                                                                            │
+│           │ Example 8:  Coast Computer Faires, subsequent DDJ editors[1] like Marlin Ouverson,[2][                   │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "Pan", "Pan", "Pan", "Pan", "Pan", "Pan", "Pan".                                      │
+│           │ PREVIOUS TOKENS: "Little said", "Leon E.", "At a news conference Thursday,", "", "stereo field.", ",",   │
+│           │ "So what is panning?".                                                                                   │
+│           │ NEXT TOKENS: "etta was first briefed", "etta two", "etta said he had", "etta, who took", "ning allows    │
+│           │ for sounds", "asonic for the G", "ning helps you control".                                               │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are consistently "Pan".                                                            │
+│           │ The previous tokens vary widely, indicating no specific pattern.                                         │
+│           │ The next tokens are mostly additional letters or words completing a proper noun or term ("etta" to       │
+│           │ complete "Panetta", "asonic" to complete "Panasonic", "ning" to complete "panning").                     │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The activating tokens appear in two contexts: as a fragment of a longer word (proper noun or technical │
+│           │ term) and as a standalone concept related to audio technique.                                            │
+│           │ - The full terms related to "Pan" are "Panetta", "Panasonic", and "panning", indicating an activation    │
+│           │ related to either names or technical terms.                                                              │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The token "Pan" when it is a part of, or leads into, a longer proper noun or technical term.          │
+│           │ 2. The token "Pan" involved in contexts related to names, brands, or specific technical jargon.          │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: <|endoftext|> one is called an AB Test. For example, Promo Panel 1 and Promo                  │
+│           │ Example 2:  called an AB Test. For example, Promo Panel 1 and Promo Panel 2 will be added                │
+│           │ Example 3:  structures in the rings.                                                                     │
+│           │                                                                                                          │
+│           │ During this orbit��s ring-plane crossing, the spacecraft                                                 │
+│           │ Example 4:  to help shield the spacecraft from ring particles.                                           │
+│           │                                                                                                          │
+│           │ Also during ring-plane crossing, in the                                                                  │
+│           │ Example 5:  to lactate threshold:                                                                        │
+│           │                                                                                                          │
+│           │ ​Forum Jump                                                                                               │
+│           │                                                                                                          │
+│           │ User Control Panel Private Messages Subscript                                                            │
+│           │ Example 6:  Snug Warm Place For Your Cat To Nap                                                          │
+│           │                                                                                                          │
+│           │ Suitable For Double Panel Radiators                                                                      │
+│           │                                                                                                          │
+│           │ Example 7: , love and affection.                                                                         │
+│           │                                                                                                          │
+│           │ There's an excellent viral video by Soul Panc                                                            │
+│           │ Example 8:  the VDV. Famously, in accepting his appointment he demands that Anatoli Serdyuk              │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS: "Promo Panel", "ring-plane crossing", "Panel", "ring-plane crossing", "Panel",        │
+│           │ "Panel".                                                                                                 │
+│           │ PREVIOUS TOKENS: "example,", "During this orbit’s", "and", "Also during", "Control", "Double".           │
+│           │ NEXT TOKENS: "1 and", "the spacecraft", "2 will", "in the", "Private", "Radiators".                      │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ The activating tokens contain the term "Panel" or "ring-plane crossing".                                 │
+│           │ There is no apparent pattern in the previous tokens across all examples.                                 │
+│           │ The next tokens vary widely without a clear pattern.                                                     │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The activating neuron triggers on specific technical terms or phrases, particularly "Promo Panel" and  │
+│           │ "ring-plane crossing".                                                                                   │
+│           │ - These terms appear to be contextually related to panels in a promotional or structural context and     │
+│           │ specific orbital maneuvers.                                                                              │
+│           │                                                                                                          │
+│           │ Let me re-examine the text examples to ensure accuracy and completeness in pattern identification. No    │
+│           │ additional linguistic or contextual similarities seem to be present.                                     │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Technical terms related to specific subjects: "Promo Panel" for promotions and "ring-plane crossing"  │
+│           │ for orbital maneuvers.                                                                                   │
+│           │ 2. Specific repeated terms associated with structured entities or specific events within a technical or  │
+│           │ promotional context.                                                                                     │
+│ System    │ The token "Pan" when it is a part of, or leads into, a longer proper noun or technical term.             │
+│           │                                                                                                          │
+│           │ The token "Pan" involved in contexts related to names, brands, or specific technical jargon              │
+│           │ Technical terms related to specific subjects: "Promo Panel" for promotions and "ring-plane crossing" for │
+│           │ orbital maneuvers.                                                                                       │
+│           │                                                                                                          │
+│           │ Specific repeated terms associated with structured entities or specific events within a technical or     │
+│           │ promotional context                                                                                      │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: The token "Pan" when it is a part of, or leads into, a longer proper noun or technical term.  │
+│           │                                                                                                          │
+│           │ Feature 2: The token "Pan" involved in contexts related to names, brands, or specific technical jargon   │
+│           │ Feature 3: Technical terms related to specific subjects: "Promo Panel" for promotions and "ring-plane    │
+│           │ crossing" for orbital maneuvers.                                                                         │
+│           │                                                                                                          │
+│           │ Feature 4: Specific repeated terms associated with structured entities or specific events within a       │
+│           │ technical or promotional context                                                                         │
+│           │                                                                                                          │
+│ Assistant │ Here is the condensed list of distinct features:                                                         │
+│           │                                                                                                          │
+│           │ Feature 1: The token "Pan" when it is a part of, or leads into, a longer proper noun or technical term.  │
+│           │ Feature 2: Technical terms related to specific subjects: "Promo Panel" for promotions and "ring-plane    │
+│           │ crossing" for orbital maneuvers.                                                                         │
+│           │ Feature 3: Specific repeated terms associated with structured entities or specific events within a       │
+│           │ technical or promotional context.                                                                        │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The token "Pan" when it is a part of, or leads into, a longer proper noun or     │
+│           │ technical term.                                                                                          │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain the token "Pan" when it is a part of, or leads into, a longer proper noun │
+│           │ or technical term:                                                                                       │
+│           │                                                                                                          │
+│           │ Example 1: "Panetta"                                                                                     │
+│           │ Example 3: "Panetta"                                                                                     │
+│           │ Example 6: "Panetta"                                                                                     │
+│           │ Example 7: "Panetta"                                                                                     │
+│           │ Example 10: "Panning"                                                                                    │
+│           │ Example 11: "Panasonic"                                                                                  │
+│           │ Example 12: "Panning"                                                                                    │
+│           │ Example 19: "Promo Panel"                                                                                │
+│           │ Example 20: "Promo Panel"                                                                                │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 19, 20]                                                           │
+│ System    │ Running on explanation: Technical terms related to specific subjects: "Promo Panel" for promotions and   │
+│           │ "ring-plane crossing" for orbital maneuvers.                                                             │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain the technical terms related to specific subjects as described:            │
+│           │                                                                                                          │
+│           │ Example 19 and Example 20 contain the term "Promo Panel" related to promotions.                          │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [19, 20]                                                                                   │
+│ System    │ Running on explanation: Specific repeated terms associated with structured entities or specific events   │
+│           │ within a technical or promotional context.                                                               │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain specific repeated terms associated with structured entities or specific   │
+│           │ events within a technical or promotional context:                                                        │
+│           │                                                                                                          │
+│           │ Example 2: Repeated technical terms related to the F-35 aircraft.                                        │
+│           │ Example 3: Mention of a specific event involving a congressman and Defense Secretary Leon E. Panetta.    │
+│           │ Example 6: Specific event involving a news conference with Panetta.                                      │
+│           │ Example 7: Specific mention of Panetta in a context suggesting a structured event or narrative.          │
+│           │ Example 19: Mention of an AB Test, a structured entity within a promotional context.                     │
+│           │ Example 20: Explicit mention of an AB Test and Promo Panels, structured entities within a promotional    │
+│           │ context.                                                                                                 │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [2, 3, 6, 7, 19, 20]                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The token "Pan" when it is a part of, or leads into, a longer proper noun or     │
+│           │ technical term.                                                                                          │
+│ Assistant │ Here are 10 examples of short text samples containing the token "Pan" as a part of, or leading into, a   │
+│           │ longer proper noun or technical term.                                                                    │
+│           │                                                                                                          │
+│           │ Example 1: The biodiversity in Panama is truly remarkable.                                               │
+│           │ Example 2: She specialized in studying the Pantropical spotted dolphin.                                  │
+│           │ Example 3: One of the busiest shipping routes is the Panama Canal.                                       │
+│           │ Example 4: An essential ingredient in our new skincare line is Panthenol.                                │
+│           │ Example 5: During the festival, everyone wanted to hear the steel pan music.                             │
+│           │ Example 6: Many ancient artifacts were found in the Panhellenic sanctuary.                               │
+│           │ Example 7: The documentary features the Pan-STARRS telescope in Hawaii.                                  │
+│           │ Example 8: Our geography class studied the Pannonian Basin in Europe.                                    │
+│           │ Example 9: The legend of the Pandavas is crucial in understanding the epic.                              │
+│           │ Example 10: Pancreatitis is a serious medical condition that requires immediate attention.               │
+│ System    │ Score: 7.33449125289917                                                                                  │
+│ System    │ Running on explanation: Technical terms related to specific subjects: "Promo Panel" for promotions and   │
+│           │ "ring-plane crossing" for orbital maneuvers.                                                             │
+│ Assistant │ Here are 10 examples of short text examples containing the technical terms "Promo Panel" in the context  │
+│           │ of promotions and "ring-plane crossing" in the context of orbital maneuvers. The context is established  │
+│           │ early in each example.                                                                                   │
+│           │                                                                                                          │
+│           │ Example 1: During the marketing meeting, they discussed updating the Promo Panel to attract more         │
+│           │ customers.                                                                                               │
+│           │ Example 2: The spacecraft's trajectory was adjusted for a ring-plane crossing of Saturn, which would     │
+│           │ provide valuable data.                                                                                   │
+│           │ Example 3: To increase user engagement, the design team added an interactive Promo Panel on the          │
+│           │ homepage.                                                                                                │
+│           │ Example 4: The mission's success hinged on the precise timing of the ring-plane crossing to minimize     │
+│           │ risks from debris.                                                                                       │
+│           │ Example 5: The Promo Panel at the trade show featured a QR code that visitors could scan for a surprise  │
+│           │ discount.                                                                                                │
+│           │ Example 6: Astronomers and engineers gathered to analyze the data collected during the ring-plane        │
+│           │ crossing by the unmanned probe.                                                                          │
+│           │ Example 7: The new online store layout featured a Promo Panel prominently at the top with the week's     │
+│           │ special offers.                                                                                          │
+│           │ Example 8: In preparation for the upcoming mission, the simulation software was updated to include the   │
+│           │ dynamics of a ring-plane crossing.                                                                       │
+│           │ Example 9: The digital billboard switched to a new Promo Panel every 30 seconds, showcasing different    │
+│           │ products.                                                                                                │
+│           │ Example 10: Educational outreach programs included detailed explanations of ring-plane crossings to      │
+│           │ inspire future scientists.                                                                               │
+│ System    │ Score: 3.386606216430664                                                                                 │
+│ System    │ Running on explanation: Specific repeated terms associated with structured entities or specific events   │
+│           │ within a technical or promotional context.                                                               │
+│ Assistant │ The following examples will contain specific repeated terms related to structured entities or specific   │
+│           │ events, set within technical or promotional contexts. Each example will establish the context before     │
+│           │ including the repeated specific terms.                                                                   │
+│           │                                                                                                          │
+│           │ Example 1: Join our Webinar on Cloud Computing Essentials! Learn about Deployment Models, Service        │
+│           │ Models, and Key Features. Understand Deployment Models and Service Models in depth.                      │
+│           │                                                                                                          │
+│           │ Example 2: At the Auto Expo 2023, explore the latest in Hybrid Technology, Electric Engines, and         │
+│           │ Sustainable Materials. Discover cutting-edge Electric Engines and Hybrid Technology.                     │
+│           │                                                                                                          │
+│           │ Example 3: Our Annual Software Development Conference features sessions on Agile Methodologies, DevOps   │
+│           │ Practices, and Code Review Standards. Improve your skills in Agile Methodologies and DevOps Practices.   │
+│           │                                                                                                          │
+│           │ Example 4: This workshop on Digital Marketing will cover SEO Strategies, Content Creation, and Social    │
+│           │ Media Engagement. Master SEO Strategies and Content Creation to boost your online presence.              │
+│           │                                                                                                          │
+│           │ Example 5: The Photography Masterclass focuses on High-Speed Photography, Portrait Lighting, and         │
+│           │ Post-Processing Techniques. Enhance your skills in Portrait Lighting and High-Speed Photography.         │
+│           │                                                                                                          │
+│           │ Example 6: During the Cybersecurity Symposium, we will delve into Threat Detection, Data Encryption, and │
+│           │ Network Security Measures. Strengthen your understanding of Data Encryption and Threat Detection.        │
+│           │                                                                                                          │
+│           │ Example 7: Our latest brochure on Sustainable Building Practices highlights Green Materials, Energy      │
+│           │ Efficiency, and Water Conservation Methods. Learn how to implement Energy Efficiency and Green Materials │
+│           │ in your projects.                                                                                        │
+│           │                                                                                                          │
+│           │ Example 8: The Virtual Reality Gaming Tournament will showcase Multiplayer Modes, Immersive              │
+│           │ Environments, and Advanced Control Systems. Experience the thrill of Immersive Environments and Advanced │
+│           │ Control Systems.                                                                                         │
+│           │                                                                                                          │
+│           │ Example 9: Explore the world of craft brewing at our Beer Festival with sessions on Fermentation         │
+│           │ Techniques, Hop Varieties, and Flavor Profiling. Dive deeper into Fermentation Techniques and Hop        │
+│           │ Varieties.                                                                                               │
+│           │                                                                                                          │
+│           │ Example 10: The Health and Wellness Retreat offers programs on Meditation Techniques, Nutritional Plans, │
+│           │ and Physical Fitness Routines. Focus on improving your Nutritional Plans and Meditation Techniques.      │
+│ System    │ Score: 0.0                                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 39.71010208129883                                                                        │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.9, 0.0)                                                                              │
+│           │ Generation Score: 7.33449125289917                                                                       │
+│           │ Explanation: The token "Pan" when it is a part of, or leads into, a longer proper noun or technical      │
+│           │ term.                                                                                                    │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.2, 0.0)                                                                              │
+│           │ Generation Score: 3.386606216430664                                                                      │
+│           │ Explanation: Technical terms related to specific subjects: "Promo Panel" for promotions and "ring-plane  │
+│           │ crossing" for orbital maneuvers.                                                                         │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.5, 0.1)                                                                              │
+│           │ Generation Score: 0.0                                                                                    │
+│           │ Explanation: Specific repeated terms associated with structured entities or specific events within a     │
+│           │ technical or promotional context.                                                                        │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 39.71010208129883
+
+Explanation 0:
+Detection Score: (0.9, 0.0)
+Generation Score: 7.33449125289917
+Explanation: The token "Pan" when it is a part of, or leads into, a longer proper noun or technical term.
+
+Explanation 1:
+Detection Score: (0.2, 0.0)
+Generation Score: 3.386606216430664
+Explanation: Technical terms related to specific subjects: "Promo Panel" for promotions and "ring-plane crossing" for 
+orbital maneuvers.
+
+Explanation 2:
+Detection Score: (0.5, 0.1)
+Generation Score: 0.0
+Explanation: Specific repeated terms associated with structured entities or specific events within a technical or 
+promotional context.
+
+

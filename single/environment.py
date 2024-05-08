@@ -231,7 +231,7 @@ class Environment:
         g_scores_list = self.gen_scorer.score(explanation_list, self.sae)
         print("Generation Scorer completed.")
 
-        results = ""
+        results = f"Max Activation: {state.max_act}\n\n"
 
         for i in range(len(explanation_list)):
             results += f"Explanation {i}:\n"

@@ -1,0 +1,327 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  was funny, he said, "Let me know and I��ll<< either>> come and campaign for                  │
+│           │ Example 2:                                                                                               │
+│           │                                                                                                          │
+│           │ Rnd 1: ch 1,<< h>>dc<< in>> same st<<, h>>dc around. Sl                                                  │
+│           │ Example 3: , about to lick it from<< her>> finger and kiss him to make sure<< none is left>>.            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Example 4:  as of course providing verifiable sources that back this up I'll<< be>> glad<< to discuss>>  │
+│           │ it. Kurt                                                                                                 │
+│           │ Example 5:  but the two heroes unite and use the<< skills>> her father, Zatara<<, taught>> them to       │
+│           │ expose                                                                                                   │
+│           │ Example 6:  Gold, were released for the PlayStation and Sega Saturn, although versions of specific<<     │
+│           │ games>> in the series were                                                                               │
+│           │ Example 7: currentPage"<< total>>Pages =<< Number>> @get "<<total>>Pages" for<< pageNumber in>>          │
+│           │ Example 8:  (ABC) syntax, with optional ��#�� prefix and optional<< trailing>> opacity byte (00          │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "either", "h", "in", "her", "none is left", "be", "to discuss", "skills", "taught",   │
+│           │ "games", "Number", "trailing".                                                                           │
+│           │ PREVIOUS TOKENS: "and I’ll", "ch 1,", "from", "make sure", "I'll", "her father, Zatara", "of specific",  │
+│           │ "total", "optional".                                                                                     │
+│           │ NEXT TOKENS: "come and campaign", "dc", "finger and kiss", "it", "them to expose", "in the series",      │
+│           │ "@get", "opacity byte".                                                                                  │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are a mix of words and single characters.                                          │
+│           │ The previous tokens have nothing in common.                                                              │
+│           │ The next tokens have nothing in common.                                                                  │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples involve different parts of speech (conjunctions, nouns, verbs, etc.).                     │
+│           │ - The activating tokens seem to be unrelated.                                                            │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - Some of the activating tokens are used to connect or relate things ("either", "in", "to discuss",      │
+│           │ "taught", "trailing").                                                                                   │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Tokens that connect or relate things in a sentence, including conjunctions and prepositions.          │
+│           │ 2. Tokens that are used to link, combine, or modify other words or phrases.                              │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: . And if you've ever offered a potential romantic partner the chance to cut<< to>> the chase, │
+│           │ split                                                                                                    │
+│           │ Example 2:  be in for a stint on the sideline after he suffered a<< serious>> cut<< in his>> mouth.      │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Example 3:  McNamara and Stephanie Keuhmert and local historians Robert Loerzel<< and>> Richard Lindberg │
+│           │ Example 4:  sloppy statistical analysis. And yet these major media outlets are touting (see what<< I     │
+│           │ did>> there…?)                                                                                           │
+│           │ Example 5:  U.S. bombings broke chemical warfare containers and led to sickness (called<< the>> Gulf     │
+│           │ Example 6:                                                                                               │
+│           │                                                                                                          │
+│           │ Newsletter Sign Up Continue reading the main story Please verify you<<'re>> not<< a>> robot by clicking  │
+│           │ the                                                                                                      │
+│           │ Example 7: . When I went to the dentist, he said my mouth shows no<< signs of>> dryness damage (         │
+│           │ Example 8:                                                                                               │
+│           │                                                                                                          │
+│           │ Romney. ��And according to the tipster who<< claims to have>> hacked<< [>>Romney�                        │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "to", "serious", "in", "and", "I did", "the", "'re", "not", "a", "signs of", "claims  │
+│           │ to have", "[".                                                                                           │
+│           │ PREVIOUS TOKENS: "chance", "a", "he", "Robert", "what", "these", "called", "you", "no", "who".           │
+│           │ NEXT TOKENS: "the", "his", "Richard", "there…?", "Gulf", "by", "dryness", "hacked".                      │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are all function words or phrases that connect or relate other words.              │
+│           │ The previous tokens are often words that introduce a clause or phrase.                                   │
+│           │ The next tokens often continue the phrase or clause.                                                     │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples involve connecting words or phrases.                                                      │
+│           │ - The activating token often introduces or connects a phrase or clause.                                  │
+│           │ - The activating token often appears in a specific grammatical context.                                  │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The activating token is often used to provide additional information or context.                       │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Function words or phrases that connect or relate other words, often introducing or continuing a       │
+│           │ phrase or clause.                                                                                        │
+│           │ 2. Words or phrases that provide additional information or context, such as specifying a condition or    │
+│           │ relation.                                                                                                │
+│ System    │ Tokens that connect or relate things in a sentence, including conjunctions and prepositions.             │
+│           │                                                                                                          │
+│           │ Tokens that are used to link, combine, or modify other words or phrases                                  │
+│           │ Function words or phrases that connect or relate other words, often introducing or continuing a phrase   │
+│           │ or clause.                                                                                               │
+│           │                                                                                                          │
+│           │ Words or phrases that provide additional information or context, such as specifying a condition or       │
+│           │ relation                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: Tokens that connect or relate things in a sentence, including conjunctions and prepositions.  │
+│           │                                                                                                          │
+│           │ Feature 2: Tokens that are used to link, combine, or modify other words or phrases                       │
+│           │ Feature 3: Function words or phrases that connect or relate other words, often introducing or continuing │
+│           │ a phrase or clause.                                                                                      │
+│           │                                                                                                          │
+│           │ Feature 4: Words or phrases that provide additional information or context, such as specifying a         │
+│           │ condition or relation                                                                                    │
+│           │                                                                                                          │
+│ Assistant │ After reviewing the list, I've removed the duplicates and condensed the features. Here is the resulting  │
+│           │ list:                                                                                                    │
+│           │                                                                                                          │
+│           │ Feature 1: Tokens that connect or relate things in a sentence, including conjunctions and prepositions.  │
+│           │ Feature 2: Words or phrases that provide additional information or context, such as specifying a         │
+│           │ condition or relation.                                                                                   │
+│           │                                                                                                          │
+│           │ The original Features 2 and 3 were essentially the same, so I removed them to avoid duplication.         │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Tokens that connect or relate things in a sentence, including conjunctions and   │
+│           │ prepositions.                                                                                            │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens that connect or relate things in a sentence, including             │
+│           │ conjunctions and prepositions:                                                                           │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 4, Example 5, Example 7, Example 9, Example 10, Example 11, Example 14,    │
+│           │ Example 15, Example 16, Example 17, Example 18, Example 19, Example 20.                                  │
+│           │                                                                                                          │
+│           │ These examples contain words such as "and", "but", "or", "with", "in", "on", "at", "from", "to", etc.    │
+│           │ that connect or relate things in a sentence.                                                             │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 4, 5, 7, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20]                                     │
+│ System    │ Running on explanation: Words or phrases that provide additional information or context, such as         │
+│           │ specifying a condition or relation.                                                                      │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain words or phrases that provide additional information or context, such as  │
+│           │ specifying a condition or relation:                                                                      │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 4, Example 5, Example 7, Example 9, Example 10, Example 11, Example 14,    │
+│           │ Example 15, Example 16, Example 18, Example 19.                                                          │
+│           │                                                                                                          │
+│           │ These examples contain phrases or words that provide additional context or information, such as          │
+│           │ specifying a condition, relation, or circumstance.                                                       │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 4, 5, 7, 9, 10, 11, 14, 15, 16, 18, 19]                                             │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Tokens that connect or relate things in a sentence, including conjunctions and   │
+│           │ prepositions.                                                                                            │
+│ Assistant │ Here are 10 examples of short text samples containing tokens that connect or relate things in a          │
+│           │ sentence, including conjunctions and prepositions.                                                       │
+│           │                                                                                                          │
+│           │ Example 1: I went to the store and bought some milk.                                                     │
+│           │ Example 2: The book is on the table with a vase.                                                         │
+│           │ Example 3: She loves reading books or watching movies.                                                   │
+│           │ Example 4: The city is between the mountains and the sea.                                                │
+│           │ Example 5: I'm going to the party, but I'll be late.                                                     │
+│           │ Example 6: The new policy applies to all employees except John.                                          │
+│           │ Example 7: The hotel is located near the airport and downtown area.                                      │
+│           │ Example 8: He's not only smart but also very athletic.                                                   │
+│           │ Example 9: The company is composed of several teams, including marketing and sales.                      │
+│           │ Example 10: The new restaurant is across from the movie theater, next to the park.                       │
+│           │                                                                                                          │
+│           │ In each example, I've included tokens that connect or relate things in the sentence, such as             │
+│           │ conjunctions (and, but, or) and prepositions (with, between, near, across, next to).                     │
+│ System    │ Score: 0.9407354593276978                                                                                │
+│ System    │ Running on explanation: Words or phrases that provide additional information or context, such as         │
+│           │ specifying a condition or relation.                                                                      │
+│ Assistant │ Here are 10 examples of short text samples containing words or phrases that provide additional           │
+│           │ information or context, such as specifying a condition or relation.                                      │
+│           │                                                                                                          │
+│           │ Example 1: The new policy, however, only applies to full-time employees.                                 │
+│           │ Example 2: The concert was amazing, especially considering the bad weather.                              │
+│           │ Example 3: I love that restaurant, particularly on Fridays when they have live music.                    │
+│           │ Example 4: The new smartphone is great, except for the battery life.                                     │
+│           │ Example 5: The company will provide a refund, provided that you return the item within 30 days.          │
+│           │ Example 6: The doctor said I'm healthy, given my age and medical history.                                │
+│           │ Example 7: The new policy is effective, assuming everyone follows the rules.                             │
+│           │ Example 8: I'm happy with the service, despite the long wait times.                                      │
+│           │ Example 9: The hotel room was nice, thanks to the ocean view.                                            │
+│           │ Example 10: The recipe works well, as long as you use fresh ingredients.                                 │
+│           │                                                                                                          │
+│           │ In each example, I've included words or phrases that provide additional context or information, such as  │
+│           │ specifying a condition, relation, or exception. These words and phrases help to clarify or modify the    │
+│           │ main statement, providing more nuance and detail.                                                        │
+│ System    │ Score: 0.9966619610786438                                                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 6.440227508544922                                                                        │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.6, 0.9)                                                                              │
+│           │ Generation Score: 0.9407354593276978                                                                     │
+│           │ Explanation: Tokens that connect or relate things in a sentence, including conjunctions and              │
+│           │ prepositions.                                                                                            │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.5, 0.8)                                                                              │
+│           │ Generation Score: 0.9966619610786438                                                                     │
+│           │ Explanation: Words or phrases that provide additional information or context, such as specifying a       │
+│           │ condition or relation.                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 6.440227508544922
+
+Explanation 0:
+Detection Score: (0.6, 0.9)
+Generation Score: 0.9407354593276978
+Explanation: Tokens that connect or relate things in a sentence, including conjunctions and prepositions.
+
+Explanation 1:
+Detection Score: (0.5, 0.8)
+Generation Score: 0.9966619610786438
+Explanation: Words or phrases that provide additional information or context, such as specifying a condition or 
+relation.
+
+

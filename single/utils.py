@@ -3,11 +3,12 @@ import os
 import torch as t
 import openai
 import replicate
+from groq import Groq
 from rich.console import Console
 from rich.table import Table
 from transformers import AutoTokenizer
 
-from keys import OAI
+from keys import OAI, GROQ
 
 def gen(
         prompt, 
@@ -18,6 +19,8 @@ def gen(
     provider = os.environ.get("PROVIDER")
     if provider == "openai":
         return gen_openai(prompt, postprocess, generation_kwargs, verbose)
+    if provider == "groq":
+        return gen_groq(prompt, postprocess, generation_kwargs, verbose)
     elif provider == "replicate":
         return gen_replicate(prompt, postprocess, generation_kwargs, verbose)
     
@@ -27,6 +30,29 @@ def gen_openai(prompt, postprocess, generation_kwargs={}, verbose=True):
 
     output = client.chat.completions.create(
         model="gpt-4-turbo-2024-04-09",
+        messages=prompt,
+        temperature = generation_kwargs.get("temperature", 1.0),
+        max_tokens = generation_kwargs.get("max_tokens", 1000),
+    )
+    
+    output = output.choices[0].message.content
+
+    try:
+        processed_output = postprocess(output)
+    except Exception as e:
+        print(f"Postprocessing failed: {e}")
+        processed_output = "FAILED"
+
+    if verbose:
+        return processed_output, output
+
+    return processed_output
+
+def gen_groq(prompt, postprocess, generation_kwargs={}, verbose=True):
+    client = Groq(api_key=GROQ)
+
+    output = client.chat.completions.create(
+        model="llama3-8b-8192",
         messages=prompt,
         temperature = generation_kwargs.get("temperature", 1.0),
         max_tokens = generation_kwargs.get("max_tokens", 1000),
@@ -138,9 +164,8 @@ def log_conversation(
         role = message["role"].capitalize()  # Capitalize the role for better appearance
         content = message["message"]
         if isinstance(content, list):
-            content = ""
-            for inner in message["message"]:
-                content += "\n".join(inner)
+            content = "\n".join(content)
+            
 
         if message["role"].lower() == "section":
             table.add_row(role, content, style="bold", end_section=True)
@@ -151,6 +176,9 @@ def log_conversation(
 
     # Print the table to the console (which is recording)
     console.print(table)
+
+    # Just print the results, too, outside of the table
+    console.print(conversation[-1]["message"])
 
     # Save the output to a log file
     console.save_text(log_file_path)

@@ -1,0 +1,350 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  consciousness, were fundamental, inescapable axioms in any action we<< undertake>>:          │
+│           │ ��Whether                                                                                                │
+│           │ Example 2:  was appropriate for Cambridge University to allow a young foreign student to go Cairo and<<  │
+│           │ undertake>> field research into such                                                                     │
+│           │ Example 3:  the forces of evil that threaten to overwhelm it. The courageous acts you will<< undertake>> │
+│           │ in Heroes will become                                                                                    │
+│           │ Example 4: ) in relation to the Offer); (iii) CanniMed completes or<< undert>>akes to complete           │
+│           │ Example 5: <|endoftext|> it will also reap the biggest rewards.                                          │
+│           │ Example 6:  in relation to the Offer); (iii) CanniMed completes or<< undert>>akes to complete            │
+│           │ Example 7:  ownership with all creatures of the earth, Francis suggests that ��It also entails a loving  │
+│           │ awareness that                                                                                           │
+│           │ Example 8: <|endoftext|> or omit the oceanic temperatures                                                │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "undertake", "undertake", "undertake", "undertakes", (no activation in examples 5, 7, │
+│           │ and 8).                                                                                                  │
+│           │ PREVIOUS TOKENS: "we", "to", "you will", "or".                                                           │
+│           │ NEXT TOKENS: ":", "field research", "in Heroes", "to complete".                                          │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are all forms of the verb "undertake".                                             │
+│           │ The previous tokens have nothing in common.                                                              │
+│           │ The next tokens have nothing in common.                                                                  │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples involve the verb "undertake" in different forms.                                          │
+│           │ - The neuron seems to activate on the specific verb "undertake", regardless of context.                  │
+│           │                                                                                                          │
+│           │ Let me look again for patterns in the examples. Are there any links or hidden linguistic commonalities   │
+│           │ that I missed? I can't see any.                                                                          │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The verb "undertake" in any form, regardless of context.                                              │
+│           │ 2. The verb "undertake" as a specific lexical item, with no regard to surrounding syntax or semantics.   │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  we should be seeing one or two events perhaps,�� said Dasgupta. ��But                        │
+│           │ Example 2:  We love to see well-written, easy-to-use tools which automate even small sections of         │
+│           │ Example 3:  a ports-like system. Ports is a system used by *BSD to automate the process of building      │
+│           │ Example 4:  concept at all. We��ve all played one, whether it be Guitar Hero, Rock Band                  │
+│           │ Example 5:  use one. A day in any of Disney��s theme parks will entail walking at least 5                │
+│           │ Example 6: �                                                                                             │
+│           │                                                                                                          │
+│           │ LKM is known to engender happiness and kindness to oneself and others through repeating                  │
+│           │ Example 7:  but Dr Bulger went to his assistance. I warned him that this would entail disqualification,  │
+│           │ but                                                                                                      │
+│           │ Example 8:  the producer talked a really good story, so that seemed like a much more feasible project    │
+│           │ than MythB                                                                                               │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: Not explicitly marked, but I'll try to identify the tokens that might be causing the  │
+│           │ neuron to activate based on the context. ACTIVATING TOKENS: "perhaps", "automate", "automate",           │
+│           │ "whether", "at least", "through", "would entail", "than".                                                │
+│           │ PREVIOUS TOKENS: "be seeing", "love to see", "a system used", "we've all played", "use one",             │
+│           │ "repeating", "I warned him", "so that seemed".                                                           │
+│           │ NEXT TOKENS: "But", "of", "the process", "it be", "5", "and others", "disqualification", "MythB".        │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens seem to be related to causality, conditionality, or quantification.                │
+│           │ The previous tokens have nothing in common.                                                              │
+│           │ The next tokens have nothing in common.                                                                  │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples involve words related to causality, conditionality, or quantification.                    │
+│           │ - The activating tokens are often used to introduce a condition, consequence, or exception.              │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The activating tokens often occur in complex sentences or sentences with multiple clauses.             │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Words related to causality, conditionality, or quantification, often used to introduce a condition,   │
+│           │ consequence, or exception.                                                                               │
+│           │ 2. Tokens that connect or separate clauses in complex sentences, indicating a relationship between       │
+│           │ ideas.                                                                                                   │
+│ System    │ The verb "undertake" in any form, regardless of context.                                                 │
+│           │                                                                                                          │
+│           │ The verb "undertake" as a specific lexical item, with no regard to surrounding syntax or semantics       │
+│           │ Words related to causality, conditionality, or quantification, often used to introduce a condition,      │
+│           │ consequence, or exception.                                                                               │
+│           │                                                                                                          │
+│           │ Tokens that connect or separate clauses in complex sentences, indicating a relationship between ideas    │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: The verb "undertake" in any form, regardless of context.                                      │
+│           │                                                                                                          │
+│           │ Feature 2: The verb "undertake" as a specific lexical item, with no regard to surrounding syntax or      │
+│           │ semantics                                                                                                │
+│           │ Feature 3: Words related to causality, conditionality, or quantification, often used to introduce a      │
+│           │ condition, consequence, or exception.                                                                    │
+│           │                                                                                                          │
+│           │ Feature 4: Tokens that connect or separate clauses in complex sentences, indicating a relationship       │
+│           │ between ideas                                                                                            │
+│           │                                                                                                          │
+│ Assistant │ Let me remove the duplicate features. Here is a list of the remaining distinct features:                 │
+│           │                                                                                                          │
+│           │ Feature 1: The verb "undertake" in any form, regardless of context.                                      │
+│           │ Feature 2: Words related to causality, conditionality, or quantification, often used to introduce a      │
+│           │ condition, consequence, or exception.                                                                    │
+│           │ Feature 3: Tokens that connect or separate clauses in complex sentences, indicating a relationship       │
+│           │ between ideas                                                                                            │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The verb "undertake" in any form, regardless of context.                         │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain the verb "undertake" in any form:                                         │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 11.                                                  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 11]                                                                           │
+│ System    │ Running on explanation: Words related to causality, conditionality, or quantification, often used to     │
+│           │ introduce a condition, consequence, or exception.                                                        │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain words related to causality, conditionality, or quantification, often used │
+│           │ to introduce a condition, consequence, or exception:                                                     │
+│           │                                                                                                          │
+│           │ Example 1 (whether), Example 5 (that), Example 7 (in relation to), Example 11 (in relation to), Example  │
+│           │ 17 (before), Example 19 (we should be seeing).                                                           │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 5, 7, 11, 17, 19]                                                                      │
+│ System    │ Running on explanation: Tokens that connect or separate clauses in complex sentences, indicating a       │
+│           │ relationship between ideas                                                                               │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens that connect or separate clauses in complex sentences, indicating  │
+│           │ a relationship between ideas:                                                                            │
+│           │                                                                                                          │
+│           │ Example 1 (colon), Example 2 (or), Example 3 (to), Example 5 (that), Example 6 (that), Example 7 (in     │
+│           │ relation to), Example 11 (in relation to), Example 12 (that), Example 17 (before), Example 19 (but)      │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 3, 5, 6, 7, 11, 12, 17, 19]                                                         │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The verb "undertake" in any form, regardless of context.                         │
+│ Assistant │ Here are 10 examples of short text samples containing the verb "undertake" in any form, regardless of    │
+│           │ context:                                                                                                 │
+│           │                                                                                                          │
+│           │ Example 1: The company will undertake a thorough investigation into the matter.                          │
+│           │ Example 2: Undertaking such a massive project requires careful planning and execution.                   │
+│           │ Example 3: She has undertaken a new role as a marketing manager.                                         │
+│           │ Example 4: The government has undertaken several initiatives to reduce carbon emissions.                 │
+│           │ Example 5: I undertake to complete the task by the end of the week.                                      │
+│           │ Example 6: The team is undertaking a series of experiments to test the new hypothesis.                   │
+│           │ Example 7: Undertaking a marathon requires months of rigorous training and dedication.                   │
+│           │ Example 8: The entrepreneur has undertaken a bold venture to disrupt the tech industry.                  │
+│           │ Example 9: We undertake to provide the best customer service possible.                                   │
+│           │ Example 10: The researchers are undertaking a comprehensive study on the effects of climate change.      │
+│           │                                                                                                          │
+│           │ I've made sure to vary the forms of the verb "undertake" (e.g., "will undertake", "undertaking", "has    │
+│           │ undertaken", etc.) and the contexts in which it appears.                                                 │
+│ System    │ Score: 17.426387786865234                                                                                │
+│ System    │ Running on explanation: Words related to causality, conditionality, or quantification, often used to     │
+│           │ introduce a condition, consequence, or exception.                                                        │
+│ Assistant │ Here are 10 examples of short text samples containing words related to causality, conditionality, or     │
+│           │ quantification, often used to introduce a condition, consequence, or exception.                          │
+│           │                                                                                                          │
+│           │ Example 1: Since it's raining, we'll have to take an umbrella.                                           │
+│           │ Example 2: If you don't hurry, you'll miss the bus.                                                      │
+│           │ Example 3: Provided that you're on time, we can grab lunch together.                                     │
+│           │ Example 4: Unless you're allergic to nuts, you can have a cookie.                                        │
+│           │ Example 5: Because of the traffic, we're running late.                                                   │
+│           │ Example 6: In the event that you need help, don't hesitate to ask.                                       │
+│           │ Example 7: As long as you're willing to learn, I'm happy to teach you.                                   │
+│           │ Example 8: While it's true that I'm tired, I'll still go to the gym.                                     │
+│           │ Example 9: Given that you're the expert, what do you think we should do?                                 │
+│           │ Example 10: Except on Sundays, the store is open from 9 am to 5 pm.                                      │
+│           │                                                                                                          │
+│           │ These examples include words and phrases such as "since", "if", "provided that", "unless", "because of", │
+│           │ "in the event that", "as long as", "while", "given that", and "except", which are commonly used to       │
+│           │ introduce conditions, consequences, or exceptions.                                                       │
+│ System    │ Score: 0.0                                                                                               │
+│ System    │ Running on explanation: Tokens that connect or separate clauses in complex sentences, indicating a       │
+│           │ relationship between ideas                                                                               │
+│ Assistant │ Here are 10 examples of short text samples containing tokens that connect or separate clauses in complex │
+│           │ sentences, indicating a relationship between ideas.                                                      │
+│           │                                                                                                          │
+│           │ Example 1: I went to the store, and I bought some milk.                                                  │
+│           │ Example 2: Because I was tired, I went to bed early.                                                     │
+│           │ Example 3: She studied hard for the exam, yet she still didn't pass.                                     │
+│           │ Example 4: The company will hire more employees; however, it won't be until next quarter.                │
+│           │ Example 5: I love reading books, for they allow me to escape reality.                                    │
+│           │ Example 6: The new policy has been implemented, so we need to adjust our procedures accordingly.         │
+│           │ Example 7: Although it was raining, we still went to the park.                                           │
+│           │ Example 8: The teacher gave us a lot of homework, but we finished it quickly.                            │
+│           │ Example 9: The company's profits have increased significantly, whereas their competitors have struggled. │
+│           │ Example 10: I wanted to go to the beach, but since it was cold, I stayed home.                           │
+│           │                                                                                                          │
+│           │ In each example, the tokens that connect or separate clauses include:                                    │
+│           │                                                                                                          │
+│           │ * Coordinating conjunctions: and, but, or, so, yet                                                       │
+│           │ * Subordinating conjunctions: because, although, since, whereas                                          │
+│           │ * Conjunctive adverbs: however, therefore, thus, consequently                                            │
+│           │ * Semicolons: ; (used to separate two independent clauses)                                               │
+│           │                                                                                                          │
+│           │ These tokens indicate a relationship between ideas, such as addition, contrast, cause-and-effect, or     │
+│           │ time.                                                                                                    │
+│ System    │ Score: 0.0                                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 27.277751922607422                                                                       │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.5, 0.0)                                                                              │
+│           │ Generation Score: 17.426387786865234                                                                     │
+│           │ Explanation: The verb "undertake" in any form, regardless of context.                                    │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.4, 0.2)                                                                              │
+│           │ Generation Score: 0.0                                                                                    │
+│           │ Explanation: Words related to causality, conditionality, or quantification, often used to introduce a    │
+│           │ condition, consequence, or exception.                                                                    │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.7, 0.3)                                                                              │
+│           │ Generation Score: 0.0                                                                                    │
+│           │ Explanation: Tokens that connect or separate clauses in complex sentences, indicating a relationship     │
+│           │ between ideas                                                                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 27.277751922607422
+
+Explanation 0:
+Detection Score: (0.5, 0.0)
+Generation Score: 17.426387786865234
+Explanation: The verb "undertake" in any form, regardless of context.
+
+Explanation 1:
+Detection Score: (0.4, 0.2)
+Generation Score: 0.0
+Explanation: Words related to causality, conditionality, or quantification, often used to introduce a condition, 
+consequence, or exception.
+
+Explanation 2:
+Detection Score: (0.7, 0.3)
+Generation Score: 0.0
+Explanation: Tokens that connect or separate clauses in complex sentences, indicating a relationship between ideas
+
+

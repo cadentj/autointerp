@@ -1,0 +1,450 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: << the only ones to use>> computers for more than writing papers<<.>>                         │
+│           │ <<                                                                                                       │
+│           │ In the mid-1990's>>                                                                                      │
+│           │ Example 2:  call�� Read more                                                                             │
+│           │                                                                                                          │
+│           │ <<Did his>> more expansive<< interests>> outside cricket<< help him cope with failure>> better           │
+│           │ Example 3: << his>> premiership with the promise of constitutional renewal, and<< the initial popularity │
+│           │ he gained was>> more than just                                                                           │
+│           │ Example 4: << often the only ones to use>> computers for more than writing papers<<.>>                   │
+│           │ <<                                                                                                       │
+│           │ In the mid-1990>>                                                                                        │
+│           │ Example 5:  can learn from Glenn Beck and his appeal?                                                    │
+│           │                                                                                                          │
+│           │ This<< was the>> question<< that I was seeking>> to                                                      │
+│           │ Example 6:  poop: New York museum acquires world's first set Read more                                   │
+│           │ <<                                                                                                       │
+│           │ While it>>��s                                                                                            │
+│           │ Example 7:  fat-cat donors to hear the major earthquake rumbling underground<<.>>                        │
+│           │ <<                                                                                                       │
+│           │ The demographic>> resh<<aping of>>                                                                       │
+│           │ Example 8: << was serious, and incompetence provoked>> roars of den<<unciation.>>                        │
+│           │ <<                                                                                                       │
+│           │ Somehow it all worked.>>                                                                                 │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ 1. "the only ones to use", "In the mid-1990's"                                                           │
+│           │ 2. "Did his", "interests", "help him cope with failure"                                                  │
+│           │ 3. "his", "the initial popularity he gained was"                                                         │
+│           │ 4. "often the only ones to use", "In the mid-1990"                                                       │
+│           │ 5. "was the", "that I was seeking"                                                                       │
+│           │ 6. "While it"                                                                                            │
+│           │ 7. "The demographic", "reshaping of"                                                                     │
+│           │ 8. "was serious, and incompetence provoked", "Somehow it all worked."                                    │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ - The activating tokens mostly include phrases or clauses, often clauses defined by their function       │
+│           │ within the sentence.                                                                                     │
+│           │ - The activating tokens typically contain essential elements of the sentence, either subject, verb, or   │
+│           │ object.                                                                                                  │
+│           │ - Specific punctuation marks like periods or commas often end the activating tokens.                     │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The examples mainly show complete clauses or significant sentence fragments.                           │
+│           │ - Activating tokens are often followed by significant punctuation marks and sometimes signify a          │
+│           │ transition or emphasis in the narrative.                                                                 │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The activation is triggered by phrases or clauses that are grammatically essential, containing key    │
+│           │ elements like subjects, verbs, objects, or descriptive attributes.                                       │
+│           │ 2. The neuron is sensitive to phrases or clauses that mark a transition or emphasize a point, often      │
+│           │ accompanied by punctuation that indicates a pause or conclusion in the narrative.                        │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  maritime piracy,<< one man>>'s pirate would be another man's privateer<<. In this shady>>    │
+│           │ world<<,>>                                                                                               │
+│           │ Example 2: << But once the kids knew>> I<< was>> onto<< them and once again in charge, they>> stopped    │
+│           │ half assing                                                                                              │
+│           │ Example 3:  revenue stream for<< the>> console manufacturers through sales of these games.[7]<< Lawson's │
+│           │ invention of>> the interchangeable                                                                       │
+│           │ Example 4: i, homeplay, rather than homework,<< and he>> meant it<<. Yet the play was serious,>>         │
+│           │ Example 5: , who would prove to be no better. Lloyd<< was>> right.                                       │
+│           │ <<                                                                                                       │
+│           │ The>> pity of it was                                                                                     │
+│           │ Example 6:  in<< their>> day to day lives.<< This meant that this understanding>> of that life<< was     │
+│           │ to>> be finally the                                                                                      │
+│           │ Example 7: << were>> left to cope<< with the consequences>> as best they<< could.>>                      │
+│           │ <<                                                                                                       │
+│           │ >>Over<< the next few years>> engine                                                                     │
+│           │ Example 8: << I>> did. Have a problem. It<< was easy>> enough to give voice<< to my>> ambival<<ence>>    │
+│           │ about                                                                                                    │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - Example 1: "one man", "In this shady", "world"                                                         │
+│           │ - Example 2: "But once the kids knew", "was", "onto"                                                     │
+│           │ - Example 3: "the", "Lawson's invention of"                                                              │
+│           │ - Example 4: "and he", "Yet the play was serious"                                                        │
+│           │ - Example 5: "was", "The"                                                                                │
+│           │ - Example 6: "their", "This meant that this understanding", "of that life", "was to"                     │
+│           │ - Example 7: "were", "with the consequences", "could", "Over", "the next few years"                      │
+│           │ - Example 8: "I", "was easy", "to my", "ence"                                                            │
+│           │                                                                                                          │
+│           │ PREVIOUS AND NEXT TOKENS:                                                                                │
+│           │ - The previous tokens are typically part of a sentence or clause leading into the activating token.      │
+│           │ - The next tokens typically continue the sentence or clause, further explaining or elaborating on the    │
+│           │ context introduced by the activating token.                                                              │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ Patterns observed across examples:                                                                       │
+│           │ - The activating tokens often include personal pronouns ("I", "he", "their", "my") or possessives ("one  │
+│           │ man's", "Lawson's").                                                                                     │
+│           │ - The activating tokens include verbs that describe states or actions ("was", "meant", "were", "could"). │
+│           │ - Some activations are linked with specific nouns or noun phrases that are key elements within the       │
+│           │ sentence context ("world", "the consequences", "the next few years").                                    │
+│           │ - Presence of directional or relational prepositions or adverbs ("onto", "in", "with").                  │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - Overall, the activating tokens seem to be closely linked with personal perspectives or states of       │
+│           │ being.                                                                                                   │
+│           │ - The tokens often involve descriptive or explanatory elements that contribute to the narrative or       │
+│           │ argumentative flow of the text.                                                                          │
+│           │ - The activations sometimes occur near punctuation marks like commas or periods, which suggests          │
+│           │ punctuation's role in delimiting important textual features.                                             │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Three explanations for what features of text cause the neuron to activate:                               │
+│           │ 1. Tokens that identify personal perspectives or possession, often highlighted through pronouns and      │
+│           │ possessive phrases.                                                                                      │
+│           │ 2. Descriptive or contributory tokens that elaborate on the context or narrative, including states of    │
+│           │ being and relational descriptions.                                                                       │
+│           │ 3. Tokens that appear near punctuation which marks significant shifts or pauses in the text structure.   │
+│ System    │ The activation is triggered by phrases or clauses that are grammatically essential, containing key       │
+│           │ elements like subjects, verbs, objects, or descriptive attributes.                                       │
+│           │                                                                                                          │
+│           │ The neuron is sensitive to phrases or clauses that mark a transition or emphasize a point, often         │
+│           │ accompanied by punctuation that indicates a pause or conclusion in the narrativeTokens that identify     │
+│           │ personal perspectives or possession, often highlighted through pronouns and possessive phrases.          │
+│           │                                                                                                          │
+│           │ Descriptive or contributory tokens that elaborate on the context or narrative, including states of being │
+│           │ and relational descriptions.                                                                             │
+│           │ 3. Tokens that appear near punctuation which marks significant shifts or pauses in the text structure    │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: ['The activation is triggered by phrases or clauses that are grammatically essential,         │
+│           │ containing key elements like subjects, verbs, objects, or descriptive attributes.\n', 'The neuron is     │
+│           │ sensitive to phrases or clauses that mark a transition or emphasize a point, often accompanied by        │
+│           │ punctuation that indicates a pause or conclusion in the narrative']                                      │
+│           │ Feature 2: ['Tokens that identify personal perspectives or possession, often highlighted through         │
+│           │ pronouns and possessive phrases.\n', 'Descriptive or contributory tokens that elaborate on the context   │
+│           │ or narrative, including states of being and relational descriptions.\n3. Tokens that appear near         │
+│           │ punctuation which marks significant shifts or pauses in the text structure']                             │
+│           │                                                                                                          │
+│ Assistant │ Feature 1: The activation is triggered by phrases or clauses that are grammatically essential,           │
+│           │ containing key elements like subjects, verbs, objects, or descriptive attributes.                        │
+│           │ Feature 2: The neuron is sensitive to phrases or clauses that mark a transition or emphasize a point,    │
+│           │ often accompanied by punctuation that indicates a pause or conclusion in the narrative.                  │
+│           │ Feature 3: Tokens that identify personal perspectives or possession, often highlighted through pronouns  │
+│           │ and possessive phrases.                                                                                  │
+│           │ Feature 4: Descriptive or contributory tokens that elaborate on the context or narrative, including      │
+│           │ states of being and relational descriptions.                                                             │
+│           │ Feature 5: Tokens that appear near punctuation which marks significant shifts or pauses in the text      │
+│           │ structure.                                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The activation is triggered by phrases or clauses that are grammatically         │
+│           │ essential, containing key elements like subjects, verbs, objects, or descriptive attributes.             │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain phrases or clauses that are grammatically essential, containing key       │
+│           │ elements like subjects, verbs, objects, or descriptive attributes:                                       │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 3, Example 4, Example 5, Example 6, Example 7, Example 8, Example 9,       │
+│           │ Example 10, Example 11, Example 12, Example 13, Example 14, Example 15, Example 16, Example 17, Example  │
+│           │ 18, Example 19, Example 20.                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]                    │
+│ System    │ Running on explanation: The neuron is sensitive to phrases or clauses that mark a transition or          │
+│           │ emphasize a point, often accompanied by punctuation that indicates a pause or conclusion in the          │
+│           │ narrative.                                                                                               │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain phrases or clauses that mark a transition or emphasize a point, often     │
+│           │ accompanied by punctuation that indicates a pause or conclusion in the narrative:                        │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 5, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13,   │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 5, 6, 7, 10, 11, 12, 13, 20]                                                        │
+│ System    │ Running on explanation: Tokens that identify personal perspectives or possession, often highlighted      │
+│           │ through pronouns and possessive phrases.                                                                 │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens that identify personal perspectives or possession, often           │
+│           │ highlighted through pronouns and possessive phrases:                                                     │
+│           │                                                                                                          │
+│           │ Example 3: "his more expansive interests"                                                                │
+│           │ Example 5: "his call for seven Lincoln-Douglas debates"                                                  │
+│           │ Example 6: "his premiership"                                                                             │
+│           │ Example 10: "his appeal"                                                                                 │
+│           │ Example 20: "I was onto them"                                                                            │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [3, 5, 6, 10, 20]                                                                          │
+│ System    │ Running on explanation: Descriptive or contributory tokens that elaborate on the context or narrative,   │
+│           │ including states of being and relational descriptions.                                                   │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain descriptive or contributory tokens that elaborate on the context or       │
+│           │ narrative, including states of being and relational descriptions:                                        │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 3, Example 4, Example 5, Example 6, Example 7, Example 8, Example 9,       │
+│           │ Example 10, Example 11, Example 12, Example 13, Example 14, Example 15, Example 16, Example 17, Example  │
+│           │ 18, Example 19, Example 20.                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]                    │
+│ System    │ Running on explanation: Tokens that appear near punctuation which marks significant shifts or pauses in  │
+│           │ the text structure.                                                                                      │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens that appear near punctuation which marks significant shifts or     │
+│           │ pauses in the text structure:                                                                            │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 3, Example 5, Example 7, Example 10, Example 11, Example 12, Example 13,   │
+│           │ Example 15, Example 18, Example 20.                                                                      │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 3, 5, 7, 10, 11, 12, 13, 15, 18, 20]                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The activation is triggered by phrases or clauses that are grammatically         │
+│           │ essential, containing key elements like subjects, verbs, objects, or descriptive attributes.             │
+│ Assistant │ Here are 10 examples of short text samples containing phrases or clauses that are grammatically          │
+│           │ essential, each including key elements like subjects, verbs, objects, or descriptive attributes:         │
+│           │                                                                                                          │
+│           │ Example 1: The cat, which was very hungry, ate the entire bowl of food.                                  │
+│           │ Example 2: The students who studied hard passed the exam with high marks.                                │
+│           │ Example 3: The book that she wrote won several awards.                                                   │
+│           │ Example 4: Cars that are not maintained well often break down.                                           │
+│           │ Example 5: The cake she baked was absolutely delicious.                                                  │
+│           │ Example 6: Anyone who arrives late will not be allowed to enter the room.                                │
+│           │ Example 7: The painting that hangs in the hallway was a gift from my grandfather.                        │
+│           │ Example 8: The dog that barked all night kept me awake.                                                  │
+│           │ Example 9: The phone which was lost yesterday has been found.                                            │
+│           │ Example 10: The flowers that bloom in the spring are a beautiful sight.                                  │
+│ System    │ Score: 41.30317687988281                                                                                 │
+│ System    │ Running on explanation: The neuron is sensitive to phrases or clauses that mark a transition or          │
+│           │ emphasize a point, often accompanied by punctuation that indicates a pause or conclusion in the          │
+│           │ narrative.                                                                                               │
+│ Assistant │ Here are 10 examples of short text examples containing phrases or clauses that mark a transition or      │
+│           │ emphasize a point, often accompanied by punctuation that indicates a pause or conclusion in the          │
+│           │ narrative:                                                                                               │
+│           │                                                                                                          │
+│           │ Example 1: She tried her best; however, it wasn't enough to win the competition.                         │
+│           │                                                                                                          │
+│           │ Example 2: The day was long and tiring—nevertheless, he found the strength to smile.                     │
+│           │                                                                                                          │
+│           │ Example 3: He promised to return before noon. Indeed, he was back by 11.                                 │
+│           │                                                                                                          │
+│           │ Example 4: The cake looked too good to be true. And indeed, it was just a display model.                 │
+│           │                                                                                                          │
+│           │ Example 5: Everyone thought it was over. Then, out of nowhere, she pulled off a stunning comeback.       │
+│           │                                                                                                          │
+│           │ Example 6: I wasn't sure at first; yet, the more I thought about it, the more it made sense.             │
+│           │                                                                                                          │
+│           │ Example 7: There were many obstacles on the way. Still, they managed to reach the summit before dawn.    │
+│           │                                                                                                          │
+│           │ Example 8: It seemed impossible at first glance. In fact, it took several tries to get it right.         │
+│           │                                                                                                          │
+│           │ Example 9: She wasn't known for her generosity. Even so, she donated a significant amount to the         │
+│           │ charity.                                                                                                 │
+│           │                                                                                                          │
+│           │ Example 10: They argued all night—finally, they agreed on a solution that satisfied everyone.            │
+│ System    │ Score: 43.201656341552734                                                                                │
+│ System    │ Running on explanation: Tokens that identify personal perspectives or possession, often highlighted      │
+│           │ through pronouns and possessive phrases.                                                                 │
+│ Assistant │ Here are 10 examples of short text examples containing tokens that identify personal perspectives or     │
+│           │ possession, often highlighted through pronouns and possessive phrases. Each example will include varied  │
+│           │ usage of possessive pronouns and phrases to demonstrate ownership or personal perspective.               │
+│           │                                                                                                          │
+│           │ Example 1: My book is on the table.                                                                      │
+│           │ Example 2: She adjusted her glasses before reading the document.                                         │
+│           │ Example 3: They couldn't find their keys anywhere in the house.                                          │
+│           │ Example 4: His opinion on the matter was well-respected.                                                 │
+│           │ Example 5: In her garden, the flowers bloom brightly.                                                    │
+│           │ Example 6: Our team won the championship last year.                                                      │
+│           │ Example 7: Your appointment has been scheduled for tomorrow morning.                                     │
+│           │ Example 8: This is my seat, please find another one.                                                     │
+│           │ Example 9: Whose coat is this hanging in the hallway?                                                    │
+│           │ Example 10: Their project received accolades from all the judges.                                        │
+│ System    │ Score: 41.77888107299805                                                                                 │
+│ System    │ Running on explanation: Descriptive or contributory tokens that elaborate on the context or narrative,   │
+│           │ including states of being and relational descriptions.                                                   │
+│ Assistant │ Example 1: The sky was a brilliant shade of blue, enhancing the serene atmosphere of the quiet park.     │
+│           │                                                                                                          │
+│           │ Example 2: Hungry and tired, the young student struggled to focus on the lengthy lecture.                │
+│           │                                                                                                          │
+│           │ Example 3: She wore a dress adorned with sparkles that shimmered under the party lights, making her the  │
+│           │ center of attention.                                                                                     │
+│           │                                                                                                          │
+│           │ Example 4: Despite his fear, he bravely walked towards the abandoned house, which creaked ominously in   │
+│           │ the wind.                                                                                                │
+│           │                                                                                                          │
+│           │ Example 5: The old library, filled with dusty books, seemed to whisper secrets of the past to anyone who │
+│           │ walked through its doors.                                                                                │
+│           │                                                                                                          │
+│           │ Example 6: The cake, rich and moist, was a hit at the birthday celebration.                              │
+│           │                                                                                                          │
+│           │ Example 7: The streets, slick and wet after the rain, reflected the city lights beautifully.             │
+│           │                                                                                                          │
+│           │ Example 8: Overwhelmed with joy, she hugged her friend tightly, grateful for the support during tough    │
+│           │ times.                                                                                                   │
+│           │                                                                                                          │
+│           │ Example 9: The mountains, majestic and towering, provided a breathtaking backdrop for the hikers.        │
+│           │                                                                                                          │
+│           │ Example 10: His voice, calm and soothing, helped ease the tension in the room.                           │
+│ System    │ Score: 45.06507110595703                                                                                 │
+│ System    │ Running on explanation: Tokens that appear near punctuation which marks significant shifts or pauses in  │
+│           │ the text structure.                                                                                      │
+│ Assistant │ Here are 10 examples of short text samples containing tokens that appear near punctuation which marks    │
+│           │ significant shifts or pauses in the text structure, such as commas, semicolons, colons, dashes, and      │
+│           │ ellipses.                                                                                                │
+│           │                                                                                                          │
+│           │ Example 1: When she arrived—unexpectedly, I might add—everyone was surprised.                            │
+│           │ Example 2: There are three options: first, the lagoon; second, the beach; and third, the forest.         │
+│           │ Example 3: He paused, unsure; then, he continued more confidently.                                       │
+│           │ Example 4: "Well," he said, "I suppose that's possible."                                                 │
+│           │ Example 5: She whispered, "Can you believe it?"; her eyes wide with excitement.                          │
+│           │ Example 6: Wait—what did you just say?                                                                   │
+│           │ Example 7: It's true... I think; therefore, I am.                                                        │
+│           │ Example 8: To be, or not to be—that is the question.                                                     │
+│           │ Example 9: They called him a genius; however, he felt like a fraud.                                      │
+│           │ Example 10: Before we start, there are a few rules: firstly, no talking; secondly, keep your phones off. │
+│ System    │ Score: 39.25614547729492                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Explanation 0:                                                                                           │
+│           │ Detection Score: (1.0, 1.0)                                                                              │
+│           │ Generation Score: 41.30317687988281                                                                      │
+│           │ Explanation: The activation is triggered by phrases or clauses that are grammatically essential,         │
+│           │ containing key elements like subjects, verbs, objects, or descriptive attributes.                        │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.9, 0.1)                                                                              │
+│           │ Generation Score: 43.201656341552734                                                                     │
+│           │ Explanation: The neuron is sensitive to phrases or clauses that mark a transition or emphasize a point,  │
+│           │ often accompanied by punctuation that indicates a pause or conclusion in the narrative.                  │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.4, 0.1)                                                                              │
+│           │ Generation Score: 41.77888107299805                                                                      │
+│           │ Explanation: Tokens that identify personal perspectives or possession, often highlighted through         │
+│           │ pronouns and possessive phrases.                                                                         │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (1.0, 1.0)                                                                              │
+│           │ Generation Score: 45.06507110595703                                                                      │
+│           │ Explanation: Descriptive or contributory tokens that elaborate on the context or narrative, including    │
+│           │ states of being and relational descriptions.                                                             │
+│           │                                                                                                          │
+│           │ Explanation 4:                                                                                           │
+│           │ Detection Score: (0.8, 0.4)                                                                              │
+│           │ Generation Score: 39.25614547729492                                                                      │
+│           │ Explanation: Tokens that appear near punctuation which marks significant shifts or pauses in the text    │
+│           │ structure.                                                                                               │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘

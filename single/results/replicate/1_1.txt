@@ -1,0 +1,309 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: <|endoftext|> those streets. The full<< list>> of buildings can be                            │
+│           │ Example 2:  ironically about the evils of government wiretapping.                                        │
+│           │                                                                                                          │
+│           │ Other movies on their<< list>> are equally interesting.                                                  │
+│           │ Example 3: <|endoftext|>, objective, and timely, and topped the<< list>> of the "10                      │
+│           │ Example 4: <|endoftext|> step up sanctions against Moscow by expanding a<< list>> of people subjected to │
+│           │ Example 5: <|endoftext|>e, we can determine a<< list>> of potential functional as                        │
+│           │ Example 6:  not really know until Monday.                                                                │
+│           │                                                                                                          │
+│           │ The NFL advisory committee gives teams a<< list>> of up and coming                                       │
+│           │ Example 7: <|endoftext|> ��where�� and ��why�� with this<< list>>; we may explore                        │
+│           │ Example 8:  Lucky's Tale is bundled with the headset.                                                    │
+│           │                                                                                                          │
+│           │ Now, onto the<< list>>. At GDC                                                                           │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "list", "list", "list", "list", "list", "list", "list", "list".                       │
+│           │ PREVIOUS TOKENS: "of", "their", "the", "a", "of", "a", "with", "onto".                                   │
+│           │ NEXT TOKENS: "of", "are", "of", "of", "of", "of", "with", ".".                                           │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are all "list".                                                                    │
+│           │ The previous tokens have nothing in common.                                                              │
+│           │ The next tokens are mostly "of", suggesting that the "list" is often referring to a list of something.   │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples all involve the word "list".                                                              │
+│           │ - The "list" is often referring to a list of something specific.                                         │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? No, I didn't miss any.                                                                     │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The presence of the word "list" in the text.                                                          │
+│           │ 2. Referring to a collection or enumeration of items, often with "of" preceding it.                      │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: <|endoftext|> think this word of Scripture is significant, although its one of the<< list>>   │
+│           │ of scripture passages we                                                                                 │
+│           │ Example 2:  porn stuff.)                                                                                 │
+│           │                                                                                                          │
+│           │ And the only other thing I would add to my<< list>> of super-inc                                         │
+│           │ Example 3:  society. Gun ownership, he said, would be at the top of the<< list>> for Kelley.             │
+│           │                                                                                                          │
+│           │ Example 4: ueinc.com�� sub domain as well and quickly scrapes a<< list>> of all of the                   │
+│           │ Example 5:  ROM Toolkit will blow your mind, just take a look at the feature<< list>>, taken directly    │
+│           │ from                                                                                                     │
+│           │ Example 6:  choices may be faulted, if you think we have left something off the<< list>> which should    │
+│           │ have made                                                                                                │
+│           │ Example 7: ara Best��s Twitter feed:                                                                     │
+│           │                                                                                                          │
+│           │ On this month's reading<< list>>: "The Original                                                          │
+│           │ Example 8:  BBC initiative last year, supported by the Foreign Office, to draw up a<< list>> of          │
+│           │ programmes that the                                                                                      │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "list", "list", "list", "list", "list", "list", "list", "list".                       │
+│           │ PREVIOUS TOKENS: "of scripture passages we", "my", "the", "of all of the", "the feature", "off the", "On │
+│           │ this month's reading", "to draw up a".                                                                   │
+│           │ NEXT TOKENS: all continue the sentence or phrase.                                                        │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating token is always "list".                                                                   │
+│           │ The previous tokens are often prepositions ("of", "my", "the") or parts of phrases that lead to the      │
+│           │ "list".                                                                                                  │
+│           │ The next tokens continue the sentence or phrase, often describing the contents of the list.              │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples all involve the word "list", often preceded by a preposition or descriptive phrase.       │
+│           │ - The "list" refers to a collection of items, sometimes specific and sometimes general.                  │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The context often involves enumeration, categorization, or organization of items.                      │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The presence of the word "list", often preceded by a preposition or descriptive phrase, referring to  │
+│           │ a collection of items.                                                                                   │
+│           │ 2. Contexts involving enumeration, categorization, or organization of items, where a "list" is           │
+│           │ mentioned.                                                                                               │
+│ System    │ The presence of the word "list" in the text.                                                             │
+│           │                                                                                                          │
+│           │ Referring to a collection or enumeration of items, often with "of" preceding it                          │
+│           │ The presence of the word "list", often preceded by a preposition or descriptive phrase, referring to a   │
+│           │ collection of items.                                                                                     │
+│           │                                                                                                          │
+│           │ Contexts involving enumeration, categorization, or organization of items, where a "list" is mentioned    │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: The presence of the word "list" in the text.                                                  │
+│           │                                                                                                          │
+│           │ Feature 2: Referring to a collection or enumeration of items, often with "of" preceding it               │
+│           │ Feature 3: The presence of the word "list", often preceded by a preposition or descriptive phrase,       │
+│           │ referring to a collection of items.                                                                      │
+│           │                                                                                                          │
+│           │ Feature 4: Contexts involving enumeration, categorization, or organization of items, where a "list" is   │
+│           │ mentioned                                                                                                │
+│           │                                                                                                          │
+│ Assistant │ After reviewing the list, I've removed the duplicates and condensed the features. Here is the resulting  │
+│           │ list:                                                                                                    │
+│           │                                                                                                          │
+│           │ Feature 1: The presence of the word "list" in the text.                                                  │
+│           │ Feature 2: Contexts involving enumeration, categorization, or organization of items, where a "list" is   │
+│           │ mentioned.                                                                                               │
+│           │                                                                                                          │
+│           │ The features 2 and 3 were very similar, and feature 3 was essentially a more detailed version of feature │
+│           │ 1, so I removed them to avoid duplication.                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The presence of the word "list" in the text.                                     │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain the word "list":                                                          │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
+│ System    │ Running on explanation: Contexts involving enumeration, categorization, or organization of items, where  │
+│           │ a "list" is mentioned.                                                                                   │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain contexts involving enumeration, categorization, or organization of items, │
+│           │ where a "list" is mentioned:                                                                             │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The presence of the word "list" in the text.                                     │
+│ Assistant │ Here are 10 examples of short text samples containing the word "list":                                   │
+│           │                                                                                                          │
+│           │ Example 1: I need to make a list for the grocery store.                                                  │
+│           │ Example 2: The teacher asked the students to create a list of their favorite books.                      │
+│           │ Example 3: Can you add "buy milk" to the list of errands?                                                │
+│           │ Example 4: I'm trying to narrow down my list of potential colleges.                                      │
+│           │ Example 5: The company will release a list of layoffs next Friday.                                       │
+│           │ Example 6: According to the list, the concert starts at 8 PM.                                            │
+│           │ Example 7: I've been checking off items on my to-do list all morning.                                    │
+│           │ Example 8: The travel agent provided us with a list of recommended hotels.                               │
+│           │ Example 9: The professor handed out a list of assigned readings for the semester.                        │
+│           │ Example 10: I'm trying to get on the list for the exclusive nightclub.                                   │
+│ System    │ Score: 23.918745040893555                                                                                │
+│ System    │ Running on explanation: Contexts involving enumeration, categorization, or organization of items, where  │
+│           │ a "list" is mentioned.                                                                                   │
+│ Assistant │ Here are 10 examples of short text samples that contain the feature of mentioning a "list" in contexts   │
+│           │ involving enumeration, categorization, or organization of items.                                         │
+│           │                                                                                                          │
+│           │ Example 1: To prepare for the camping trip, I made a list of essential items to pack, including a tent,  │
+│           │ sleeping bag, and flashlight.                                                                            │
+│           │ Example 2: The teacher asked the students to categorize the planets in our solar system into two lists:  │
+│           │ inner planets and outer planets.                                                                         │
+│           │ Example 3: According to the article, the top 10 most popular tourist destinations in Europe are on the   │
+│           │ list of must-visit places.                                                                               │
+│           │ Example 4: The company's HR department created a list of job requirements for the new position,          │
+│           │ including a degree in computer science and 3+ years of experience.                                       │
+│           │ Example 5: To organize my closet, I made a list of clothes to keep, donate, and discard.                 │
+│           │ Example 6: The travel blogger provided a list of the best restaurants to try in Paris, including a mix   │
+│           │ of fine dining and casual eateries.                                                                      │
+│           │ Example 7: The professor asked the students to create a list of pros and cons for each of the three      │
+│           │ potential solutions to the environmental issue.                                                          │
+│           │ Example 8: The recipe book includes a list of ingredients and step-by-step instructions for each dish.   │
+│           │ Example 9: The event planner created a list of tasks to complete before the wedding, including booking   │
+│           │ the venue and hiring a DJ.                                                                               │
+│           │ Example 10: The librarian helped the student create a list of relevant sources for her research paper,   │
+│           │ including books, articles, and online resources.                                                         │
+│ System    │ Score: 23.022960662841797                                                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 28.9956111907959                                                                         │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 23.918745040893555                                                                     │
+│           │ Explanation: The presence of the word "list" in the text.                                                │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 23.022960662841797                                                                     │
+│           │ Explanation: Contexts involving enumeration, categorization, or organization of items, where a "list" is │
+│           │ mentioned.                                                                                               │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 28.9956111907959
+
+Explanation 0:
+Detection Score: (1.0, 0.0)
+Generation Score: 23.918745040893555
+Explanation: The presence of the word "list" in the text.
+
+Explanation 1:
+Detection Score: (1.0, 0.0)
+Generation Score: 23.022960662841797
+Explanation: Contexts involving enumeration, categorization, or organization of items, where a "list" is mentioned.
+
+

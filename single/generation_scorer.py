@@ -57,6 +57,7 @@ class GenerationScorer:
                 middle = sae(activations)
 
                 feature_acts = middle[1][:,:,self.state.feature_id]
+                feature_acts[:,0] = 0
                 feature_acts.save()
                 
             score_batch = feature_acts.max(dim=1)[0]

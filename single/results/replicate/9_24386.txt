@@ -1,0 +1,406 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  by drinking wine?<<                                                                          │
+│           │                                                                                                          │
+│           │ >>The 2010 British student demonstrations awoke<< the>> austerity<< generation. The 2011>> Chilean       │
+│           │ Winter                                                                                                   │
+│           │ Example 2: planes heading for his borders<<. It is not far>>-<<fetched to posit that he might give the   │
+│           │ orders>>                                                                                                 │
+│           │ Example 3:  and then<< sees>> U.S. warplanes heading for his borders<<. It is not far>>-<<fetched>>      │
+│           │ Example 4:  and<< the initial popularity he gained was>> more than<< just>> relief at Blair going<<.     │
+│           │ Voters wanted a>> new approach                                                                           │
+│           │ Example 5:  more than<< just>> relief at Blair going<<. Voters wanted a>> new approach<<. Brown had the  │
+│           │ capacity>> and<< the>>                                                                                   │
+│           │ Example 6:  that<< I had>> read<< it>> before<<. By the time the>> plane landed<<, I had attained the>>  │
+│           │ ��                                                                                                       │
+│           │ Example 7:  no way to build a world of interconnected systems that was completely secure<<. Americans    │
+│           │ had>> spent the past decade                                                                              │
+│           │ Example 8: << seriously>> and then<< sees>> U.S. warplanes heading for his borders<<. It is not far>>-   │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "", "awoke the austerity generation", "for his borders", "fetched", "sees", "just",   │
+│           │ "the initial popularity", "new approach", "I had", "the", "seriously".                                   │
+│           │ PREVIOUS TOKENS: "by drinking wine", "The 2010 British student demonstrations", "planes heading", "and   │
+│           │ then", "and", "that", "no way to build a world of interconnected systems that was completely secure".    │
+│           │ NEXT TOKENS: "The", "It", "to posit", "U.S. warplanes heading for his borders", "Voters wanted", "Brown  │
+│           │ had the capacity", "By the time the plane landed", "Americans had".                                      │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are often at the beginning of a new clause or sentence.                            │
+│           │ Some previous tokens are also at the beginning of a clause or sentence.                                  │
+│           │ The next tokens are often connecting words or phrases.                                                   │
+│           │ The neuron seems to activate on transition points in the text, such as the start of a new sentence or    │
+│           │ clause.                                                                                                  │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples involve transition points in the text, such as the start of a new sentence or clause.     │
+│           │ - The activating tokens often occur at the beginning of a new idea or thought.                           │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - Some activating tokens are used to introduce a new idea or contrast ("just", "seriously", "more        │
+│           │ than").                                                                                                  │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Transition points in the text, such as the start of a new sentence or clause, often introducing a new │
+│           │ idea or thought.                                                                                         │
+│           │ 2. Words or phrases that introduce a new idea, contrast, or perspective, such as "just", "seriously", or │
+│           │ "more than".                                                                                             │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  conviction that<< I had>> read<< it>> before<<. By the time the>> plane landed<<, I had      │
+│           │ attained the>> �                                                                                         │
+│           │ Example 2: <<. The 2011>> Chilean Winter<< frightened>> tight-belted administrators the<<                │
+│           │ world>>-round<<.>> And<< now,>> Quebec                                                                   │
+│           │ Example 3:  drinking wine?<<                                                                             │
+│           │                                                                                                          │
+│           │ >>The 2010 British student demonstrations awoke<< the>> austerity<< generation. The 2011>> Chilean       │
+│           │ Winter<< frightened>>                                                                                    │
+│           │ Example 4:  disturbing video of Syrian rebels beheading a child near the city of Aleppo<<. It had>>      │
+│           │ caused a minor                                                                                           │
+│           │ Example 5:  the reproductive process those very<< men>> on whose offspring a nation depended<<. The      │
+│           │ immediate result of the vice,>>                                                                          │
+│           │ Example 6: , elimination from the reproductive process those very<< men>> on whose offspring a nation    │
+│           │ depended<<. The immediate result of>>                                                                    │
+│           │ Example 7:  elimination from the reproductive process those very<< men>> on whose offspring a nation     │
+│           │ depended<<. The immediate result of the>>                                                                │
+│           │ Example 8: �� and join the fight against tax evasion and offshore secrecy<<.>>                           │
+│           │ <<                                                                                                       │
+│           │ He could have>> looked no                                                                                │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "I had", "it", "before", "The 2011", "world-round", "now", "The 2010", "austerity",   │
+│           │ "It had", "men", "men", "men", "He could have".                                                          │
+│           │ PREVIOUS TOKENS: "that", ".", "the", "the", "awoke", "of", "those", "those", "those", "and".             │
+│           │ NEXT TOKENS: "read", "By", "frightened", "And", "caused", "The", "The", "The", "looked".                 │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are mostly verb phrases or sentences.                                              │
+│           │ The previous tokens are mostly articles, prepositions, or punctuation.                                   │
+│           │ The next tokens have no clear pattern.                                                                   │
+│           │ The neuron seems to activate on, or near, verb phrases or sentences that begin with "I", "The", or "It", │
+│           │ or ones that contain "had".                                                                              │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples involve a mix of verb tenses (past, present, and past perfect).                           │
+│           │ - The activating tokens often start with "I", "The", or "It".                                            │
+│           │                                                                                                          │
+│           │ Let me look again for patterns in the examples. Are there any links or hidden linguistic commonalities   │
+│           │ that I missed? Yes, I found another:                                                                     │
+│           │                                                                                                          │
+│           │ - The activating tokens often occur at the beginning of a sentence or clause.                            │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Verb phrases or sentences starting with "I", "The", or "It", often at the beginning of a sentence or  │
+│           │ clause.                                                                                                  │
+│           │ 2. Phrases or sentences that involve a mix of verb tenses, often starting with a common noun or pronoun. │
+│ System    │ Transition points in the text, such as the start of a new sentence or clause, often introducing a new    │
+│           │ idea or thought.                                                                                         │
+│           │                                                                                                          │
+│           │ Words or phrases that introduce a new idea, contrast, or perspective, such as "just", "seriously", or    │
+│           │ "more than"                                                                                              │
+│           │ Verb phrases or sentences starting with "I", "The", or "It", often at the beginning of a sentence or     │
+│           │ clause.                                                                                                  │
+│           │                                                                                                          │
+│           │ Phrases or sentences that involve a mix of verb tenses, often starting with a common noun or pronoun     │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: Transition points in the text, such as the start of a new sentence or clause, often           │
+│           │ introducing a new idea or thought.                                                                       │
+│           │                                                                                                          │
+│           │ Feature 2: Words or phrases that introduce a new idea, contrast, or perspective, such as "just",         │
+│           │ "seriously", or "more than"                                                                              │
+│           │ Feature 3: Verb phrases or sentences starting with "I", "The", or "It", often at the beginning of a      │
+│           │ sentence or clause.                                                                                      │
+│           │                                                                                                          │
+│           │ Feature 4: Phrases or sentences that involve a mix of verb tenses, often starting with a common noun or  │
+│           │ pronoun                                                                                                  │
+│           │                                                                                                          │
+│ Assistant │ After reviewing the list, I've condensed it to remove duplicates and similar features. Here is the       │
+│           │ resulting list:                                                                                          │
+│           │                                                                                                          │
+│           │ Feature 1: Transition points in the text, such as the start of a new sentence or clause, often           │
+│           │ introducing a new idea or thought.                                                                       │
+│           │                                                                                                          │
+│           │ Feature 2: Words or phrases that introduce a new idea, contrast, or perspective, such as "just",         │
+│           │ "seriously", or "more than"                                                                              │
+│           │                                                                                                          │
+│           │ Feature 3: Phrases or sentences that involve a mix of verb tenses, often starting with a common noun or  │
+│           │ pronoun                                                                                                  │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Transition points in the text, such as the start of a new sentence or clause,    │
+│           │ often introducing a new idea or thought.                                                                 │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain transition points in the text, such as the start of a new sentence or     │
+│           │ clause, often introducing a new idea or thought:                                                         │
+│           │                                                                                                          │
+│           │ Example 1, Example 4, Example 5, Example 8, Example 9, Example 10, Example 11, Example 12, Example 16,   │
+│           │ Example 17, Example 20.                                                                                  │
+│           │                                                                                                          │
+│           │ These examples typically start with a conjunction, a preposition, or an adverb that signals a transition │
+│           │ to a new idea or thought.                                                                                │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 4, 5, 8, 9, 10, 11, 12, 16, 17, 20]                                                    │
+│ System    │ Running on explanation: Words or phrases that introduce a new idea, contrast, or perspective, such as    │
+│           │ "just", "seriously", or "more than"                                                                      │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain words or phrases that introduce a new idea, contrast, or perspective:     │
+│           │                                                                                                          │
+│           │ Example 4: "Now" introduces a new idea or perspective.                                                   │
+│           │ Example 5: "refreshingly" contrasts with the typical expectation of a character.                         │
+│           │ Example 7: "more than" introduces a new perspective on the initial popularity.                           │
+│           │ Example 10: "more than" introduces a new perspective on the initial popularity.                          │
+│           │ Example 13: "seriously" introduces a new perspective or contrast.                                        │
+│           │ Example 18: "or" introduces a new idea or perspective.                                                   │
+│           │ Example 20: "And now" introduces a new idea or perspective.                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [4, 5, 7, 10, 13, 18, 20]                                                                  │
+│ System    │ Running on explanation: Phrases or sentences that involve a mix of verb tenses, often starting with a    │
+│           │ common noun or pronoun                                                                                   │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples involve a mix of verb tenses, often starting with a common noun or pronoun:       │
+│           │                                                                                                          │
+│           │ Example 1, Example 4, Example 7, Example 10, Example 12, Example 15, Example 20.                         │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 4, 7, 10, 12, 15, 20]                                                                  │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Transition points in the text, such as the start of a new sentence or clause,    │
+│           │ often introducing a new idea or thought.                                                                 │
+│ Assistant │ Here are 10 examples of short text samples that contain transition points, introducing new ideas or      │
+│           │ thoughts:                                                                                                │
+│           │                                                                                                          │
+│           │ Example 1: I went to the store, but then I realized I forgot my wallet.                                  │
+│           │ (Transition point: "but then")                                                                           │
+│           │                                                                                                          │
+│           │ Example 2: The new policy has been met with criticism; however, the CEO remains confident.               │
+│           │ (Transition point: "; however")                                                                          │
+│           │                                                                                                          │
+│           │ Example 3: I love reading books. Meanwhile, my sister prefers watching movies.                           │
+│           │ (Transition point: "Meanwhile")                                                                          │
+│           │                                                                                                          │
+│           │ Example 4: The company has been struggling financially, and as a result, layoffs are expected.           │
+│           │ (Transition point: "and as a result")                                                                    │
+│           │                                                                                                          │
+│           │ Example 5: We tried the new restaurant, but in contrast, the old one is still better.                    │
+│           │ (Transition point: "but in contrast")                                                                    │
+│           │                                                                                                          │
+│           │ Example 6: The weather was terrible. On the other hand, the festival was still a lot of fun.             │
+│           │ (Transition point: "On the other hand")                                                                  │
+│           │                                                                                                          │
+│           │ Example 7: The new employee was struggling to keep up; nevertheless, she showed great potential.         │
+│           │ (Transition point: "; nevertheless")                                                                     │
+│           │                                                                                                          │
+│           │ Example 8: I was tired, yet I still managed to finish the project on time.                               │
+│           │ (Transition point: "yet")                                                                                │
+│           │                                                                                                          │
+│           │ Example 9: The teacher explained the concept, and then she gave us an example.                           │
+│           │ (Transition point: "and then")                                                                           │
+│           │                                                                                                          │
+│           │ Example 10: The company has been growing rapidly, whereas the competition has been stagnant.             │
+│           │ (Transition point: "whereas")                                                                            │
+│           │                                                                                                          │
+│           │ In each example, the transition point introduces a new idea or thought, often contrasting or building    │
+│           │ upon the previous one.                                                                                   │
+│ System    │ Score: 0.005077934358268976                                                                              │
+│ System    │ Running on explanation: Words or phrases that introduce a new idea, contrast, or perspective, such as    │
+│           │ "just", "seriously", or "more than"                                                                      │
+│ Assistant │ Here are 10 examples of short text samples that contain words or phrases that introduce a new idea,      │
+│           │ contrast, or perspective:                                                                                │
+│           │                                                                                                          │
+│           │ Example 1: I love the new policy, but seriously, it's not going to work.                                 │
+│           │ Example 2: The company claims to prioritize sustainability, however, their practices suggest otherwise.  │
+│           │ Example 3: I thought the movie was okay, yet more than anything, it was the special effects that         │
+│           │ impressed me.                                                                                            │
+│           │ Example 4: Just to clarify, the deadline for the project is next Friday, not next month.                 │
+│           │ Example 5: While some argue that social media is a waste of time, on the other hand, it can be a         │
+│           │ powerful tool for social change.                                                                         │
+│           │ Example 6: I know you think I'm crazy, but honestly, I've given this a lot of thought.                   │
+│           │ Example 7: In addition to the new features, the updated software also includes improved security         │
+│           │ measures.                                                                                                │
+│           │ Example 8: Not only did the new employee exceed expectations, but also brought a fresh perspective to    │
+│           │ the team.                                                                                                │
+│           │ Example 9: I was expecting a boring lecture, though in reality, the professor was quite engaging.        │
+│           │ Example 10: Furthermore, the study found that regular exercise can also improve mental health outcomes.  │
+│           │                                                                                                          │
+│           │ I made sure to vary the examples, using different words and phrases to introduce new ideas, contrasts,   │
+│           │ or perspectives, and placing them at different positions within the sentences.                           │
+│ System    │ Score: 0.17407704889774323                                                                               │
+│ System    │ Running on explanation: Phrases or sentences that involve a mix of verb tenses, often starting with a    │
+│           │ common noun or pronoun                                                                                   │
+│ Assistant │ Here are 10 examples of short text samples that contain phrases or sentences with a mix of verb tenses,  │
+│           │ often starting with a common noun or pronoun:                                                            │
+│           │                                                                                                          │
+│           │ Example 1: The teacher has given the assignment, but the students were still confused.                   │
+│           │ Example 2: She will attend the meeting, which was scheduled last week.                                   │
+│           │ Example 3: The company has been facing financial difficulties, but it will recover soon.                 │
+│           │ Example 4: They had already eaten dinner when I arrived, but we will order takeout anyway.               │
+│           │ Example 5: The dog has been barking loudly since morning, and it is still going strong.                  │
+│           │ Example 6: My parents were very supportive when I was in college, and they will always be grateful for   │
+│           │ that experience.                                                                                         │
+│           │ Example 7: The new policy has been implemented, but the employees are still adjusting to the changes     │
+│           │ that were made last quarter.                                                                             │
+│           │ Example 8: He will graduate next year, but he has already started applying to jobs.                      │
+│           │ Example 9: The tourists got lost because the map had been outdated, and they will need to ask for        │
+│           │ directions again.                                                                                        │
+│           │ Example 10: The research team has made significant progress, but they had encountered several obstacles  │
+│           │ in the past few months.                                                                                  │
+│           │                                                                                                          │
+│           │ I made sure to vary the examples, using different nouns and pronouns as subjects, and mixing verb tenses │
+│           │ in different ways (e.g., present perfect + past simple, future simple + past perfect, etc.).             │
+│ System    │ Score: 0.09539104998111725                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 8.001972198486328                                                                        │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.5, 0.6)                                                                              │
+│           │ Generation Score: 0.005077934358268976                                                                   │
+│           │ Explanation: Transition points in the text, such as the start of a new sentence or clause, often         │
+│           │ introducing a new idea or thought.                                                                       │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.4, 0.3)                                                                              │
+│           │ Generation Score: 0.17407704889774323                                                                    │
+│           │ Explanation: Words or phrases that introduce a new idea, contrast, or perspective, such as "just",       │
+│           │ "seriously", or "more than"                                                                              │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.5, 0.2)                                                                              │
+│           │ Generation Score: 0.09539104998111725                                                                    │
+│           │ Explanation: Phrases or sentences that involve a mix of verb tenses, often starting with a common noun   │
+│           │ or pronoun                                                                                               │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 8.001972198486328
+
+Explanation 0:
+Detection Score: (0.5, 0.6)
+Generation Score: 0.005077934358268976
+Explanation: Transition points in the text, such as the start of a new sentence or clause, often introducing a new idea 
+or thought.
+
+Explanation 1:
+Detection Score: (0.4, 0.3)
+Generation Score: 0.17407704889774323
+Explanation: Words or phrases that introduce a new idea, contrast, or perspective, such as "just", "seriously", or "more
+than"
+
+Explanation 2:
+Detection Score: (0.5, 0.2)
+Generation Score: 0.09539104998111725
+Explanation: Phrases or sentences that involve a mix of verb tenses, often starting with a common noun or pronoun
+
+

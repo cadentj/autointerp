@@ -1,0 +1,347 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: <|endoftext|> Bryce Petty, QB; Ahmad Dixon, S; L<<ache>> Seastrunk                            │
+│           │ Example 2: ALS) flight crew arrived. The flight crew initiated ALS care. The tr<<ache>>a was intub       │
+│           │ Example 3:  the Trololo_mod and Effusion families of malware, which target<< Apache>> and Nginx servers  │
+│           │ Example 4: ributed,full-text search analytics engine.It is built on top of<< Apache>> Lucene™.           │
+│           │ Example 5:  is developed in Java and is released as open source under the terms of the<< Apache>>        │
+│           │ License. Elasticsearch                                                                                   │
+│           │ Example 6: <|endoftext|> ft)                                                                             │
+│           │                                                                                                          │
+│           │ Logan Shaw credited with hit on<< Mare>>k Zidl                                                           │
+│           │ Example 7: <|endoftext|> a early-autumn launch).                                                         │
+│           │                                                                                                          │
+│           │ Geographically,<< Duc>>ati saw sales increases                                                           │
+│           │ Example 8:  among the most effective and feared fighters in Syria today.                                 │
+│           │                                                                                                          │
+│           │ The mu<<ja>>hedeen that formed                                                                           │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "ache", "achea", "Apache", "Apache", "Apache", "Mare", "Duc", "ja".                   │
+│           │ PREVIOUS TOKENS: "L", "tr", "target", "top of", "terms of the", "on", "Geographically,", "The mu".       │
+│           │ NEXT TOKENS: "Seastrunk", "was intub", "and Nginx servers", "Lucene™", "License", "ft) Logan Shaw        │
+│           │ credited with hit on", "saw sales increases", "hedeen that formed".                                      │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are mostly proper nouns or parts of proper nouns, but "ache" and "ja" seem out of  │
+│           │ place.                                                                                                   │
+│           │ The previous tokens have nothing in common.                                                              │
+│           │ The next tokens have nothing in common.                                                                  │
+│           │ The neuron seems to activate on proper nouns, but also on parts of words that resemble proper nouns.     │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples mostly involve proper nouns.                                                              │
+│           │ - The activating token is often a part of a brand, company, or name.                                     │
+│           │                                                                                                          │
+│           │ Let me look again for patterns in the examples. Are there any links or hidden linguistic commonalities   │
+│           │ that I missed? Yes, I missed one:                                                                        │
+│           │                                                                                                          │
+│           │ - The out-of-place "ache" and "ja" could be due to the neuron activating on word fragments that resemble │
+│           │ parts of proper nouns.                                                                                   │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Proper nouns, especially names of companies, brands, or people.                                       │
+│           │ 2. Word fragments that resemble parts of proper nouns, or are parts of proper nouns.                     │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: <|endoftext|> be functioning in 16 Venezuelan cities, interior and justice minister<<         │
+│           │ Miguel>> Rodriguez Torres said during                                                                    │
+│           │ Example 2:  criminal charges against leading politicians and an investigation of popular former          │
+│           │ president Luiz In<<acio>> Lula da Silva                                                                  │
+│           │ Example 3: <|endoftext|>'ve seen that look like this.                                                    │
+│           │                                                                                                          │
+│           │ Tim M<<ousse>>au: Yeah this                                                                              │
+│           │ Example 4:  Okore, highly-rated by all who saw him play for Nords<<ja>>elland in the                     │
+│           │ Example 5: <|endoftext|>                                                                                 │
+│           │ <?php<< namespace>> Mapper; use                                                                          │
+│           │ Example 6: <|endoftext|> an artist, musician, code-monkey (or code-nin<<ja>>), game designer,            │
+│           │ Example 7:  Church, Miami, as they look today. (Photo: Public Domain/<<Wiki>>Commons)                    │
+│           │                                                                                                          │
+│           │ Example 8:  included Peter Cushing, Henry Stephens Salt, Isaac Pitman, Jor<<ja>> Fox, George Bernard     │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "Miguel", "Inacio", "Mousse", "ja", "namespace", "inja", "Wiki", "ja".                │
+│           │ PREVIOUS TOKENS: "minister", "Luiz", "Tim", "Nords", "use", "code-nin", "Public Domain/", "Jor".         │
+│           │ NEXT TOKENS: "Rodriguez", "Lula", "Yeah", "elland", "Mapper;", "game", "Commons", "Fox".                 │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are mostly proper nouns, or parts of them.                                         │
+│           │ Some of the activating tokens are foreign words or names.                                                │
+│           │ The previous tokens have nothing in common.                                                              │
+│           │ The next tokens have nothing in common.                                                                  │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples involve proper nouns, names, or words from other languages.                               │
+│           │ - The activating tokens are often inside names or titles.                                                │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The activating tokens are often the part of a proper noun that makes it unique.                        │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Uncommon or foreign parts of proper nouns, such as names or titles.                                   │
+│           │ 2. Unique components of names, titles, or words from other languages.                                    │
+│ System    │ Proper nouns, especially names of companies, brands, or people.                                          │
+│           │                                                                                                          │
+│           │ Word fragments that resemble parts of proper nouns, or are parts of proper nouns                         │
+│           │ Uncommon or foreign parts of proper nouns, such as names or titles.                                      │
+│           │                                                                                                          │
+│           │ Unique components of names, titles, or words from other languages                                        │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: Proper nouns, especially names of companies, brands, or people.                               │
+│           │                                                                                                          │
+│           │ Feature 2: Word fragments that resemble parts of proper nouns, or are parts of proper nouns              │
+│           │ Feature 3: Uncommon or foreign parts of proper nouns, such as names or titles.                           │
+│           │                                                                                                          │
+│           │ Feature 4: Unique components of names, titles, or words from other languages                             │
+│           │                                                                                                          │
+│ Assistant │ After reviewing the list, I've condensed it to remove duplicates and similar features. Here is the       │
+│           │ resulting list:                                                                                          │
+│           │                                                                                                          │
+│           │ Feature 1: Proper nouns, especially names of companies, brands, or people.                               │
+│           │ Feature 2: Word fragments that resemble parts of proper nouns, or are parts of proper nouns              │
+│           │ Feature 3: Unique components of names, titles, or words from other languages                             │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Proper nouns, especially names of companies, brands, or people.                  │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain proper nouns, especially names of companies, brands, or people:           │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 5, Example 6, Example 7, Example 8, Example 10, Example 11, Example 12,    │
+│           │ Example 15, Example 19, Example 20.                                                                      │
+│           │                                                                                                          │
+│           │ These examples contain names of people (e.g., Bryce Petty, Ahmad Dixon, Sarah Ravani, Vivian Ho, Evan    │
+│           │ Sernoffsky, Logan Shaw, Marek Zidl, Miguel Rodriguez Torres, Luiz Inacio Lula da Silva),                 │
+│           │ companies/brands (e.g., Nido EV, Apache, Elasticsearch, Ducati), and locations (e.g., San Francisco,     │
+│           │ Turin, Valletta, Malta, Syria, Venezuela).                                                               │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 5, 6, 7, 8, 10, 11, 12, 15, 19, 20]                                                 │
+│ System    │ Running on explanation: Word fragments that resemble parts of proper nouns, or are parts of proper nouns │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain word fragments that resemble parts of proper nouns, or are parts of       │
+│           │ proper nouns:                                                                                            │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 5, Example 6, Example 7, Example 8, Example 10, Example 11, Example 12,    │
+│           │ Example 15, Example 18, Example 19, Example 20.                                                          │
+│           │                                                                                                          │
+│           │ These examples contain proper nouns, acronyms, or parts of proper nouns, such as names (Bryce Petty,     │
+│           │ Ahmad Dixon, Sarah Ravani, etc.), locations (San Francisco, Turin, Valletta, Malta, etc.), organizations │
+│           │ (Apache, Nginx, Ducati, etc.), and specific terms (ALS, Nido EV, Trololo_mod, Effusion, Apache Lucene,   │
+│           │ etc.).                                                                                                   │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 5, 6, 7, 8, 10, 11, 12, 15, 18, 19, 20]                                             │
+│ System    │ Running on explanation: Unique components of names, titles, or words from other languages                │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain unique components of names, titles, or words from other languages:        │
+│           │                                                                                                          │
+│           │ Example 1 (Ahmad, Lache Seastrunk), Example 2 (anatuan), Example 5 (Nido EV, Cambiano, Turin), Example 6 │
+│           │ (Trololo_mod, Effusion), Example 7 (Apache Lucene), Example 8 (Valletta, Malta), Example 10 (Apache      │
+│           │ License), Example 11 (Marek Zidl), Example 13 (mujahedeen, Syria), Example 15 (Sivagami), Example 19     │
+│           │ (Miguel Rodriguez Torres), Example 20 (Luiz Inacio Lula da Silva)                                        │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 5, 6, 7, 8, 10, 11, 13, 15, 19, 20]                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Proper nouns, especially names of companies, brands, or people.                  │
+│ Assistant │ Here are 10 examples of short text samples containing proper nouns, especially names of companies,       │
+│           │ brands, or people:                                                                                       │
+│           │                                                                                                          │
+│           │ Example 1: I'm buying a new iPhone from Apple today.                                                     │
+│           │ Example 2: Have you tried the new menu at Starbucks?                                                     │
+│           │ Example 3: Elon Musk is revolutionizing space travel with SpaceX.                                        │
+│           │ Example 4: I'm a huge fan of Taylor Swift's music.                                                       │
+│           │ Example 5: The new Nike sneakers are so cool!                                                            │
+│           │ Example 6: Google Maps is the best navigation app out there.                                             │
+│           │ Example 7: I'm reading a book by J.K. Rowling right now.                                                 │
+│           │ Example 8: Samsung is releasing a new flagship phone next month.                                         │
+│           │ Example 9: I'm a big fan of the work done by Doctors Without Borders.                                    │
+│           │ Example 10: The latest collection from Gucci is stunning!                                                │
+│ System    │ Score: 4.776866912841797                                                                                 │
+│ System    │ Running on explanation: Word fragments that resemble parts of proper nouns, or are parts of proper nouns │
+│ Assistant │ Here are 10 examples of short text samples containing word fragments that resemble parts of proper nouns │
+│           │ or are parts of proper nouns:                                                                            │
+│           │                                                                                                          │
+│           │ Example 1: I'm thinking of visiting Mex- in the summer.                                                  │
+│           │ Example 2: The new smartphone has a Go- processor, which is super fast.                                  │
+│           │ Example 3: Have you tried the new Fran- coffee shop downtown?                                            │
+│           │ Example 4: The movie was filmed on loc- in New York City.                                                │
+│           │ Example 5: I'm a big fan of the Mc- burgers at that restaurant.                                          │
+│           │ Example 6: The company is headquartered in Cal-.                                                         │
+│           │ Example 7: The new employee is from Scot-.                                                               │
+│           │ Example 8: The hotel room had a beautiful view of the Pan- Canal.                                        │
+│           │ Example 9: I love listening to music from the 1960s, especially the Bea-les.                             │
+│           │ Example 10: The new policy is mandated by the Fed- Reserve.                                              │
+│           │                                                                                                          │
+│           │ Note: I've made sure to include a mix of examples where the word fragment is a part of a proper noun     │
+│           │ (e.g. "Mex-" from "Mexico", "Go-" from "Google") and where it resembles a part of a proper noun (e.g.    │
+│           │ "Cal-" which could be from "California" or "Calgary").                                                   │
+│ System    │ Score: 6.378678321838379                                                                                 │
+│ System    │ Running on explanation: Unique components of names, titles, or words from other languages                │
+│ Assistant │ Here are 10 examples of short text samples containing unique components of names, titles, or words from  │
+│           │ other languages:                                                                                         │
+│           │                                                                                                          │
+│           │ Example 1: The new employee, Xiaoling, was from China.                                                   │
+│           │ Example 2: The title of the Japanese film was "Kazoku no Uta".                                           │
+│           │ Example 3: The Indian restaurant served delicious naan bread.                                            │
+│           │ Example 4: The French aristocrat, Duc de Orleans, was known for his lavish parties.                      │
+│           │ Example 5: The Arabic calligraphy on the wall read "As-salamu alaykum".                                  │
+│           │ Example 6: The Russian novel "Война и мир" (War and Peace) is a classic.                                 │
+│           │ Example 7: The Korean dish, Bibimbap, was my favorite at the food festival.                              │
+│           │ Example 8: The Sanskrit mantra "Om mani padme hum" was chanted by the monks.                             │
+│           │ Example 9: The German philosopher, Herr Nietzsche, wrote extensively on morality.                        │
+│           │ Example 10: The Chinese character "龍" (Long) means dragon.                                              │
+│           │                                                                                                          │
+│           │ Note: I've included a mix of languages, such as Chinese characters, Japanese titles, Arabic phrases, and │
+│           │ words from Indian, French, Russian, Korean, and German languages to showcase unique components of names, │
+│           │ titles, or words from other languages.                                                                   │
+│ System    │ Score: 3.697683811187744                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 29.419586181640625                                                                       │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.8, 0.4)                                                                              │
+│           │ Generation Score: 4.776866912841797                                                                      │
+│           │ Explanation: Proper nouns, especially names of companies, brands, or people.                             │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.8, 0.5)                                                                              │
+│           │ Generation Score: 6.378678321838379                                                                      │
+│           │ Explanation: Word fragments that resemble parts of proper nouns, or are parts of proper nouns            │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.8, 0.4)                                                                              │
+│           │ Generation Score: 3.697683811187744                                                                      │
+│           │ Explanation: Unique components of names, titles, or words from other languages                           │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 29.419586181640625
+
+Explanation 0:
+Detection Score: (0.8, 0.4)
+Generation Score: 4.776866912841797
+Explanation: Proper nouns, especially names of companies, brands, or people.
+
+Explanation 1:
+Detection Score: (0.8, 0.5)
+Generation Score: 6.378678321838379
+Explanation: Word fragments that resemble parts of proper nouns, or are parts of proper nouns
+
+Explanation 2:
+Detection Score: (0.8, 0.4)
+Generation Score: 3.697683811187744
+Explanation: Unique components of names, titles, or words from other languages
+
+

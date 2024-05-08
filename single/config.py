@@ -5,7 +5,7 @@ PROVIDER: str = "openai"
 
 @dataclass
 class EnvConfig:
-    num_batches: int = 2_000
+    num_batches: int = 2_250
     minibatch_size: int = 150
     seed: int = 22
 

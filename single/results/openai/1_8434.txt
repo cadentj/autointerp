@@ -1,0 +1,393 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  consciousness, were fundamental, inescapable axioms in any action we<< undertake>>:          │
+│           │ ��Whether                                                                                                │
+│           │ Example 2:  was appropriate for Cambridge University to allow a young foreign student to go Cairo and<<  │
+│           │ undertake>> field research into such                                                                     │
+│           │ Example 3:  the forces of evil that threaten to overwhelm it. The courageous acts you will<< undertake>> │
+│           │ in Heroes will become                                                                                    │
+│           │ Example 4: ) in relation to the Offer); (iii) CanniMed completes or<< undert>>akes to complete           │
+│           │ Example 5: <|endoftext|> it will also reap the biggest rewards.                                          │
+│           │ Example 6:  in relation to the Offer); (iii) CanniMed completes or<< undert>>akes to complete            │
+│           │ Example 7:  ownership with all creatures of the earth, Francis suggests that ��It also entails a loving  │
+│           │ awareness that                                                                                           │
+│           │ Example 8: <|endoftext|> or omit the oceanic temperatures                                                │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS: "undertake", "undertake", "undertake", "undert", "undert".                            │
+│           │ PREVIOUS TOKENS: "we", "go Cairo and", "will", "completes or", "completes or".                           │
+│           │ NEXT TOKENS: ": ��Whether", "field research into such", "in Heroes will become", "akes to complete",     │
+│           │ "akes to complete".                                                                                      │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ - The activating tokens include both "undertake" and "undert".                                           │
+│           │ - The previous tokens suggest a context of preparation or readiness to act.                              │
+│           │ - The next tokens generally indicate a continuation of action or explanation.                            │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The neuron activates on the root of the verb "undertake," including fragmented forms like "undert".    │
+│           │ - The context around the activating tokens generally pertains to the initiation or consideration of an   │
+│           │ action or task.                                                                                          │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The presence of the root "undert" in verbs related to initiating or committing to an action.          │
+│           │ 2. The use of the word "undertake" or its fragments in contexts that discuss or prepare for future       │
+│           │ actions.                                                                                                 │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  we should be seeing one or two events perhaps,�� said Dasgupta. ��But                        │
+│           │ Example 2:  We love to see well-written, easy-to-use tools which automate even small sections of         │
+│           │ Example 3:  a ports-like system. Ports is a system used by *BSD to automate the process of building      │
+│           │ Example 4:  concept at all. We��ve all played one, whether it be Guitar Hero, Rock Band                  │
+│           │ Example 5:  use one. A day in any of Disney��s theme parks will entail walking at least 5                │
+│           │ Example 6: �                                                                                             │
+│           │                                                                                                          │
+│           │ LKM is known to engender happiness and kindness to oneself and others through repeating                  │
+│           │ Example 7:  but Dr Bulger went to his assistance. I warned him that this would entail disqualification,  │
+│           │ but                                                                                                      │
+│           │ Example 8:  the producer talked a really good story, so that seemed like a much more feasible project    │
+│           │ than MythB                                                                                               │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "��", "automate", "automate", "��", "��", "�", "entail", "feasible".                  │
+│           │ PREVIOUS TOKENS:                                                                                         │
+│           │ - "said Dasgupta.", ",", "used by *BSD to", "We", "of Disney", "", "this would", "like a much more".     │
+│           │ NEXT TOKENS:                                                                                             │
+│           │ - "But", "even", "the", "ve", "s", "", "disqualification,", "project".                                   │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ Patterns in the activating tokens include:                                                               │
+│           │ - "automate" (repeated twice, related to automation or simplification of tasks),                         │
+│           │ - "entail" and "feasible" (related to discussing possibilities or consequences),                         │
+│           │ - Special characters ("��", "�"), which seem related to encoding issues or special punctuation.          │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - There is a linguistic connection with the words "automate," "entail," and "feasible" in scenarios      │
+│           │ discussing functions, consequences, or practicalities.                                                   │
+│           │ - Special characters occur frequently, possibly indicating neuron activation related to encoding or      │
+│           │ punctuation.                                                                                             │
+│           │ - The words "automate," "entail," and "feasible" are followed by contexts that elaborate or define the   │
+│           │ terms.                                                                                                   │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Taking a close look at the shared features and patterns, two explanations for neuron activation emerge:  │
+│           │                                                                                                          │
+│           │ 1. The neuron activates on words that discuss the functionality or practical consequence of an action or │
+│           │ condition within a given context.                                                                        │
+│           │ 2. The neuron may also activate on encoded or special punctuation characters that appear in text,        │
+│           │ potentially due to irregularities or specifics in the text encoding used.                                │
+│ System    │ The presence of the root "undert" in verbs related to initiating or committing to an action.             │
+│           │                                                                                                          │
+│           │ The use of the word "undertake" or its fragments in contexts that discuss or prepare for future actions  │
+│           │ The neuron activates on words that discuss the functionality or practical consequence of an action or    │
+│           │ condition within a given context.                                                                        │
+│           │                                                                                                          │
+│           │ The neuron may also activate on encoded or special punctuation characters that appear in text,           │
+│           │ potentially due to irregularities or specifics in the text encoding used                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: The presence of the root "undert" in verbs related to initiating or committing to an action.  │
+│           │                                                                                                          │
+│           │ Feature 2: The use of the word "undertake" or its fragments in contexts that discuss or prepare for      │
+│           │ future actions                                                                                           │
+│           │ Feature 3: The neuron activates on words that discuss the functionality or practical consequence of an   │
+│           │ action or condition within a given context.                                                              │
+│           │                                                                                                          │
+│           │ Feature 4: The neuron may also activate on encoded or special punctuation characters that appear in      │
+│           │ text, potentially due to irregularities or specifics in the text encoding used                           │
+│           │                                                                                                          │
+│ Assistant │ Here is the list of distinct features after reviewing for duplicates:                                    │
+│           │                                                                                                          │
+│           │ Feature 1: The presence of the root "undert" in verbs related to initiating or committing to an action.  │
+│           │ Feature 2: The use of the word "undertake" or its fragments in contexts that discuss or prepare for      │
+│           │ future actions.                                                                                          │
+│           │ Feature 3: The neuron activates on words that discuss the functionality or practical consequence of an   │
+│           │ action or condition within a given context.                                                              │
+│           │ Feature 4: The neuron may also activate on encoded or special punctuation characters that appear in      │
+│           │ text, potentially due to irregularities or specifics in the text encoding used.                          │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The presence of the root "undert" in verbs related to initiating or committing   │
+│           │ to an action.                                                                                            │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain the root "undert" in verbs related to initiating or committing to an      │
+│           │ action:                                                                                                  │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 11.                                                  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 11]                                                                           │
+│ System    │ Running on explanation: The use of the word "undertake" or its fragments in contexts that discuss or     │
+│           │ prepare for future actions.                                                                              │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain the use of the word "undertake" or its fragments in contexts that discuss │
+│           │ or prepare for future actions:                                                                           │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 11.                                                  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 11]                                                                           │
+│ System    │ Running on explanation: The neuron activates on words that discuss the functionality or practical        │
+│           │ consequence of an action or condition within a given context.                                            │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples discuss the functionality or practical consequence of an action or condition      │
+│           │ within a given context:                                                                                  │
+│           │                                                                                                          │
+│           │ Example 2: Discusses the consequence of using Google's curated features compared to other options.       │
+│           │ Example 3: Discusses the appropriateness and implications of allowing a student to undertake field       │
+│           │ research.                                                                                                │
+│           │ Example 4: Discusses the consequences of a standstill in a development.                                  │
+│           │ Example 6: Discusses the consequences of undertaking courageous acts in a game.                          │
+│           │ Example 7: Discusses the completion of actions in relation to an offer.                                  │
+│           │ Example 8: Discusses the potential outcomes of a low-risk, high-reward signing.                          │
+│           │ Example 11: Similar to Example 7, discusses the completion of actions in relation to an offer.           │
+│           │ Example 14: Discusses the practical consequence of using an extractor tool to pull emails into a         │
+│           │ spreadsheet.                                                                                             │
+│           │ Example 17: Discusses the practical aspects and consequences of having an airport nearby.                │
+│           │ Example 20: Discusses the benefits and functionality of well-written, easy-to-use tools.                 │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [2, 3, 4, 6, 7, 8, 11, 14, 17, 20]                                                         │
+│ System    │ Running on explanation: The neuron may also activate on encoded or special punctuation characters that   │
+│           │ appear in text, potentially due to irregularities or specifics in the text encoding used.                │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain encoded or special punctuation characters that appear in text,            │
+│           │ potentially due to irregularities or specifics in the text encoding used:                                │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 7, Example 8, Example 10, Example 11, Example 12, Example 13, Example 14,  │
+│           │ Example 15, Example 16, Example 17, Example 18.                                                          │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18]                                           │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The presence of the root "undert" in verbs related to initiating or committing   │
+│           │ to an action.                                                                                            │
+│ Assistant │ Here are 10 examples of short text samples containing verbs with the root "undert" related to initiating │
+│           │ or committing to an action.                                                                              │
+│           │                                                                                                          │
+│           │ Example 1: She undertook the challenging task of climbing Mount Everest.                                 │
+│           │ Example 2: The company is undertaking a new project to develop eco-friendly packaging.                   │
+│           │ Example 3: To undertake such a complex issue requires careful planning and strategy.                     │
+│           │ Example 4: He undertook the responsibility of organizing the charity event by himself.                   │
+│           │ Example 5: They will undertake a journey across the desert next month.                                   │
+│           │ Example 6: The government undertook reforms to improve healthcare services.                              │
+│           │ Example 7: Before you undertake the role of a leader, make sure you are ready.                           │
+│           │ Example 8: The scientist undertook a series of experiments to prove his theory.                          │
+│           │ Example 9: We have undertaken a commitment to reduce our carbon emissions by 50%.                        │
+│           │ Example 10: She undertook the difficult task of reconciling the conflicting parties.                     │
+│ System    │ Score: 22.21445655822754                                                                                 │
+│ System    │ Running on explanation: The use of the word "undertake" or its fragments in contexts that discuss or     │
+│           │ prepare for future actions.                                                                              │
+│ Assistant │ Here are 10 examples of short text examples containing the use of the word "undertake" or its fragments  │
+│           │ in contexts discussing or preparing for future actions.                                                  │
+│           │                                                                                                          │
+│           │ The feature involves the use of the word "undertake" or its fragments in a specific context (future      │
+│           │ actions), so I'll make sure to establish that context at the start of each example.                      │
+│           │                                                                                                          │
+│           │ I'll keep the examples varied, with the feature appearing at different positions in the sentence.        │
+│           │                                                                                                          │
+│           │ Example 1: We plan to undertake a new marketing strategy next quarter to boost sales.                    │
+│           │ Example 2: Before we undertake the journey, we need to ensure that all supplies are packed.              │
+│           │ Example 3: The team will undertake significant training to prepare for the upcoming championship.        │
+│           │ Example 4: To better manage risks, the company must undertake a thorough analysis of potential market    │
+│           │ changes.                                                                                                 │
+│           │ Example 5: Our next project involves building a bridge, and we will soon undertake the necessary         │
+│           │ surveys.                                                                                                 │
+│           │ Example 6: As we look to expand overseas, we must undertake careful planning to succeed.                 │
+│           │ Example 7: Before the end of this year, we will undertake an evaluation of all employee performances.    │
+│           │ Example 8: She is determined to undertake the challenge of climbing Mount Everest next spring.           │
+│           │ Example 9: The government will soon undertake a review of the current tax legislation.                   │
+│           │ Example 10: In preparation for the software upgrade, the IT department will undertake a series of tests  │
+│           │ next week.                                                                                               │
+│ System    │ Score: 25.206594467163086                                                                                │
+│ System    │ Running on explanation: The neuron activates on words that discuss the functionality or practical        │
+│           │ consequence of an action or condition within a given context.                                            │
+│ Assistant │ Here are 10 examples of short text samples where the functionality or practical consequence of an action │
+│           │ or condition is discussed within a given context:                                                        │
+│           │                                                                                                          │
+│           │ Example 1: Wearing sunscreen helps prevent skin damage from UV rays.                                     │
+│           │ Example 2: Installing energy-efficient windows reduces heating costs in winter.                          │
+│           │ Example 3: Drinking plenty of water aids in maintaining hydration and supports kidney function.          │
+│           │ Example 4: Regular exercise improves cardiovascular health and increases lifespan.                       │
+│           │ Example 5: Eating high-fiber foods aids digestion and prevents constipation.                             │
+│           │ Example 6: Using LED bulbs saves energy and lowers electricity bills.                                    │
+│           │ Example 7: Applying mulch in the garden helps retain soil moisture and suppresses weeds.                 │
+│           │ Example 8: Setting a strict bedtime improves overall sleep quality and boosts morning productivity.      │
+│           │ Example 9: Practicing meditation reduces stress and enhances mental clarity.                             │
+│           │ Example 10: Taking public transportation reduces traffic congestion and lowers carbon emissions.         │
+│ System    │ Score: 0.0                                                                                               │
+│ System    │ Running on explanation: The neuron may also activate on encoded or special punctuation characters that   │
+│           │ appear in text, potentially due to irregularities or specifics in the text encoding used.                │
+│ Assistant │ Here are 10 examples of short text examples containing encoded or special punctuation characters,        │
+│           │ demonstrating their appearance due to irregularities or specific text encoding.                          │
+│           │                                                                                                          │
+│           │ Example 1: Did you see that? She asked, “Are you okay?”                                                  │
+│           │ Example 2: In many novels, dashes – like this – are common.                                              │
+│           │ Example 3: “I can't believe it!” he exclaimed.                                                           │
+│           │ Example 4: The café’s menu featured crème brûlée.                                                        │
+│           │ Example 5: It’s not just any store—it’s “the” store.                                                     │
+│           │ Example 6: “Come here,” she said, “and look at this!”                                                    │
+│           │ Example 7: The price of the item was $5, not $3—what a difference!                                       │
+│           │ Example 8: “No, no, no!” he cried. “That’s not what I meant.”                                            │
+│           │ Example 9: She whispered, “Can you keep a secret?”                                                       │
+│           │ Example 10: The sign read: Beware of dog—proceed with caution.                                           │
+│ System    │ Score: 0.0                                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 27.277751922607422                                                                       │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.5, 0.0)                                                                              │
+│           │ Generation Score: 22.21445655822754                                                                      │
+│           │ Explanation: The presence of the root "undert" in verbs related to initiating or committing to an        │
+│           │ action.                                                                                                  │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.5, 0.0)                                                                              │
+│           │ Generation Score: 25.206594467163086                                                                     │
+│           │ Explanation: The use of the word "undertake" or its fragments in contexts that discuss or prepare for    │
+│           │ future actions.                                                                                          │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.5, 0.5)                                                                              │
+│           │ Generation Score: 0.0                                                                                    │
+│           │ Explanation: The neuron activates on words that discuss the functionality or practical consequence of an │
+│           │ action or condition within a given context.                                                              │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (0.6, 0.7)                                                                              │
+│           │ Generation Score: 0.0                                                                                    │
+│           │ Explanation: The neuron may also activate on encoded or special punctuation characters that appear in    │
+│           │ text, potentially due to irregularities or specifics in the text encoding used.                          │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 27.277751922607422
+
+Explanation 0:
+Detection Score: (0.5, 0.0)
+Generation Score: 22.21445655822754
+Explanation: The presence of the root "undert" in verbs related to initiating or committing to an action.
+
+Explanation 1:
+Detection Score: (0.5, 0.0)
+Generation Score: 25.206594467163086
+Explanation: The use of the word "undertake" or its fragments in contexts that discuss or prepare for future actions.
+
+Explanation 2:
+Detection Score: (0.5, 0.5)
+Generation Score: 0.0
+Explanation: The neuron activates on words that discuss the functionality or practical consequence of an action or 
+condition within a given context.
+
+Explanation 3:
+Detection Score: (0.6, 0.7)
+Generation Score: 0.0
+Explanation: The neuron may also activate on encoded or special punctuation characters that appear in text, potentially 
+due to irregularities or specifics in the text encoding used.
+
+

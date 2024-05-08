@@ -4,7 +4,7 @@ PROVIDER: str = "replicate"
 
 @dataclass
 class EnvConfig:
-    num_batches: int = 2_000
+    num_batches: int = 2_250
     minibatch_size: int = 150
     seed: int = 22
 
@@ -18,7 +18,7 @@ class EnvConfig:
 @dataclass
 class ExplainerConfig:
     max_tokens : int = 2000
-    temperature : float = 1.5
+    temperature : float = 1.0
 
     batch_size: int = 8
     n_batches : int = 2

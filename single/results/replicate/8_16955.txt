@@ -1,0 +1,393 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: a meaty ale.�� Notes Morris: ��They<< rejected it because they thought ��>>                   │
+│           │ Example 2: , I had a child," Newton said. "The<< people that needed to know>> have<< known for a>>       │
+│           │ Example 3:  her identity, fearing government reprisals.                                                  │
+│           │                                                                                                          │
+│           │ "I was<< very scared when I>> was<< first>>                                                              │
+│           │ Example 4:  with Australia".                                                                             │
+│           │                                                                                                          │
+│           │ "He<< was a sailor in the>> conv<<oys that protected Australian troops being taken>>                     │
+│           │ Example 5:  the U.S. president-elect.                                                                    │
+│           │                                                                                                          │
+│           │ "I<< wanted to meet with Trump today to>>                                                                │
+│           │ Example 6: << the repercussions would>> be<< massive.>> …<< I>> did not<< think things could get much    │
+│           │ worse.>>��                                                                                               │
+│           │                                                                                                          │
+│           │ Example 7:  three types of scenes," said the producer. "The boss stages<< were particularly difficult.   │
+│           │ The>> original<< game>>                                                                                  │
+│           │ Example 8: . You aren��t creating. You��re discovering what<< was there all the time,>>                  │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "they thought", "people that needed to know", "very scared when I", "was a sailor in  │
+│           │ the", "wanted to meet with Trump today to", "the repercussions would", "I", "was there all the time".    │
+│           │ PREVIOUS TOKENS: "They", "The", "I", "He", "I", "the", "You".                                            │
+│           │ NEXT TOKENS: "because", "have", "first", "conv", "today", "be", "things", "all".                         │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are all parts of sentences that seem to be quotations or direct speech.            │
+│           │ The previous tokens are often "I", "He", "The", which are typical starters for direct speech.            │
+│           │ The next tokens also fit into the direct speech context.                                                 │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples involve direct speech or quotations.                                                      │
+│           │ - The activating tokens are parts of sentences within direct speech.                                     │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The activating tokens often contain verbs like "thought", "wanted", "were", "was", indicating mental   │
+│           │ states or actions.                                                                                       │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Parts of sentences within direct speech or quotations.                                                │
+│           │ 2. Verbs or phrases indicating mental states or actions within direct speech.                            │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  by cyclists<< of>> limited ability. …<< The>> third-streamers<< openly advocated policies    │
+│           │ that specifically targeted the weakest>>                                                                 │
+│           │ Example 2:  the minister responsible for the consultations, said, ��We<< felt it was important to>>      │
+│           │ hold<< a>> public                                                                                        │
+│           │ Example 3:  meaty ale.�� Notes Morris: ��They<< rejected it because they thought ��meat>>                │
+│           │ Example 4:  the campaign.                                                                                │
+│           │                                                                                                          │
+│           │ ��I think<< the>> Russians clearly<< intervened in the election,>>�� Podesta                             │
+│           │ Example 5: This is a battle we fight all the time. It was<< a debate about how that money>> should be    │
+│           │ Example 6: << me, and he>>'s always following me around the house. He adapted<< to the home life very    │
+│           │ easily>>                                                                                                 │
+│           │ Example 7: << he>>'s always following me around the house. He adapted<< to the home life very easily>>," │
+│           │ Justin told                                                                                              │
+│           │ Example 8: �a meaty ale.�� Notes Morris: ��They<< rejected it because they thought �>>                   │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "of", "The", "felt it was important to", "meat", "the", "intervened in the election", │
+│           │ "a debate about how that money", "me, and he", "he", "meat".                                             │
+│           │ PREVIOUS TOKENS: "cyclists", "third-streamers", "We", "They", "I", "It", "he", "They".                   │
+│           │ NEXT TOKENS: "limited ability", "hold", "because", " Podesta", "should be", "around the house", "told",  │
+│           │ "because".                                                                                               │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are mostly grammatical elements (prepositions, articles, conjunctions) and         │
+│           │ pronouns.                                                                                                │
+│           │ The previous tokens are mostly pronouns, nouns, or verbs.                                                │
+│           │ The next tokens have nothing in common.                                                                  │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The examples mostly involve quotes or reported speech.                                                 │
+│           │ - The activating tokens are mostly small, functional words (prepositions, articles, conjunctions) or     │
+│           │ pronouns.                                                                                                │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The activating tokens often occur at the beginning of a quoted phrase or sentence.                     │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Small, functional words (prepositions, articles, conjunctions) or pronouns at the beginning of a      │
+│           │ quoted phrase or sentence.                                                                               │
+│           │ 2. Words that introduce a quoted opinion, statement, or thought, especially in reported speech.          │
+│ System    │ Parts of sentences within direct speech or quotations.                                                   │
+│           │                                                                                                          │
+│           │ Verbs or phrases indicating mental states or actions within direct speech                                │
+│           │ Small, functional words (prepositions, articles, conjunctions) or pronouns at the beginning of a quoted  │
+│           │ phrase or sentence.                                                                                      │
+│           │                                                                                                          │
+│           │ Words that introduce a quoted opinion, statement, or thought, especially in reported speech              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: Parts of sentences within direct speech or quotations.                                        │
+│           │                                                                                                          │
+│           │ Feature 2: Verbs or phrases indicating mental states or actions within direct speech                     │
+│           │ Feature 3: Small, functional words (prepositions, articles, conjunctions) or pronouns at the beginning   │
+│           │ of a quoted phrase or sentence.                                                                          │
+│           │                                                                                                          │
+│           │ Feature 4: Words that introduce a quoted opinion, statement, or thought, especially in reported speech   │
+│           │                                                                                                          │
+│ Assistant │ After reviewing the list, I've condensed it to remove duplicates and similar features. Here is the       │
+│           │ resulting list:                                                                                          │
+│           │                                                                                                          │
+│           │ Feature 1: Parts of sentences within direct speech or quotations.                                        │
+│           │ Feature 2: Verbs or phrases indicating mental states or actions within direct speech                     │
+│           │ Feature 3: Small, functional words (prepositions, articles, conjunctions) or pronouns at the beginning   │
+│           │ of a quoted phrase or sentence.                                                                          │
+│           │ Feature 4: Words that introduce a quoted opinion, statement, or thought.                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Parts of sentences within direct speech or quotations.                           │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain parts of sentences within direct speech or quotations:                    │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 4, Example 5, Example 6, Example 7, Example 9, Example 10, Example 11,     │
+│           │ Example 12, Example 17, Example 18, Example 20.                                                          │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 17, 18, 20]                                              │
+│ System    │ Running on explanation: Verbs or phrases indicating mental states or actions within direct speech        │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain verbs or phrases indicating mental states or actions within direct        │
+│           │ speech:                                                                                                  │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 5, Example 6, Example 9, Example 10, Example 12, Example 20.               │
+│           │                                                                                                          │
+│           │ These examples contain verbs or phrases indicating mental states or actions within direct speech, such   │
+│           │ as "thought", "wonder", "said", "ashamed", "scared", "wanted", and "felt".                               │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 5, 6, 9, 10, 12, 20]                                                                │
+│ System    │ Running on explanation: Small, functional words (prepositions, articles, conjunctions) or pronouns at    │
+│           │ the beginning of a quoted phrase or sentence.                                                            │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain small, functional words (prepositions, articles, conjunctions) or         │
+│           │ pronouns at the beginning of a quoted phrase or sentence:                                                │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 9, Example 10, Example 12, Example 18, Example 20.   │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 9, 10, 12, 18, 20]                                                            │
+│ System    │ Running on explanation: Words that introduce a quoted opinion, statement, or thought.                    │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain words that introduce a quoted opinion, statement, or thought:             │
+│           │                                                                                                          │
+│           │ Example 1 (Notes), Example 3 (said), Example 6 ("I was very scared..."), Example 7 ("He was a            │
+│           │ sailor..."), Example 9 (no explicit introduction, but quotation marks indicate a quoted statement),      │
+│           │ Example 10 ("I wanted to meet..."), Example 12 (said), Example 18 (denied), Example 19 (no explicit      │
+│           │ introduction, but quotation marks indicate a quoted statement), Example 20 (said)                        │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 9, 10, 12, 18, 19, 20]                                                        │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Parts of sentences within direct speech or quotations.                           │
+│ Assistant │ Here are 10 examples of short text samples containing parts of sentences within direct speech or         │
+│           │ quotations:                                                                                              │
+│           │                                                                                                          │
+│           │ Example 1: "I'm going to the store," said John, "and I'll be back soon."                                 │
+│           │ Example 2: The teacher asked, "What is the capital of France, and who can tell me?"                      │
+│           │ Example 3: According to the CEO, "We will increase production by 20% next quarter."                      │
+│           │ Example 4: "I love this song!" exclaimed Sarah, "it's my favorite!"                                      │
+│           │ Example 5: The article stated, "The new policy will take effect on January 1st, but it's still unclear   │
+│           │ how it will be implemented."                                                                             │
+│           │ Example 6: "I'm not sure," replied Tom, "but I think we should try again."                               │
+│           │ Example 7: The politician's speech ended with, "We will make our country great again, and we will do it  │
+│           │ together!"                                                                                               │
+│           │ Example 8: "What's the meaning of life?" asked the philosopher, "is it to seek happiness or to fulfill   │
+│           │ our duty?"                                                                                               │
+│           │ Example 9: The review said, "The new restaurant is a must-try, especially their signature dish, which is │
+│           │ to die for."                                                                                             │
+│           │ Example 10: "I'm sorry," whispered Emily, "I didn't mean to hurt your feelings."                         │
+│ System    │ Score: 5.393588542938232                                                                                 │
+│ System    │ Running on explanation: Verbs or phrases indicating mental states or actions within direct speech        │
+│ Assistant │ Here are 10 examples of short text samples containing verbs or phrases indicating mental states or       │
+│           │ actions within direct speech.                                                                            │
+│           │                                                                                                          │
+│           │ Since the feature involves direct speech, I'll make sure to use quotation marks to set off the quoted    │
+│           │ text.                                                                                                    │
+│           │                                                                                                          │
+│           │ I'll keep the examples varied, with different mental states and actions, and different sentence          │
+│           │ structures.                                                                                              │
+│           │                                                                                                          │
+│           │ Example 1: "I think I'll go to the store," she said.                                                     │
+│           │ Example 2: The teacher asked, "Do you understand the lesson, John?"                                      │
+│           │ Example 3: "I'm so confused," Sarah exclaimed, staring at her math homework.                             │
+│           │ Example 4: "I believe in you," the coach told the nervous athlete.                                       │
+│           │ Example 5: "I'm trying to focus, but I just can't," Emily said, frustrated.                              │
+│           │ Example 6: "I remember when I first learned to ride a bike," Grandpa said, smiling.                      │
+│           │ Example 7: "I'm worried about the test," Tom admitted to his friend.                                     │
+│           │ Example 8: "I realize now that I made a mistake," the CEO said in the press conference.                  │
+│           │ Example 9: "I'm imagining a world where anything is possible," the artist said, describing her vision.   │
+│           │ Example 10: "I'm feeling really anxious about this presentation," Rachel confessed to her colleague.     │
+│ System    │ Score: 4.684375762939453                                                                                 │
+│ System    │ Running on explanation: Small, functional words (prepositions, articles, conjunctions) or pronouns at    │
+│           │ the beginning of a quoted phrase or sentence.                                                            │
+│ Assistant │ Here are 10 examples of short text samples containing small, functional words (prepositions, articles,   │
+│           │ conjunctions) or pronouns at the beginning of a quoted phrase or sentence:                               │
+│           │                                                                                                          │
+│           │ Example 1: The CEO said, "At the end of the day, we need to make a decision."                            │
+│           │ Example 2: According to the report, "The company will not be liable for any damages."                    │
+│           │ Example 3: My mom always says, "And then there were none, left to clean up the mess."                    │
+│           │ Example 4: The politician claimed, "I will always put the needs of the people first."                    │
+│           │ Example 5: The teacher wrote on the board, "A well-structured essay begins with a clear thesis           │
+│           │ statement."                                                                                              │
+│           │ Example 6: The actor's famous line was, "But I didn't do it, officer."                                   │
+│           │ Example 7: The company's motto is, "For the people, by the people, of the people."                       │
+│           │ Example 8: The professor quoted, "It is not the strongest of the species that survives, but rather the   │
+│           │ one most adaptable to change."                                                                           │
+│           │ Example 9: The singer's hit song started with the lyrics, "You and I, we're meant to be."                │
+│           │ Example 10: The philosopher once said, "Or is it the other way around, that the truth is what we make it │
+│           │ to be?"                                                                                                  │
+│ System    │ Score: 8.108765602111816                                                                                 │
+│ System    │ Running on explanation: Words that introduce a quoted opinion, statement, or thought.                    │
+│ Assistant │ Here are 10 examples of short text samples containing words that introduce a quoted opinion, statement,  │
+│           │ or thought.                                                                                              │
+│           │                                                                                                          │
+│           │ Example 1: According to the expert, "the economy will recover soon."                                     │
+│           │ Example 2: She said that "the new policy is a disaster waiting to happen."                               │
+│           │ Example 3: As the CEO noted, "our sales have increased by 20% this quarter."                             │
+│           │ Example 4: The report stated that "the company will go bankrupt if it doesn't restructure."              │
+│           │ Example 5: In her opinion, "the best way to learn a language is through immersion."                      │
+│           │ Example 6: As he put it, "you can't teach an old dog new tricks."                                        │
+│           │ Example 7: The mayor declared that "the city will do everything in its power to support the victims."    │
+│           │ Example 8: According to the review, "this restaurant serves the best sushi in town."                     │
+│           │ Example 9: The professor argued that "climate change is the most pressing issue of our time."            │
+│           │ Example 10: As the article claimed, "the new smartphone will revolutionize the tech industry."           │
+│           │                                                                                                          │
+│           │ I've made sure to include a variety of words that introduce quoted opinions, statements, or thoughts,    │
+│           │ such as "according to", "said", "noted", "stated", "in her opinion", "as he put it", "declared",         │
+│           │ "according to the review", "argued", and "claimed".                                                      │
+│ System    │ Score: 6.582217693328857                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 7.30042028427124                                                                         │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.8, 0.5)                                                                              │
+│           │ Generation Score: 5.393588542938232                                                                      │
+│           │ Explanation: Parts of sentences within direct speech or quotations.                                      │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.6, 0.2)                                                                              │
+│           │ Generation Score: 4.684375762939453                                                                      │
+│           │ Explanation: Verbs or phrases indicating mental states or actions within direct speech                   │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.7, 0.2)                                                                              │
+│           │ Generation Score: 8.108765602111816                                                                      │
+│           │ Explanation: Small, functional words (prepositions, articles, conjunctions) or pronouns at the beginning │
+│           │ of a quoted phrase or sentence.                                                                          │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (0.8, 0.2)                                                                              │
+│           │ Generation Score: 6.582217693328857                                                                      │
+│           │ Explanation: Words that introduce a quoted opinion, statement, or thought.                               │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 7.30042028427124
+
+Explanation 0:
+Detection Score: (0.8, 0.5)
+Generation Score: 5.393588542938232
+Explanation: Parts of sentences within direct speech or quotations.
+
+Explanation 1:
+Detection Score: (0.6, 0.2)
+Generation Score: 4.684375762939453
+Explanation: Verbs or phrases indicating mental states or actions within direct speech
+
+Explanation 2:
+Detection Score: (0.7, 0.2)
+Generation Score: 8.108765602111816
+Explanation: Small, functional words (prepositions, articles, conjunctions) or pronouns at the beginning of a quoted 
+phrase or sentence.
+
+Explanation 3:
+Detection Score: (0.8, 0.2)
+Generation Score: 6.582217693328857
+Explanation: Words that introduce a quoted opinion, statement, or thought.
+
+

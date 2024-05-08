@@ -31,7 +31,7 @@ def run(
     # Load configs for respective providers
     if provider == "openai":
         from config import EnvConfig, ExplainerConfig, CondenserConfig, DetectionScorerConfig, GenerationScorerConfig
-    elif provider == "replicate":
+    else:
         from llama_config import EnvConfig, ExplainerConfig, CondenserConfig, DetectionScorerConfig, GenerationScorerConfig
 
     # Load default configs for now
@@ -80,6 +80,11 @@ def load_sae(
 
     return sae
 
+# run("openai", 1, [1, 6243, 19991, 8434, 8231])
 
+run("openai", 10, [11, 19, 33, 20, 7000])
 
-run("replicate", 10, [11, 19, 33, 20, 7000])
+# run("replicate", 9, [23735, 23839, 24007, 24386, 21503])
+
+# run("replicate", 8, [16955, 15269, 10277, 14407, 6236])
+

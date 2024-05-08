@@ -1,0 +1,398 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: ues                                                                                           │
+│           │                                                                                                          │
+│           │ Exec<<ute one>> or<< more tasks concurrently                                                             │
+│           │                                                                                                          │
+│           │ Tasks are completed according to>> complexity and                                                        │
+│           │ Example 2:  will consists of several<< roles, each role will be responsible for>> set<< of tasks to      │
+│           │ install>> a component<< or>>                                                                             │
+│           │ Example 3:  characteristics of a given value: It might be involved<< in an operation, such as>> addition │
+│           │ or multiplication<<,>>                                                                                   │
+│           │ Example 4: <|endoftext|>ues                                                                              │
+│           │                                                                                                          │
+│           │ Exec<<ute one>> or<< more tasks concurrently                                                             │
+│           │                                                                                                          │
+│           │ T>>                                                                                                      │
+│           │ Example 5:  careful wording used.                                                                        │
+│           │                                                                                                          │
+│           │ The word authentication<< basically means>> "the<< process or action of>> proving or showing             │
+│           │ Example 6: <|endoftext|> present command<<:>> droplet name:                                              │
+│           │ Example 7:  playbook will consists of several<< roles, each role will be responsible for>> set<< of      │
+│           │ tasks to install>> a component                                                                           │
+│           │ Example 8:  trace the component<< state>> and<< modify it>> from provided inputs, we can manually<<      │
+│           │ trigger events, directly>> jump<< to>>                                                                   │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - "ute one", "more tasks concurrently", "or", "according to", "roles, each role will be responsible      │
+│           │ for", "of tasks to install", "or", "in an operation, such as", "addition or multiplication,", "ute one", │
+│           │ "or", "more tasks concurrently", "basically means", "process or action of", ":", "roles, each role will  │
+│           │ be responsible for", "of tasks to install", "state", "modify it", "trigger events, directly", "to"       │
+│           │                                                                                                          │
+│           │ PREVIOUS TOKENS:                                                                                         │
+│           │ - "Exec", "concurrently", "one", "completed", "will consists of several", "responsible for", a "set",    │
+│           │ "involved", "such as", "Exec", "concurrently", "authentication", "means", "command", "will consists of   │
+│           │ several", "responsible for", "component", "it", "we can manually", "jump"                                │
+│           │                                                                                                          │
+│           │ NEXT TOKENS:                                                                                             │
+│           │ - "or", "Tasks are", "tasks", "complexity and", "set", "a component", "in an operation",                 │
+│           │ "characteristics of a given value:", "more tasks", "concurrently", "authentication", "droplet name:", "a │
+│           │ component", "state", "from provided inputs", "trigger events", "from provided inputs"                    │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ Patterns in activating tokens:                                                                           │
+│           │ - Related to actions, processes, or states (e.g., "modify it", "trigger events", "process or action      │
+│           │ of").                                                                                                    │
+│           │ - Often include verbs or action-oriented phrases ("execute one", "modify it").                           │
+│           │ - Frequently occur at boundaries of clauses or sentences.                                                │
+│           │                                                                                                          │
+│           │ Patterns in previous tokens:                                                                             │
+│           │ - Often verbs or phrases indicating a transition or continuation ("Exec", "completed", "will consists of │
+│           │ several").                                                                                               │
+│           │                                                                                                          │
+│           │ Patterns in next tokens:                                                                                 │
+│           │ - Continuations of action descriptions or specifications of tasks ("or", "Tasks are", "tasks").          │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ Shared Features:                                                                                         │
+│           │ - Activating tokens often include verbs or action-oriented language.                                     │
+│           │ - They appear in contexts related to task management or process descriptions.                            │
+│           │ - Activating tokens often bridge or initiate descriptive or directive clauses.                           │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Presence of verbs or phrases indicating actions, particularly those initiating or describing tasks    │
+│           │ and processes.                                                                                           │
+│           │ 2. Tokens that appear at the syntactic boundary of clauses, typically initiating or concluding action    │
+│           │ descriptions.                                                                                            │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  and consciousness, were fundamental, inescapable axioms in any<< action we undertake:>> ��   │
+│           │ Example 2: <|endoftext|>ues                                                                              │
+│           │                                                                                                          │
+│           │ Exec<<ute one>> or<< more tasks concurrently                                                             │
+│           │                                                                                                          │
+│           │ Tasks>>                                                                                                  │
+│           │ Example 3:  themselves by<< ">>magic" if one variable changes. You could write the<< update logic        │
+│           │ manually,>> but with                                                                                     │
+│           │ Example 4: ffc7fff pc=0x41439e] goroutine<< 2395 : runtime                                               │
+│           │ Example 5:  identified 30 prime characteristics of a given value: It might be involved<< in an           │
+│           │ operation, such as>> addition                                                                            │
+│           │ Example 6: <|endoftext|>ues                                                                              │
+│           │                                                                                                          │
+│           │ Exec<<ute one>> or<< more tasks concurrently>>                                                           │
+│           │ Example 7:  everyone save Sung and OSx had died. Just as the<< spell was>> about<< to complete>>, a      │
+│           │ death                                                                                                    │
+│           │ Example 8: <|endoftext|>ues                                                                              │
+│           │                                                                                                          │
+│           │ Exec<<ute one>> or<< more tasks>>                                                                        │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - "action we undertake:"                                                                                 │
+│           │ - "ute one", "more tasks", "more tasks concurrently"                                                     │
+│           │ - "\"", "update logic manually,"                                                                         │
+│           │ - "2395 "                                                                                                │
+│           │ - "addition"                                                                                             │
+│           │ - "or", "Tasks"                                                                                          │
+│           │ - "about", "a death"                                                                                     │
+│           │ - "or", "Tasks"                                                                                          │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ The activating tokens often involve concepts or actions: "action," "execute," "update logic," "running," │
+│           │ "operation," "spell," "tasks."                                                                           │
+│           │ The previous tokens are often verbs or prepositions indicating an action or state.                       │
+│           │ The next tokens sometimes involve continuation or conclusion of statements or codes.                     │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The examples often contain phrases indicating actions or execution.                                    │
+│           │ - The neuron responds to tokens within speech or programming contexts.                                   │
+│           │ - The activating tokens are often followed by punctuation or symbols indicating a continuation or end of │
+│           │ a statement.                                                                                             │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples?                                    │
+│           │ - The activating tokens are often verbs or verb phrases.                                                 │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Tokens associated with action or verb phrases within programming, procedural or functional contexts.  │
+│           │ 2. Tokens indicating continuation or termination of actions within spoken, written, or coded dialogues.  │
+│ System    │ Presence of verbs or phrases indicating actions, particularly those initiating or describing tasks and   │
+│           │ processes.                                                                                               │
+│           │                                                                                                          │
+│           │ Tokens that appear at the syntactic boundary of clauses, typically initiating or concluding action       │
+│           │ descriptionsTokens associated with action or verb phrases within programming, procedural or functional   │
+│           │ contexts.                                                                                                │
+│           │                                                                                                          │
+│           │ Tokens indicating continuation or termination of actions within spoken, written, or coded dialogues      │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: ['Presence of verbs or phrases indicating actions, particularly those initiating or           │
+│           │ describing tasks and processes.\n', 'Tokens that appear at the syntactic boundary of clauses, typically  │
+│           │ initiating or concluding action descriptions']                                                           │
+│           │ Feature 2: ['Tokens associated with action or verb phrases within programming, procedural or functional  │
+│           │ contexts.\n', 'Tokens indicating continuation or termination of actions within spoken, written, or coded │
+│           │ dialogues']                                                                                              │
+│           │                                                                                                          │
+│ Assistant │ Feature 1: Presence of verbs or phrases indicating actions, particularly those initiating or describing  │
+│           │ tasks and processes.                                                                                     │
+│           │ Feature 2: Tokens that appear at the syntactic boundary of clauses, typically initiating or concluding   │
+│           │ action descriptions.                                                                                     │
+│           │ Feature 3: Tokens associated with action or verb phrases within programming, procedural or functional    │
+│           │ contexts.                                                                                                │
+│           │ Feature 4: Tokens indicating continuation or termination of actions within spoken, written, or coded     │
+│           │ dialogues.                                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Presence of verbs or phrases indicating actions, particularly those initiating   │
+│           │ or describing tasks and processes.                                                                       │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain verbs or phrases indicating actions, particularly those initiating or     │
+│           │ describing tasks and processes:                                                                          │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 10, Example 12, Example 13, Example 17, Example 19, Example 20. │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 10, 12, 13, 17, 19, 20]                                                          │
+│ System    │ Running on explanation: Tokens that appear at the syntactic boundary of clauses, typically initiating or │
+│           │ concluding action descriptions.                                                                          │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens that appear at the syntactic boundary of clauses, typically        │
+│           │ initiating or concluding action descriptions:                                                            │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 8, Example 10, Example 12, Example 13, Example 19.              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 8, 10, 12, 13, 19]                                                               │
+│ System    │ Running on explanation: Tokens associated with action or verb phrases within programming, procedural or  │
+│           │ functional contexts.                                                                                     │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens associated with action or verb phrases within programming,         │
+│           │ procedural, or functional contexts:                                                                      │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 20.  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 20]                                                           │
+│ System    │ Running on explanation: Tokens indicating continuation or termination of actions within spoken, written, │
+│           │ or coded dialogues.                                                                                      │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens indicating continuation or termination of actions within spoken,   │
+│           │ written, or coded dialogues:                                                                             │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 11, Example 12, Example 13, Example 20.              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 11, 12, 13, 20]                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Presence of verbs or phrases indicating actions, particularly those initiating   │
+│           │ or describing tasks and processes.                                                                       │
+│ Assistant │ Here are 10 examples of short text samples containing verbs or phrases indicating actions, specifically  │
+│           │ those that initiate or describe tasks and processes:                                                     │
+│           │                                                                                                          │
+│           │ Example 1: Please begin the presentation now.                                                            │
+│           │ Example 2: She started the engine before dawn.                                                           │
+│           │ Example 3: Mark decided to launch the new software today.                                                │
+│           │ Example 4: Initiate the safety protocols immediately.                                                    │
+│           │ Example 5: They conducted a thorough review of all procedures.                                           │
+│           │ Example 6: I will create the project timeline by tomorrow.                                               │
+│           │ Example 7: He implemented the changes as suggested in the meeting.                                       │
+│           │ Example 8: She organized all the files neatly in the new cabinet.                                        │
+│           │ Example 9: We need to develop a new approach to increase efficiency.                                     │
+│           │ Example 10: Can you compile the report by the end of the day?                                            │
+│ System    │ Score: 90.93666076660156                                                                                 │
+│ System    │ Running on explanation: Tokens that appear at the syntactic boundary of clauses, typically initiating or │
+│           │ concluding action descriptions.                                                                          │
+│ Assistant │ Here are 10 examples of short text examples containing tokens that appear at the syntactic boundary of   │
+│           │ clauses, typically initiating or concluding action descriptions:                                         │
+│           │                                                                                                          │
+│           │ Example 1: After she arrived, the meeting started.                                                       │
+│           │ Example 2: The rain fell heavily, so they postponed the game.                                            │
+│           │ Example 3: Once he finished his homework, he went out to play.                                           │
+│           │ Example 4: The moment the bell rang, the students rushed out.                                            │
+│           │ Example 5: If you complete the project on time, you will receive a bonus.                                │
+│           │ Example 6: Before we begin the presentation, please turn off your phones.                                │
+│           │ Example 7: As soon as the concert ended, the crowd cheered loudly.                                       │
+│           │ Example 8: Since the train was late, I decided to take a cab.                                            │
+│           │ Example 9: When the cake is done baking, let it cool for ten minutes.                                    │
+│           │ Example 10: While she was reading, the phone rang.                                                       │
+│ System    │ Score: 90.42169952392578                                                                                 │
+│ System    │ Running on explanation: Tokens associated with action or verb phrases within programming, procedural or  │
+│           │ functional contexts.                                                                                     │
+│ Assistant │ Here are 10 examples of short text samples containing tokens associated with action or verb phrases      │
+│           │ within programming, procedural, or functional contexts:                                                  │
+│           │                                                                                                          │
+│           │ Example 1: Initialize the variables before starting the loop.                                            │
+│           │ Example 2: Call the function to process the data.                                                        │
+│           │ Example 3: Execute the query to retrieve the user information.                                           │
+│           │ Example 4: Append the new element to the list after checking its value.                                  │
+│           │ Example 5: Update the database with the new entry from the form.                                         │
+│           │ Example 6: Remove the obsolete files from the directory.                                                 │
+│           │ Example 7: Fetch the latest updates from the server.                                                     │
+│           │ Example 8: Compile the code to check for errors.                                                         │
+│           │ Example 9: Deploy the application to the production environment.                                         │
+│           │ Example 10: Iterate through the array to find the maximum value.                                         │
+│ System    │ Score: 93.08316040039062                                                                                 │
+│ System    │ Running on explanation: Tokens indicating continuation or termination of actions within spoken, written, │
+│           │ or coded dialogues.                                                                                      │
+│ Assistant │ Here are 10 examples of short text samples containing tokens that indicate continuation or termination   │
+│           │ of actions within spoken, written, or coded dialogues. The tokens will appear in varied positions and    │
+│           │ contexts.                                                                                                │
+│           │                                                                                                          │
+│           │ Example 1: "Please proceed with the next step in the procedure," the technician instructed over the      │
+│           │ intercom.                                                                                                │
+│           │                                                                                                          │
+│           │ Example 2: She typed "END" to signal the termination of the data entry session.                          │
+│           │                                                                                                          │
+│           │ Example 3: During the meeting, he said, "Let's continue this discussion after lunch."                    │
+│           │                                                                                                          │
+│           │ Example 4: In the script, the character decisively says, "Stop, that's enough," bringing the heated      │
+│           │ argument to a halt.                                                                                      │
+│           │                                                                                                          │
+│           │ Example 5: "Go on, I'm listening," she encouraged, eager to hear more of the story.                      │
+│           │                                                                                                          │
+│           │ Example 6: The software developer wrote a comment in the code: //TODO: Implement the termination         │
+│           │ condition here.                                                                                          │
+│           │                                                                                                          │
+│           │ Example 7: "And then what happened?" he asked, urging the speaker to keep going with the tale.           │
+│           │                                                                                                          │
+│           │ Example 8: "That concludes our presentation, thank you for attending," she announced, ending the         │
+│           │ session.                                                                                                 │
+│           │                                                                                                          │
+│           │ Example 9: "Hold that thought," he interjected, pausing the flow of ideas for a moment.                  │
+│           │                                                                                                          │
+│           │ Example 10: In the dialogue box, the option read "Exit," which would close the application completely.   │
+│ System    │ Score: 87.9032974243164                                                                                  │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.8, 0.1)                                                                              │
+│           │ Generation Score: 90.93666076660156                                                                      │
+│           │ Explanation: Presence of verbs or phrases indicating actions, particularly those initiating or           │
+│           │ describing tasks and processes.                                                                          │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.7, 0.1)                                                                              │
+│           │ Generation Score: 90.42169952392578                                                                      │
+│           │ Explanation: Tokens that appear at the syntactic boundary of clauses, typically initiating or concluding │
+│           │ action descriptions.                                                                                     │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.9, 0.0)                                                                              │
+│           │ Generation Score: 93.08316040039062                                                                      │
+│           │ Explanation: Tokens associated with action or verb phrases within programming, procedural or functional  │
+│           │ contexts.                                                                                                │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (0.8, 0.0)                                                                              │
+│           │ Generation Score: 87.9032974243164                                                                       │
+│           │ Explanation: Tokens indicating continuation or termination of actions within spoken, written, or coded   │
+│           │ dialogues.                                                                                               │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘

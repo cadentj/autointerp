@@ -1,0 +1,433 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  by drinking wine?<<                                                                          │
+│           │                                                                                                          │
+│           │ >>The 2010 British student demonstrations awoke<< the>> austerity<< generation. The 2011>> Chilean       │
+│           │ Winter                                                                                                   │
+│           │ Example 2: planes heading for his borders<<. It is not far>>-<<fetched to posit that he might give the   │
+│           │ orders>>                                                                                                 │
+│           │ Example 3:  and then<< sees>> U.S. warplanes heading for his borders<<. It is not far>>-<<fetched>>      │
+│           │ Example 4:  and<< the initial popularity he gained was>> more than<< just>> relief at Blair going<<.     │
+│           │ Voters wanted a>> new approach                                                                           │
+│           │ Example 5:  more than<< just>> relief at Blair going<<. Voters wanted a>> new approach<<. Brown had the  │
+│           │ capacity>> and<< the>>                                                                                   │
+│           │ Example 6:  that<< I had>> read<< it>> before<<. By the time the>> plane landed<<, I had attained the>>  │
+│           │ ��                                                                                                       │
+│           │ Example 7:  no way to build a world of interconnected systems that was completely secure<<. Americans    │
+│           │ had>> spent the past decade                                                                              │
+│           │ Example 8: << seriously>> and then<< sees>> U.S. warplanes heading for his borders<<. It is not far>>-   │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - Example 1: "The 2010 British student demonstrations awoke", "the", "austerity", "generation", "The     │
+│           │ 2011", "Chilean Winter"                                                                                  │
+│           │ - Example 2: "It is not far", "fetched to posit that he might give the orders"                           │
+│           │ - Example 3: "sees", "It is not far", "fetched"                                                          │
+│           │ - Example 4: "the initial popularity he gained was", "more than", "just", "relief at Blair going",       │
+│           │ "Voters wanted a", "new approach"                                                                        │
+│           │ - Example 5: "more than", "just", "relief at Blair going", "Voters wanted a", "new approach", "Brown had │
+│           │ the capacity", "and", "the"                                                                              │
+│           │ - Example 6: "I had", "read", "it", "before", "By the time the", "plane landed", "I had attained the",   │
+│           │ "��"                                                                                                     │
+│           │ - Example 7: "Americans had", "spent the past decade"                                                    │
+│           │ - Example 8: "seriously", "and then", "sees", "It is not far", "-"                                       │
+│           │                                                                                                          │
+│           │ PREVIOUS TOKENS:                                                                                         │
+│           │ - Typically, previous tokens set up a context or are part of a larger statement that includes the        │
+│           │ activating tokens.                                                                                       │
+│           │                                                                                                          │
+│           │ NEXT TOKENS:                                                                                             │
+│           │ - Often punctuation marks or continuation of the clause or sentence, maintaining the narrative or        │
+│           │ explanatory context.                                                                                     │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ Patterns observed:                                                                                       │
+│           │ - Many activating tokens seem to involve describing events, situations, or actions ("sees", "spent the   │
+│           │ past decade", "had read").                                                                               │
+│           │ - Several examples contain comparative or evaluative phrases ("more than", "just").                      │
+│           │ - Some activating tokens are part of explanatory or speculative statements ("It is not far-fetched to    │
+│           │ posit that he might give the orders").                                                                   │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The examples often involve expressions that extend, elaborate, or clarify a situation, event, or       │
+│           │ action.                                                                                                  │
+│           │ - The activating tokens frequently occur in contexts that involve reflection, evaluation, or speculation │
+│           │ about a condition or scenario.                                                                           │
+│           │ - The tokens often appear in complex sentence structures that require deeper cognitive processing to     │
+│           │ understand implications or relationships between elements.                                               │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │ 1. Tokens that are part of phrases that evaluate, speculate, or explain scenarios, particularly in       │
+│           │ complex sentence structures.                                                                             │
+│           │ 2. Tokens involved in describing or detailing events, actions, or conditions, often within a narrative   │
+│           │ or explanatory context.                                                                                  │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  conviction that<< I had>> read<< it>> before<<. By the time the>> plane landed<<, I had      │
+│           │ attained the>> �                                                                                         │
+│           │ Example 2: <<. The 2011>> Chilean Winter<< frightened>> tight-belted administrators the<<                │
+│           │ world>>-round<<.>> And<< now,>> Quebec                                                                   │
+│           │ Example 3:  drinking wine?<<                                                                             │
+│           │                                                                                                          │
+│           │ >>The 2010 British student demonstrations awoke<< the>> austerity<< generation. The 2011>> Chilean       │
+│           │ Winter<< frightened>>                                                                                    │
+│           │ Example 4:  disturbing video of Syrian rebels beheading a child near the city of Aleppo<<. It had>>      │
+│           │ caused a minor                                                                                           │
+│           │ Example 5: inity of the government and the insanity of<< the>> nuclear war spectacle<< became evident to │
+│           │ everyone, the>> spontaneous human                                                                        │
+│           │ Example 6:  (as he thoughtfully described the gorgeous mosaic of gay life in Manhattan<<). It was a>>    │
+│           │ spirited piece                                                                                           │
+│           │ Example 7:  warplanes heading for his borders<<. It is not far>>-<<fetched to posit that he might give   │
+│           │ the>>                                                                                                    │
+│           │ Example 8: �workforce rebalancing charge��—this time $560 million<<—was paired with>> another            │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - "I had", "it", "By the time the", "plane landed", "I had attained the", "�"                            │
+│           │ - ". The 2011", "Chilean Winter", "frightened", "world", "-round", ".", "And", "now,", "Quebec"          │
+│           │ - "The 2010 British student demonstrations awoke", "the", "austerity", "generation. The 2011", "Chilean  │
+│           │ Winter", "frightened"                                                                                    │
+│           │ - "It had"                                                                                               │
+│           │ - "the", "nuclear war spectacle", "became evident to everyone, the", "spontaneous human"                 │
+│           │ - "It was a", "spirited piece"                                                                           │
+│           │ - "It is not far", "-fetched to posit that he might give the"                                            │
+│           │ - "—was paired with"                                                                                     │
+│           │                                                                                                          │
+│           │ PREVIOUS TOKENS:                                                                                         │
+│           │ - "that", "read", "before", "the time the", "attained the", "�"                                          │
+│           │ - "administrators the", "frightened", "now,", "Quebec"                                                   │
+│           │ - "demonstrations awoke", "generation. The 2011", "frightened"                                           │
+│           │ - "Aleppo", "a minor"                                                                                    │
+│           │ - "the insanity of", "spontaneous human"                                                                 │
+│           │ - "Manhattan", "a"                                                                                       │
+│           │ - "his borders", "posits that he might give the"                                                         │
+│           │ - "million", "another"                                                                                   │
+│           │                                                                                                          │
+│           │ NEXT TOKENS:                                                                                             │
+│           │ - "read", "before", "plane landed", "�"                                                                  │
+│           │ - "Chilean Winter", "world-round", "now,", "Quebec"                                                      │
+│           │ - "the", "austerity", "generation. The 2011", "Chilean Winter", "frightened"                             │
+│           │ - "caused a minor"                                                                                       │
+│           │ - "nuclear war spectacle", "became evident to everyone, the", "spontaneous human"                        │
+│           │ - "spirited piece"                                                                                       │
+│           │ - "far-fetched to posit that he might give the"                                                          │
+│           │ - "another"                                                                                              │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ - Activating tokens are phrases often connected to events, descriptions, or actions within sentences.    │
+│           │ - Activating tokens largely seem to be pivotal narrative shifts or key actions/descriptions.             │
+│           │ - Activating tokens are often followed or surrounded by commas, dashes, or other punctuation marking a   │
+│           │ pause or shift.                                                                                          │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - Activating tokens often involve impactful action or description words.                                 │
+│           │ - The occurrence of activating tokens often appears around punctuation that indicates a pause or change  │
+│           │ in the sentence.                                                                                         │
+│           │ - The neuron activates around narrative shifts or significant elements in the text.                      │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Phrases that denote a narrative shift or crucial action points in sentences, often signaled by        │
+│           │ punctuation like commas, periods, or dashes.                                                             │
+│           │ 2. Key descriptive phrases that centralize pivotal elements or actions in the narrative context, often   │
+│           │ encapsulated by punctuation marks, serving as a pause or emphasis in the text.                           │
+│ System    │ Tokens that are part of phrases that evaluate, speculate, or explain scenarios, particularly in complex  │
+│           │ sentence structures.                                                                                     │
+│           │                                                                                                          │
+│           │ Tokens involved in describing or detailing events, actions, or conditions, often within a narrative or   │
+│           │ explanatory context                                                                                      │
+│           │ Phrases that denote a narrative shift or crucial action points in sentences, often signaled by           │
+│           │ punctuation like commas, periods, or dashes.                                                             │
+│           │                                                                                                          │
+│           │ Key descriptive phrases that centralize pivotal elements or actions in the narrative context, often      │
+│           │ encapsulated by punctuation marks, serving as a pause or emphasis in the text                            │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: Tokens that are part of phrases that evaluate, speculate, or explain scenarios, particularly  │
+│           │ in complex sentence structures.                                                                          │
+│           │                                                                                                          │
+│           │ Feature 2: Tokens involved in describing or detailing events, actions, or conditions, often within a     │
+│           │ narrative or explanatory context                                                                         │
+│           │ Feature 3: Phrases that denote a narrative shift or crucial action points in sentences, often signaled   │
+│           │ by punctuation like commas, periods, or dashes.                                                          │
+│           │                                                                                                          │
+│           │ Feature 4: Key descriptive phrases that centralize pivotal elements or actions in the narrative context, │
+│           │ often encapsulated by punctuation marks, serving as a pause or emphasis in the text                      │
+│           │                                                                                                          │
+│ Assistant │ Here is the condensed list of distinct features:                                                         │
+│           │                                                                                                          │
+│           │ Feature 1: Tokens that are part of phrases that evaluate, speculate, or explain scenarios, particularly  │
+│           │ in complex sentence structures.                                                                          │
+│           │                                                                                                          │
+│           │ Feature 2: Tokens involved in describing or detailing events, actions, or conditions, often within a     │
+│           │ narrative or explanatory context.                                                                        │
+│           │                                                                                                          │
+│           │ Feature 3: Phrases that denote a narrative shift or crucial action points in sentences, often signaled   │
+│           │ by punctuation like commas, periods, or dashes.                                                          │
+│           │                                                                                                          │
+│           │ Feature 4: Key descriptive phrases that centralize pivotal elements or actions in the narrative context, │
+│           │ often encapsulated by punctuation marks, serving as a pause or emphasis in the text.                     │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Tokens that are part of phrases that evaluate, speculate, or explain scenarios,  │
+│           │ particularly in complex sentence structures.                                                             │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens that are part of phrases that evaluate, speculate, or explain      │
+│           │ scenarios, particularly in complex sentence structures:                                                  │
+│           │                                                                                                          │
+│           │ Example 3: "It is not far-fetched to posit that he might give the orders" speculates about a possible    │
+│           │ action.                                                                                                  │
+│           │ Example 6: "It is not far-fetched" speculates about a scenario.                                          │
+│           │ Example 7: "and the initial popularity he gained was more than just relief at Blair going. Voters wanted │
+│           │ a new approach" evaluates a political scenario.                                                          │
+│           │ Example 10: "more than just relief at Blair going. Voters wanted a new approach. Brown had the capacity  │
+│           │ and the" evaluates and explains a political scenario.                                                    │
+│           │ Example 12: "no way to build a world of interconnected systems that was completely secure. Americans had │
+│           │ spent the past decade" explains a scenario regarding security.                                           │
+│           │ Example 13: "seriously and then sees U.S. warplanes heading for his borders. It is not far-" speculates  │
+│           │ about a scenario.                                                                                        │
+│           │ Example 20: ". The 2011 Chilean Winter frightened tight-belted administrators the world-round. And now,  │
+│           │ Quebec" evaluates the impact of an event.                                                                │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [3, 6, 7, 10, 12, 13, 20]                                                                  │
+│ System    │ Running on explanation: Tokens involved in describing or detailing events, actions, or conditions, often │
+│           │ within a narrative or explanatory context.                                                               │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens involved in describing or detailing events, actions, or            │
+│           │ conditions, often within a narrative or explanatory context:                                             │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 3, Example 4, Example 6, Example 7, Example 10, Example 12, Example 13,    │
+│           │ Example 15, Example 17, Example 20.                                                                      │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 3, 4, 6, 7, 10, 12, 13, 15, 17, 20]                                                 │
+│ System    │ Running on explanation: Phrases that denote a narrative shift or crucial action points in sentences,     │
+│           │ often signaled by punctuation like commas, periods, or dashes.                                           │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain phrases that denote a narrative shift or crucial action points in         │
+│           │ sentences, often signaled by punctuation like commas, periods, or dashes:                                │
+│           │                                                                                                          │
+│           │ Example 1, Example 4, Example 10, Example 11, Example 12, Example 17, Example 19, Example 20.            │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 4, 10, 11, 12, 17, 19, 20]                                                             │
+│ System    │ Running on explanation: Key descriptive phrases that centralize pivotal elements or actions in the       │
+│           │ narrative context, often encapsulated by punctuation marks, serving as a pause or emphasis in the text.  │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain key descriptive phrases that centralize pivotal elements or actions in    │
+│           │ the narrative context, often encapsulated by punctuation marks, serving as a pause or emphasis in the    │
+│           │ text:                                                                                                    │
+│           │                                                                                                          │
+│           │ Example 1, Example 4, Example 15, Example 17.                                                            │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 4, 15, 17]                                                                             │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Tokens that are part of phrases that evaluate, speculate, or explain scenarios,  │
+│           │ particularly in complex sentence structures.                                                             │
+│ Assistant │ Here are 10 examples of text samples containing tokens that are part of phrases used to evaluate,        │
+│           │ speculate, or explain scenarios, particularly in complex sentence structures:                            │
+│           │                                                                                                          │
+│           │ Example 1: Given that the market is volatile, investing in bonds might be safer than stocks.             │
+│           │ Example 2: Assuming the weather stays clear, the picnic should be delightful.                            │
+│           │ Example 3: Provided that he submits his assignment on time, he should pass the course.                   │
+│           │ Example 4: If the experiment succeeds, it could mean a breakthrough in renewable energy.                 │
+│           │ Example 5: Because the road was icy, the school decided to delay opening by two hours.                   │
+│           │ Example 6: Unless the team improves their defense, winning the championship will remain a distant dream. │
+│           │ Example 7: Even though he practiced daily, he could not secure a position in the first team.             │
+│           │ Example 8: Whenever the software is updated, make sure to back up your files first.                      │
+│           │ Example 9: As long as the terms are met, the contract will be binding.                                   │
+│           │ Example 10: While the offer is generous, we need to consider the long-term implications before making a  │
+│           │ decision.                                                                                                │
+│ System    │ Score: 0.09545449167490005                                                                               │
+│ System    │ Running on explanation: Tokens involved in describing or detailing events, actions, or conditions, often │
+│           │ within a narrative or explanatory context.                                                               │
+│ Assistant │ Here are 10 examples of short text samples containing tokens that describe or detail events, actions, or │
+│           │ conditions, often within a narrative or explanatory context.                                             │
+│           │                                                                                                          │
+│           │ Example 1: The storm raged throughout the night, toppling trees and flooding streets.                    │
+│           │ Example 2: She whispered softly to calm the frightened child.                                            │
+│           │ Example 3: The cake rose perfectly in the oven, its golden top glistening under the warm light.          │
+│           │ Example 4: He jogged every morning, gradually increasing his pace and endurance over the months.         │
+│           │ Example 5: The volcano erupted suddenly, spewing lava and ash into the sky.                              │
+│           │ Example 6: They danced gracefully across the floor, their movements synchronized to the melody.          │
+│           │ Example 7: The contract was signed at noon, finalizing the agreement between the two companies.          │
+│           │ Example 8: The sun set slowly, painting the sky with hues of orange and pink.                            │
+│           │ Example 9: The car skidded on the icy road before coming to a stop.                                      │
+│           │ Example 10: Leaves rustled as the wind swept through the forest, creating a soothing sound.              │
+│ System    │ Score: 0.2564728558063507                                                                                │
+│ System    │ Running on explanation: Phrases that denote a narrative shift or crucial action points in sentences,     │
+│           │ often signaled by punctuation like commas, periods, or dashes.                                           │
+│ Assistant │ Here are 10 examples of short text samples containing phrases that denote narrative shifts or crucial    │
+│           │ action points, often signaled by punctuation like commas, periods, or dashes. These phrases signal a     │
+│           │ change in the direction or pace of the narrative.                                                        │
+│           │                                                                                                          │
+│           │ Example 1: He turned the corner, and there it was—the legendary lost city.                               │
+│           │ Example 2: After years of silence, she finally spoke up—her voice trembling with emotion.                │
+│           │ Example 3: The storm raged on; suddenly, a flash of lightning revealed a figure in the distance.         │
+│           │ Example 4: Everything seemed normal until—the phone rang, shattering the quiet.                          │
+│           │ Example 5: They climbed for hours, reaching the summit just as the sun rose.                             │
+│           │ Example 6: She hesitated, then—with a deep breath—stepped onto the stage.                                │
+│           │ Example 7: He laughed at the joke and then—his expression changed—something was wrong.                   │
+│           │ Example 8: The meeting dragged on, but then—the CEO announced a major breakthrough.                      │
+│           │ Example 9: The door creaked open; a shadow slipped quietly inside.                                       │
+│           │ Example 10: We were losing hope, yet—miraculously—the rescue team arrived.                               │
+│ System    │ Score: 1.2976049184799194                                                                                │
+│ System    │ Running on explanation: Key descriptive phrases that centralize pivotal elements or actions in the       │
+│           │ narrative context, often encapsulated by punctuation marks, serving as a pause or emphasis in the text.  │
+│ Assistant │ Here are 10 examples of short text samples containing key descriptive phrases centralizing pivotal       │
+│           │ elements or actions in the narrative context, encapsulated by punctuation marks to serve as a pause or   │
+│           │ emphasis.                                                                                                │
+│           │                                                                                                          │
+│           │ Example 1: As the storm approached, the sky turned a menacing shade of grey; an ominous silence fell     │
+│           │ over the city.                                                                                           │
+│           │ Example 2: He handed her the gift — a small, velvet box — and she gasped in surprise.                    │
+│           │ Example 3: The detective examined the scene carefully, noting the position of the knife: clearly, this   │
+│           │ was no accident.                                                                                         │
+│           │ Example 4: They reached the summit just in time to witness the sunrise; a breathtaking view that made    │
+│           │ their struggles worthwhile.                                                                              │
+│           │ Example 5: In the midst of chaos, one voice stood out — calm, clear, and commanding — guiding everyone   │
+│           │ to safety.                                                                                               │
+│           │ Example 6: She opened the letter, her hands trembling; it was the news they had all been waiting for.    │
+│           │ Example 7: As the music swelled, the dancers moved in perfect harmony; a mesmerizing performance that    │
+│           │ captivated all who watched.                                                                              │
+│           │ Example 8: The final whistle blew, the score was tied; everything now depended on the penalty shootout.  │
+│           │ Example 9: He paused at the door, took a deep breath, and stepped inside; this was the moment of truth.  │
+│           │ Example 10: The experiment was a success; a breakthrough that could change the course of scientific      │
+│           │ research.                                                                                                │
+│ System    │ Score: 1.049425721168518                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 8.001972198486328                                                                        │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.7, 0.0)                                                                              │
+│           │ Generation Score: 0.09545449167490005                                                                    │
+│           │ Explanation: Tokens that are part of phrases that evaluate, speculate, or explain scenarios,             │
+│           │ particularly in complex sentence structures.                                                             │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.8, 0.4)                                                                              │
+│           │ Generation Score: 0.2564728558063507                                                                     │
+│           │ Explanation: Tokens involved in describing or detailing events, actions, or conditions, often within a   │
+│           │ narrative or explanatory context.                                                                        │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.6, 0.2)                                                                              │
+│           │ Generation Score: 1.2976049184799194                                                                     │
+│           │ Explanation: Phrases that denote a narrative shift or crucial action points in sentences, often signaled │
+│           │ by punctuation like commas, periods, or dashes.                                                          │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (0.1, 0.3)                                                                              │
+│           │ Generation Score: 1.049425721168518                                                                      │
+│           │ Explanation: Key descriptive phrases that centralize pivotal elements or actions in the narrative        │
+│           │ context, often encapsulated by punctuation marks, serving as a pause or emphasis in the text.            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
