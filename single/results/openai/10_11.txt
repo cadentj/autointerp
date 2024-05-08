@@ -54,28 +54,24 @@
 │           │ thus<< far>> by the response to                                                                          │
 │           │                                                                                                          │
 │ Assistant │ Step 1.                                                                                                  │
-│           │ ACTIVATING TOKENS: "far"                                                                                 │
-│           │ PREVIOUS TOKENS: "so", "thus", "thus", "so", "thus", "so", "so", "thus"                                  │
-│           │ NEXT TOKENS: ".", ".", "�� says", "? The US has", "this season. Amanda", "suggests there are             │
-│           │ problems",", is mine for", "by the response to"                                                          │
+│           │ ACTIVATING TOKENS: "far".                                                                                │
+│           │ PREVIOUS TOKENS: "so", "thus", "thus", "so", "thus", "so", "so", "thus".                                 │
+│           │ NEXT TOKENS: ".", ".", ",", "?", "this", " suggests", ",", " by".                                        │
 │           │                                                                                                          │
 │           │ Step 2.                                                                                                  │
-│           │ - All activating tokens are the word "far".                                                              │
-│           │ - Previous tokens include "so" or "thus", indicating a temporal context or reference to what has been    │
-│           │ discussed or occurred up to now.                                                                         │
-│           │ - The next tokens are usually punctuation or the start of a new thought/phrase, indicating the end of a  │
-│           │ clause.                                                                                                  │
+│           │ The activating token is consistently "far".                                                              │
+│           │ The previous tokens are "so" or "thus", all adverbs modifying "far".                                     │
+│           │ The next tokens vary, but are mostly punctuation marks or indicate a continuation of a sentence.         │
 │           │                                                                                                          │
 │           │ Step 3.                                                                                                  │
-│           │ - Each instance of the activating token "far" appears in a context that provides an update or summary of │
-│           │ events, achievements, or statuses up to the current point in time.                                       │
-│           │ - The word "far" is used in a comparative temporal sense, often coupled with "so" or "thus".             │
+│           │ - The examples always use "far" in a temporal context, referring to a point in time up to the present.   │
+│           │ - The phrase "thus far" or "so far" is used to summarize or conclude observations or results.            │
 │           │                                                                                                          │
 │           │ Step 4.                                                                                                  │
 │           │ Two explanations for what causes the neuron to activate:                                                 │
-│           │ 1. The word "far" used in contexts that summarize or quantify developments up to the present moment.     │
-│           │ 2. The word "far" typically follows the words "so" or "thus", used to denote the extent or reach until   │
-│           │ the present in narrative or descriptive passages.                                                        │
+│           │                                                                                                          │
+│           │ 1. The use of the word "far" in a temporal context, specifically in the phrases "so far" or "thus far".  │
+│           │ 2. The word "far" being used to summarize or evaluate progress or results up to the current point.       │
 │ System    │ Processing batch 2 of 2                                                                                  │
 │ System    │ Query 1 of 1                                                                                             │
 │ System    │ Running on examples:                                                                                     │
@@ -97,39 +93,34 @@
 │ Assistant │ Step 1.                                                                                                  │
 │           │ ACTIVATING TOKENS: "far", "far", "far", "far", "far", "far", "point", "far", "date".                     │
 │           │ PREVIOUS TOKENS: "so", "so", "so", "so", "So", "So", "this", "so", "to".                                 │
-│           │ NEXT TOKENS: ".", "Even", "away", "been", ",", "the", "took", ".", "have".                               │
+│           │ NEXT TOKENS: ".", ".", "away", "been", ",", ",", "took", ".", "have".                                    │
 │           │                                                                                                          │
 │           │ Step 2.                                                                                                  │
-│           │ The activating tokens "far", "point", and "date" mostly occur after words like "so" and "this".          │
-│           │ All activating tokens relate to concepts of distance or milestones in time.                              │
-│           │ The next tokens often include punctuation or conjunctions.                                               │
+│           │ The activating tokens include "far", "point", and "date", which are often used to denote extents in time │
+│           │ or distance.                                                                                             │
+│           │ The previous tokens frequently include "so", "this", "to", correlating with the usage of "far", "point", │
+│           │ and "date" in expressing extents or limits.                                                              │
+│           │ Next tokens vary significantly, but they are part of continuing sentences or ending them.                │
 │           │                                                                                                          │
 │           │ Step 3.                                                                                                  │
-│           │ - The activating tokens are typically associated with expressions of temporal or spatial distance.       │
-│           │ - The activating tokens are often preceded by "so", indicating extent.                                   │
-│           │ - The activating tokens are followed by punctuation or conjunctions, which may imply they often conclude │
-│           │ or transition thoughts.                                                                                  │
-│           │                                                                                                          │
-│           │ Re-evaluating patterns and commonalities:                                                                │
-│           │                                                                                                          │
-│           │ - The tokens "far", "point", and "date" all connect to notions of distance or extent, whether physical   │
-│           │ ("far") or in terms of progress/extent ("point", "date").                                                │
+│           │ - The activating tokens are primarily used in expressions related to measurement or extent (e.g., far,   │
+│           │ point, date).                                                                                            │
+│           │ - The activating tokens are often preceded by words that set up a comparative or descriptive context     │
+│           │ (e.g., "so", "this", "to").                                                                              │
 │           │                                                                                                          │
 │           │ Step 4.                                                                                                  │
 │           │ Two explanations for what causes the neuron to activate:                                                 │
 │           │                                                                                                          │
-│           │ 1. Words expressing extent or distance in terms of time or space, especially when used in conjunction    │
-│           │ with "so".                                                                                               │
-│           │ 2. Expressions concluding or transitioning thoughts, often marked by following punctuation or            │
-│           │ conjunctions.                                                                                            │
-│ System    │ The word "far" used in contexts that summarize or quantify developments up to the present moment.        │
+│           │ 1. Tokens that are part of phrases expressing extent, distance, or time, commonly preceded by            │
+│           │ comparative or descriptive modifiers.                                                                    │
+│           │ 2. Tokens indicating extents or limits within contexts that assess or describe progression or status.    │
+│ System    │ The use of the word "far" in a temporal context, specifically in the phrases "so far" or "thus far".     │
 │           │                                                                                                          │
-│           │ The word "far" typically follows the words "so" or "thus", used to denote the extent or reach until the  │
-│           │ present in narrative or descriptive passages                                                             │
-│           │ Words expressing extent or distance in terms of time or space, especially when used in conjunction with  │
-│           │ "so".                                                                                                    │
+│           │ The word "far" being used to summarize or evaluate progress or results up to the current point           │
+│           │ Tokens that are part of phrases expressing extent, distance, or time, commonly preceded by comparative   │
+│           │ or descriptive modifiers.                                                                                │
 │           │                                                                                                          │
-│           │ Expressions concluding or transitioning thoughts, often marked by following punctuation or conjunctions  │
+│           │ Tokens indicating extents or limits within contexts that assess or describe progression or status        │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Running condenser.                                                                                       │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -148,30 +139,25 @@
 │           │                                                                                                          │
 │           │ Get ready to see the list of features.                                                                   │
 │           │                                                                                                          │
-│           │ Feature 1: The word "far" used in contexts that summarize or quantify developments up to the present     │
-│           │ moment.                                                                                                  │
+│           │ Feature 1: The use of the word "far" in a temporal context, specifically in the phrases "so far" or      │
+│           │ "thus far".                                                                                              │
 │           │                                                                                                          │
-│           │ Feature 2: The word "far" typically follows the words "so" or "thus", used to denote the extent or reach │
-│           │ until the present in narrative or descriptive passages                                                   │
-│           │ Feature 3: Words expressing extent or distance in terms of time or space, especially when used in        │
-│           │ conjunction with "so".                                                                                   │
+│           │ Feature 2: The word "far" being used to summarize or evaluate progress or results up to the current      │
+│           │ point                                                                                                    │
+│           │ Feature 3: Tokens that are part of phrases expressing extent, distance, or time, commonly preceded by    │
+│           │ comparative or descriptive modifiers.                                                                    │
 │           │                                                                                                          │
-│           │ Feature 4: Expressions concluding or transitioning thoughts, often marked by following punctuation or    │
-│           │ conjunctions                                                                                             │
+│           │ Feature 4: Tokens indicating extents or limits within contexts that assess or describe progression or    │
+│           │ status                                                                                                   │
 │           │                                                                                                          │
-│ Assistant │ Here is the condensed list of distinct features:                                                         │
+│ Assistant │ Here is the revised list of distinct features after removing duplicates:                                 │
 │           │                                                                                                          │
-│           │ Feature 1: The word "far" used in contexts that summarize or quantify developments up to the present     │
-│           │ moment.                                                                                                  │
-│           │                                                                                                          │
-│           │ Feature 2: The word "far" typically follows the words "so" or "thus", used to denote the extent or reach │
-│           │ until the present in narrative or descriptive passages.                                                  │
-│           │                                                                                                          │
-│           │ Feature 3: Words expressing extent or distance in terms of time or space, especially when used in        │
-│           │ conjunction with "so".                                                                                   │
-│           │                                                                                                          │
-│           │ Feature 4: Expressions concluding or transitioning thoughts, often marked by following punctuation or    │
-│           │ conjunctions.                                                                                            │
+│           │ Feature 1: The use of the word "far" in a temporal context, specifically in the phrases "so far" or      │
+│           │ "thus far".                                                                                              │
+│           │ Feature 2: Tokens that are part of phrases expressing extent, distance, or time, commonly preceded by    │
+│           │ comparative or descriptive modifiers.                                                                    │
+│           │ Feature 3: Tokens indicating extents or limits within contexts that assess or describe progression or    │
+│           │ status.                                                                                                  │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Running detection scoring.                                                                               │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -202,44 +188,36 @@
 │           │ Text examples:                                                                                           │
 │           │                                                                                                          │
 │           │ <EXPLANATION>                                                                                            │
-│ System    │ Running on explanation: The word "far" used in contexts that summarize or quantify developments up to    │
-│           │ the present moment.                                                                                      │
+│ System    │ Running on explanation: The use of the word "far" in a temporal context, specifically in the phrases "so │
+│           │ far" or "thus far".                                                                                      │
 │ System    │ Processing batch 1 of 1                                                                                  │
-│ Assistant │ The following examples contain the word "far" used in contexts that summarize or quantify developments   │
-│           │ up to the present moment:                                                                                │
+│ Assistant │ The following examples contain the word "far" used in a temporal context, specifically in the phrases    │
+│           │ "so far" or "thus far":                                                                                  │
 │           │                                                                                                          │
 │           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
 │           │ Example 20.                                                                                              │
 │           │                                                                                                          │
 │           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
-│ System    │ Running on explanation: The word "far" typically follows the words "so" or "thus", used to denote the    │
-│           │ extent or reach until the present in narrative or descriptive passages.                                  │
+│ System    │ Running on explanation: Tokens that are part of phrases expressing extent, distance, or time, commonly   │
+│           │ preceded by comparative or descriptive modifiers.                                                        │
 │ System    │ Processing batch 1 of 1                                                                                  │
-│ Assistant │ The following examples contain the word "far" that typically follows the words "so" or "thus":           │
+│ Assistant │ The following examples contain tokens that are part of phrases expressing extent, distance, or time,     │
+│           │ commonly preceded by comparative or descriptive modifiers:                                               │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13,   │
+│           │ Example 19, Example 20.                                                                                  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                    │
+│ System    │ Running on explanation: Tokens indicating extents or limits within contexts that assess or describe      │
+│           │ progression or status.                                                                                   │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens indicating extents or limits within contexts that assess or        │
+│           │ describe progression or status:                                                                          │
 │           │                                                                                                          │
 │           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
 │           │ Example 20.                                                                                              │
 │           │                                                                                                          │
 │           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
-│ System    │ Running on explanation: Words expressing extent or distance in terms of time or space, especially when   │
-│           │ used in conjunction with "so".                                                                           │
-│ System    │ Processing batch 1 of 1                                                                                  │
-│ Assistant │ The following examples contain words expressing extent or distance in terms of time or space, especially │
-│           │ when used in conjunction with "so":                                                                      │
-│           │                                                                                                          │
-│           │ Example 1, Example 7, Example 11, Example 12, Example 19, Example 20.                                    │
-│           │                                                                                                          │
-│           │ FINAL ANSWER: [1, 7, 11, 12, 19, 20]                                                                     │
-│ System    │ Running on explanation: Expressions concluding or transitioning thoughts, often marked by following      │
-│           │ punctuation or conjunctions.                                                                             │
-│ System    │ Processing batch 1 of 1                                                                                  │
-│ Assistant │ The following examples contain expressions that conclude or transition thoughts, often marked by         │
-│           │ following punctuation or conjunctions:                                                                   │
-│           │                                                                                                          │
-│           │ Example 1, Example 3, Example 4, Example 5, Example 7, Example 8, Example 11, Example 12, Example 13,    │
-│           │ Example 16, Example 17, Example 18, Example 19, Example 20.                                              │
-│           │                                                                                                          │
-│           │ FINAL ANSWER: [1, 3, 4, 5, 7, 8, 11, 12, 13, 16, 17, 18, 19, 20]                                         │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Running generation scoring.                                                                              │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -265,109 +243,55 @@
 │           │                                                                                                          │
 │           │                                                                                                          │
 │           │ <EXPLANATION>                                                                                            │
-│ System    │ Running on explanation: The word "far" used in contexts that summarize or quantify developments up to    │
-│           │ the present moment.                                                                                      │
-│ Assistant │ Here are 10 examples of short text samples where the word "far" is used to summarize or quantify         │
-│           │ developments up to the present moment:                                                                   │
+│ System    │ Running on explanation: The use of the word "far" in a temporal context, specifically in the phrases "so │
+│           │ far" or "thus far".                                                                                      │
+│ Assistant │ Here are 10 examples of short text samples containing the word "far" used in a temporal context,         │
+│           │ specifically in the phrases "so far" or "thus far". Each example will make it clear that "far" is being  │
+│           │ used to discuss time.                                                                                    │
 │           │                                                                                                          │
-│           │ Example 1: In the financial review, the CEO summarized, "So far, our quarterly profits have exceeded     │
-│           │ expectations."                                                                                           │
+│           │ Example 1: The project has been successful so far, with all milestones met on schedule.                  │
+│           │ Example 2: Thus far, we have seen significant improvements in the patient's condition.                   │
+│           │ Example 3: In reviewing the quarterly reports, profits are up so far compared to last year.              │
+│           │ Example 4: So far, the feedback from the new policy has been overwhelmingly positive.                    │
+│           │ Example 5: The weather this month has been the mildest we've experienced thus far this year.             │
+│           │ Example 6: She has read five books so far this summer.                                                   │
+│           │ Example 7: So far, the team has won every match, securing their top position in the league.              │
+│           │ Example 8: Thus far, the new software update has not caused any system errors.                           │
+│           │ Example 9: Our vacation has been fantastic so far, with perfect weather and great food.                  │
+│           │ Example 10: In his career thus far, the young scientist has published more than twenty research papers.  │
+│ System    │ Score: 22.218854904174805                                                                                │
+│ System    │ Running on explanation: Tokens that are part of phrases expressing extent, distance, or time, commonly   │
+│           │ preceded by comparative or descriptive modifiers.                                                        │
+│ Assistant │ Here are 10 examples of short text samples containing tokens that are part of phrases expressing extent, │
+│           │ distance, or time, commonly preceded by comparative or descriptive modifiers:                            │
 │           │                                                                                                          │
-│           │ Example 2: The project has come far, achieving most of its milestones ahead of schedule.                 │
+│           │ Example 1: The journey was slightly longer than expected.                                                │
+│           │ Example 2: She ran much faster this time around.                                                         │
+│           │ Example 3: The building is far taller than the one next to it.                                           │
+│           │ Example 4: This book is significantly thicker than that one.                                             │
+│           │ Example 5: The lecture seemed a bit shorter today.                                                       │
+│           │ Example 6: His essay was considerably longer than mine.                                                  │
+│           │ Example 7: The bridge is quite wider at this point.                                                      │
+│           │ Example 8: The temperature today is somewhat higher than yesterday's.                                    │
+│           │ Example 9: The movie felt a lot shorter than the previous one.                                           │
+│           │ Example 10: The river is slightly deeper near the bend.                                                  │
+│ System    │ Score: 0.21974347531795502                                                                               │
+│ System    │ Running on explanation: Tokens indicating extents or limits within contexts that assess or describe      │
+│           │ progression or status.                                                                                   │
+│ Assistant │ Here are 10 examples of short text samples containing tokens indicating extents or limits within         │
+│           │ contexts that assess or describe progression or status.                                                  │
 │           │                                                                                                          │
-│           │ Example 3: So far, the response to our new policy has been overwhelmingly positive.                      │
-│           │                                                                                                          │
-│           │ Example 4: Looking at the climate data, temperatures have risen far more than predicted over the last    │
-│           │ decade.                                                                                                  │
-│           │                                                                                                          │
-│           │ Example 5: In terms of technological advancements, we have come far in just a few years.                 │
-│           │                                                                                                          │
-│           │ Example 6: The peace talks have progressed far, reaching a tentative agreement much earlier than         │
-│           │ anticipated.                                                                                             │
-│           │                                                                                                          │
-│           │ Example 7: So far, the team's efforts have resulted in a 30% increase in productivity.                   │
-│           │                                                                                                          │
-│           │ Example 8: The novel's protagonist has traveled far, both literally and metaphorically, from the opening │
-│           │ chapter to now.                                                                                          │
-│           │                                                                                                          │
-│           │ Example 9: As far as we can tell, the new software has streamlined operations significantly.             │
-│           │                                                                                                          │
-│           │ Example 10: Regarding health improvements in the region, we have come far but still have a long way to   │
-│           │ go.                                                                                                      │
-│ System    │ Score: 8.936483383178711                                                                                 │
-│ System    │ Running on explanation: The word "far" typically follows the words "so" or "thus", used to denote the    │
-│           │ extent or reach until the present in narrative or descriptive passages.                                  │
-│ Assistant │ Here are 10 examples where the word "far" follows the words "so" or "thus", used to indicate the extent  │
-│           │ or reach until the present in narrative or descriptive passages:                                         │
-│           │                                                                                                          │
-│           │ Example 1: She had traveled so far from her hometown, reflecting on her journey with a mix of nostalgia  │
-│           │ and pride.                                                                                               │
-│           │                                                                                                          │
-│           │ Example 2: The company has grown so far beyond its original scope, now encompassing multiple             │
-│           │ international branches.                                                                                  │
-│           │                                                                                                          │
-│           │ Example 3: The research has come so far in the past decade, yielding results that were once thought      │
-│           │ impossible.                                                                                              │
-│           │                                                                                                          │
-│           │ Example 4: His understanding of the subject has advanced so far, surpassing even his teachers'           │
-│           │ knowledge.                                                                                               │
-│           │                                                                                                          │
-│           │ Example 5: They had walked so far that day, covering more ground than they had planned in their hiking   │
-│           │ trip.                                                                                                    │
-│           │                                                                                                          │
-│           │ Example 6: The novel's storyline has developed so far, intertwining the fates of characters from         │
-│           │ seemingly unrelated beginnings.                                                                          │
-│           │                                                                                                          │
-│           │ Example 7: The technology has evolved so far, now allowing for real-time communication across the globe  │
-│           │ without delay.                                                                                           │
-│           │                                                                                                          │
-│           │ Example 8: Her career had progressed so far in such a short time, earning her a reputation as a rising   │
-│           │ star in the industry.                                                                                    │
-│           │                                                                                                          │
-│           │ Example 9: The civilization had expanded so far, reaching distant lands that were once mere names on a   │
-│           │ map.                                                                                                     │
-│           │                                                                                                          │
-│           │ Example 10: The impact of the policy has been felt so far and wide, affecting communities in ways that   │
-│           │ were not initially anticipated.                                                                          │
-│ System    │ Score: 20.26766586303711                                                                                 │
-│ System    │ Running on explanation: Words expressing extent or distance in terms of time or space, especially when   │
-│           │ used in conjunction with "so".                                                                           │
-│ Assistant │ Here are 10 examples of short text examples containing words expressing extent or distance in terms of   │
-│           │ time or space, especially when used in conjunction with "so".                                            │
-│           │                                                                                                          │
-│           │ Example 1: I was so close to catching the train this morning!                                            │
-│           │ Example 2: She felt so far away, even though she was just across the room.                               │
-│           │ Example 3: We are so near the end of the project, just a few more steps.                                 │
-│           │ Example 4: He was so late to the meeting, it had already ended by the time he arrived.                   │
-│           │ Example 5: The mountain looked so distant, but we reached it by noon.                                    │
-│           │ Example 6: This winter felt so long, spring couldn't come soon enough.                                   │
-│           │ Example 7: The stars seem so far, yet they are so beautiful.                                             │
-│           │ Example 8: I've never seen the ocean so vast as when I stood on the cliff above it.                      │
-│           │ Example 9: The deadline is so close, we need to hurry up!                                                │
-│           │ Example 10: He moved so quickly, I barely saw him leave the room.                                        │
-│ System    │ Score: 2.935722827911377                                                                                 │
-│ System    │ Running on explanation: Expressions concluding or transitioning thoughts, often marked by following      │
-│           │ punctuation or conjunctions.                                                                             │
-│ Assistant │ Here are 10 examples of short text examples containing expressions that conclude or transition thoughts, │
-│           │ often marked by following punctuation or conjunctions.                                                   │
-│           │                                                                                                          │
-│           │ In these examples, I'll focus on ensuring that each expression used for concluding or transitioning is   │
-│           │ highlighted by proper punctuation or conjunctions like semicolons, dashes, "therefore," "however," "in   │
-│           │ conclusion," etc.                                                                                        │
-│           │                                                                                                          │
-│           │ Example 1: We've reviewed all the evidence; therefore, we must act now.                                  │
-│           │ Example 2: The project was a success—thus, the team deserves a celebration.                              │
-│           │ Example 3: It was raining all day; however, the picnic went ahead as planned.                            │
-│           │ Example 4: She tried her best in the competition; nonetheless, she did not win.                          │
-│           │ Example 5: He forgot his lines during the play. In conclusion, the performance was less than perfect.    │
-│           │ Example 6: The data clearly shows an upward trend. Consequently, we predict a profitable quarter.        │
-│           │ Example 7: There were many candidates for the job. Hence, the selection process was rigorous.            │
-│           │ Example 8: The roads were icy, and visibility was poor; as a result, the school decided to close for the │
-│           │ day.                                                                                                     │
-│           │ Example 9: They've always been supportive—in short, they are true friends.                               │
-│           │ Example 10: We need to invest more in renewable energy sources; otherwise, we risk severe environmental  │
-│           │ consequences.                                                                                            │
-│ System    │ Score: 1.2515920400619507                                                                                │
+│           │ Example 1: The project has reached its final stage.                                                      │
+│           │ Example 2: She has hit the maximum number of hours allowed for overtime.                                 │
+│           │ Example 3: The temperature outside has dropped to the lowest point this winter.                          │
+│           │ Example 4: We've achieved the upper limit of our fundraising goal.                                       │
+│           │ Example 5: This month, sales reached an all-time high.                                                   │
+│           │ Example 6: The river's water level is at its peak following the heavy rain.                              │
+│           │ Example 7: You're approaching the end of your data usage for this month.                                 │
+│           │ Example 8: The battery is currently at full capacity.                                                    │
+│           │ Example 9: The company has expanded to the extent of its market potential.                               │
+│           │ Example 10: He has used up the last of his vacation days for the year.                                   │
+│ System    │ Score: 0.9098204970359802                                                                                │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Results.                                                                                                 │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -375,27 +299,21 @@
 │           │                                                                                                          │
 │           │ Explanation 0:                                                                                           │
 │           │ Detection Score: (1.0, 0.0)                                                                              │
-│           │ Generation Score: 8.936483383178711                                                                      │
-│           │ Explanation: The word "far" used in contexts that summarize or quantify developments up to the present   │
-│           │ moment.                                                                                                  │
+│           │ Generation Score: 22.218854904174805                                                                     │
+│           │ Explanation: The use of the word "far" in a temporal context, specifically in the phrases "so far" or    │
+│           │ "thus far".                                                                                              │
 │           │                                                                                                          │
 │           │ Explanation 1:                                                                                           │
-│           │ Detection Score: (1.0, 0.0)                                                                              │
-│           │ Generation Score: 20.26766586303711                                                                      │
-│           │ Explanation: The word "far" typically follows the words "so" or "thus", used to denote the extent or     │
-│           │ reach until the present in narrative or descriptive passages.                                            │
+│           │ Detection Score: (1.0, 0.1)                                                                              │
+│           │ Generation Score: 0.21974347531795502                                                                    │
+│           │ Explanation: Tokens that are part of phrases expressing extent, distance, or time, commonly preceded by  │
+│           │ comparative or descriptive modifiers.                                                                    │
 │           │                                                                                                          │
 │           │ Explanation 2:                                                                                           │
-│           │ Detection Score: (0.6, 0.0)                                                                              │
-│           │ Generation Score: 2.935722827911377                                                                      │
-│           │ Explanation: Words expressing extent or distance in terms of time or space, especially when used in      │
-│           │ conjunction with "so".                                                                                   │
-│           │                                                                                                          │
-│           │ Explanation 3:                                                                                           │
-│           │ Detection Score: (0.8, 0.6)                                                                              │
-│           │ Generation Score: 1.2515920400619507                                                                     │
-│           │ Explanation: Expressions concluding or transitioning thoughts, often marked by following punctuation or  │
-│           │ conjunctions.                                                                                            │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 0.9098204970359802                                                                     │
+│           │ Explanation: Tokens indicating extents or limits within contexts that assess or describe progression or  │
+│           │ status.                                                                                                  │
 │           │                                                                                                          │
 │           │                                                                                                          │
 └───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -403,24 +321,18 @@ Max Activation: 57.9810676574707
 
 Explanation 0:
 Detection Score: (1.0, 0.0)
-Generation Score: 8.936483383178711
-Explanation: The word "far" used in contexts that summarize or quantify developments up to the present moment.
+Generation Score: 22.218854904174805
+Explanation: The use of the word "far" in a temporal context, specifically in the phrases "so far" or "thus far".
 
 Explanation 1:
-Detection Score: (1.0, 0.0)
-Generation Score: 20.26766586303711
-Explanation: The word "far" typically follows the words "so" or "thus", used to denote the extent or reach until the 
-present in narrative or descriptive passages.
+Detection Score: (1.0, 0.1)
+Generation Score: 0.21974347531795502
+Explanation: Tokens that are part of phrases expressing extent, distance, or time, commonly preceded by comparative or 
+descriptive modifiers.
 
 Explanation 2:
-Detection Score: (0.6, 0.0)
-Generation Score: 2.935722827911377
-Explanation: Words expressing extent or distance in terms of time or space, especially when used in conjunction with 
-"so".
-
-Explanation 3:
-Detection Score: (0.8, 0.6)
-Generation Score: 1.2515920400619507
-Explanation: Expressions concluding or transitioning thoughts, often marked by following punctuation or conjunctions.
+Detection Score: (1.0, 0.0)
+Generation Score: 0.9098204970359802
+Explanation: Tokens indicating extents or limits within contexts that assess or describe progression or status.
 
 

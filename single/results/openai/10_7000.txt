@@ -36,90 +36,102 @@
 │ System    │ Processing batch 1 of 2                                                                                  │
 │ System    │ Query 1 of 1                                                                                             │
 │ System    │ Running on examples:                                                                                     │
-│           │ Example 1:  couple of those plays he even finished off one foot in the paint, we<< are>> challenging him │
+│           │ Example 1:  can't recommend enough!                                                                      │
+│           │                                                                                                          │
+│           │ This one is a bit unexpected, I<<'m>> sure... I had                                                      │
+│           │ Example 2:  couple of those plays he even finished off one foot in the paint, we<< are>> challenging him │
 │           │ more to                                                                                                  │
-│           │ Example 2: like formation. I<< am>> sure there is a name for it, and I<< am>> sure one of my             │
-│           │ Example 3:  simultaneously, which encourages more intuitive shooting.��                                  │
+│           │ Example 3: like formation. I<< am>> sure there is a name for it, and I<< am>> sure one of my             │
+│           │ Example 4:  simultaneously, which encourages more intuitive shooting.��                                  │
 │           │                                                                                                          │
 │           │ I��<<m truly>>, truly trying                                                                             │
-│           │ Example 4: <|endoftext|> is just not a player worth investing in. I<<'m>> sure he puts maximum           │
-│           │ Example 5:  road, having broken through the front line west of Zlitan. I<< am>> trying to check with     │
-│           │ Example 6:  order, the protests or how Dr. King was treated. I��<<m>> sure he is not                     │
-│           │ Example 7:  an ARG?                                                                                      │
+│           │ Example 5: <|endoftext|> is just not a player worth investing in. I<<'m>> sure he puts maximum           │
+│           │ Example 6:  road, having broken through the front line west of Zlitan. I<< am>> trying to check with     │
+│           │ Example 7:  order, the protests or how Dr. King was treated. I��<<m>> sure he is not                     │
+│           │ Example 8:  an ARG?                                                                                      │
 │           │                                                                                                          │
 │           │ A smattering of hands go up. I<<'m actually quite>> impressed and                                        │
-│           │ Example 8:  also seems to add a new love interest to the movie, and The Wrap<< is>> reporting that       │
-│           │ Kristen Wi                                                                                               │
 │           │                                                                                                          │
-│ Assistant │ Step 1:                                                                                                  │
-│           │ ACTIVATING TOKENS: "are", "am", "m truly", "'m", "am", "m", "'m actually quite", "is".                   │
-│           │ PREVIOUS TOKENS: "we", "I", "I", "I", "I", "I", "I", "The Wrap".                                         │
-│           │ NEXT TOKENS: "challenging", "sure", "truly", "sure", "trying", "sure", "impressed", "reporting".         │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "m", " are", " am", "m truly", "'m", " am", "m", "'m actually quite".                 │
+│           │ PREVIOUS TOKENS: "I", "we", "I", "I��", "I", "I", "I��", "I".                                            │
+│           │ NEXT TOKENS: "sure...", "challenging him more to", "sure there is a name for it, and I", "truly trying", │
+│           │ "sure he puts maximum", "trying to check with", "sure he is not", "impressed and".                       │
 │           │                                                                                                          │
-│           │ Step 2:                                                                                                  │
-│           │ The activating tokens are all forms of the verb "to be" (are, am, is) or contractions involving "am"     │
-│           │ (I'm, I'm truly, I'm actually quite).                                                                    │
-│           │ The previous tokens are generally pronouns ("I", "we") or a noun phrase ("The Wrap").                    │
-│           │ The next tokens are generally verbs ("challenging", "sure", "trying", "reporting") or adjectives         │
-│           │ ("impressed").                                                                                           │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are all contractions or forms of "to be" associated with the pronoun "I" (i.e., 'm │
+│           │ = am, are, am, m = am).                                                                                  │
+│           │ The previous tokens are consistently "I" or a variant with special characters.                           │
+│           │ The next tokens vary but often include forms of assurance or continuation of action.                     │
 │           │                                                                                                          │
-│           │ Step 3:                                                                                                  │
-│           │ - All examples where the neuron activates involve forms of the verb "to be" or its contractions.         │
-│           │ - These tokens are associated with a subject pronoun or noun phrase and often lead into a verb or        │
-│           │ adjective.                                                                                               │
-│           │ - The activating tokens tend to be linked with expressing certainty or ongoing action.                   │
+│           │ Step 3.                                                                                                  │
+│           │ - All examples contain a form of the verb "to be" linked directly to "I".                                │
+│           │ - Each activating token is directly after "I" or a variant, indicating a personal statement or           │
+│           │ expression.                                                                                              │
+│           │ - Several examples end with additional assurance or speculative statements ("sure...").                  │
 │           │                                                                                                          │
-│           │ Step 4:                                                                                                  │
+│           │ Step 4.                                                                                                  │
 │           │ Two explanations for what causes the neuron to activate:                                                 │
 │           │                                                                                                          │
-│           │ 1. Forms of the verb "to be" or its contractions, especially when used with a first-person pronoun,      │
-│           │ indicating personal statements or reflections.                                                           │
-│           │ 2. These forms of "to be" are typically followed by verbs or adjectives, suggesting a continuation of a  │
-│           │ personal statement or an expression of certainty or description.                                         │
+│           │ 1. Contractions or forms of the verb "to be" that are directly associated with the first-person pronoun  │
+│           │ "I".                                                                                                     │
+│           │ 2. Personal statements or expressions involving the first-person pronoun "I" followed by a form of the   │
+│           │ verb "to be".                                                                                            │
 │ System    │ Processing batch 2 of 2                                                                                  │
 │ System    │ Query 1 of 1                                                                                             │
 │ System    │ Running on examples:                                                                                     │
-│           │ Example 1:  thing you can��t fake or mislead, and so I��<<m very strongly>> in favor                     │
-│           │ Example 2: , right? How are you approaching combat in this one? I��<<m>> guessing you��                  │
-│           │ Example 3:  coaching candidates every year. Just to help you form an opinion rapidly, I<< am>> going to  │
+│           │ Example 1:  also seems to add a new love interest to the movie, and The Wrap<< is>> reporting that       │
+│           │ Kristen Wi                                                                                               │
+│           │ Example 2:  thing you can��t fake or mislead, and so I��<<m very strongly>> in favor                     │
+│           │ Example 3: �s not sure that she��s safe there. I��<<m not>> sure they�                                   │
+│           │ Example 4: , right? How are you approaching combat in this one? I��<<m>> guessing you��                  │
+│           │ Example 5:  coaching candidates every year. Just to help you form an opinion rapidly, I<< am>> going to  │
 │           │ profile the                                                                                              │
-│           │ Example 4:  book is fully designed and just about ready to go to the printer. I<<'m just>> waiting to    │
+│           │ Example 6: . Frankly, the performance appears to be fine, so I��<<m>> willing to leave things            │
+│           │ Example 7:  talented team is only one game better than last years club. I��<<m>> sure all of us          │
+│           │ Example 8:  book is fully designed and just about ready to go to the printer. I<<'m just>> waiting to    │
 │           │ add                                                                                                      │
-│           │ Example 5:                                                                                               │
-│           │ Chris Nov-16-2016 5:58 PM Hahaha I<<'m>> with                                                            │
-│           │ Example 6:  bare minimum (i.e. production costs) for everyone, so I<< am>> thinking something I could    │
-│           │ Example 7: pless Danni isn't headed for whoredom in a vacuum. We<<'re>> provided with the following      │
-│           │ Example 8:  and the Hearst Brands. We had such scale on About, that we<<'re>> launching these new brands │
 │           │                                                                                                          │
-│ Assistant │ Step 1:                                                                                                  │
-│           │ ACTIVATING TOKENS: "m very strongly", "m", "am", "'m just", "'m", "am", "'re", "'re".                    │
-│           │ PREVIOUS TOKENS: "I", "I", "I", "I", "I", "I", "We", "we".                                               │
-│           │ NEXT TOKENS: " in favor", " guessing you", " going to profile the", " waiting to add", " with", "        │
-│           │ thinking something I could", " provided with the", " launching these new brands".                        │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "is", "m very strongly", "m not", "m", "am", "m", "m", "'m just".                     │
+│           │ PREVIOUS TOKENS: "The Wrap", "I��", "I��", "I��", "I", "I��", "I��", "I".                                │
+│           │ NEXT TOKENS: "reporting", "in favor", "sure they", "guessing you", "going to profile the", "willing to   │
+│           │ leave things", "sure all of us", "waiting to add".                                                       │
 │           │                                                                                                          │
-│           │ Step 2:                                                                                                  │
-│           │ - The activating tokens are all contracted or full forms of "am" or "are".                               │
-│           │ - The previous tokens are personal pronouns ("I", "We").                                                 │
-│           │ - The next tokens vary, but often they indicate the following action or state of being.                  │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens include forms of "am" and "is," which are conjugations of the verb "be." These     │
+│           │ tokens often appear in conjunctions with "I" or a subject.                                               │
+│           │ The previous tokens are primarily personal pronouns, particularly "I" (sometimes obscured by encoding    │
+│           │ issues, e.g., "I��").                                                                                    │
+│           │ The next tokens involve verbs or verb phrases that describe an action or state directly related to the   │
+│           │ subject.                                                                                                 │
 │           │                                                                                                          │
-│           │ Step 3:                                                                                                  │
-│           │ - The activating tokens are all forms of the verb "to be", used in the first-person singular or plural.  │
-│           │ - The examples all involve a subject pronoun preceding the verb.                                         │
-│           │ - The verb is either in its contracted (with a preceding pronoun) or full form.                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The activating tokens are primarily forms of the verb "be" (is, am) associated with the first-person   │
+│           │ pronoun "I."                                                                                             │
+│           │ - These tokens are used in contexts describing a state, action, or opinion.                              │
+│           │ - The activating tokens are often followed by verbs or phrases indicating continuation of a statement or │
+│           │ action.                                                                                                  │
 │           │                                                                                                          │
-│           │ Step 4:                                                                                                  │
+│           │ Let me carefully consider these patterns and any linguistic commonalities.                               │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
 │           │ Two explanations for what causes the neuron to activate:                                                 │
 │           │                                                                                                          │
-│           │ 1. The contracted or full forms of the verb "to be" (am, are) when used with first-person pronouns.      │
-│           │ 2. The usage of forms of "to be" in contexts indicating a personal statement or action.                  │
-│ System    │ Forms of the verb "to be" or its contractions, especially when used with a first-person pronoun,         │
-│           │ indicating personal statements or reflections.                                                           │
+│           │ 1. First-person statements using the verb "be" (am, is) to describe a state or opinion, particularly in  │
+│           │ contexts where the speaker is asserting a personal stance or perception.                                 │
+│           │ 2. The use of the verb "be" conjugations (am, is) directly following a first-person pronoun, typically   │
+│           │ at the beginning of a statement or assertion in speech or written text.                                  │
+│ System    │ Contractions or forms of the verb "to be" that are directly associated with the first-person pronoun     │
+│           │ "I".                                                                                                     │
 │           │                                                                                                          │
-│           │ These forms of "to be" are typically followed by verbs or adjectives, suggesting a continuation of a     │
-│           │ personal statement or an expression of certainty or descriptionThe contracted or full forms of the verb  │
-│           │ "to be" (am, are) when used with first-person pronouns.                                                  │
+│           │ Personal statements or expressions involving the first-person pronoun "I" followed by a form of the verb │
+│           │ "to be"                                                                                                  │
+│           │ First-person statements using the verb "be" (am, is) to describe a state or opinion, particularly in     │
+│           │ contexts where the speaker is asserting a personal stance or perception.                                 │
 │           │                                                                                                          │
-│           │ The usage of forms of "to be" in contexts indicating a personal statement or action                      │
+│           │ The use of the verb "be" conjugations (am, is) directly following a first-person pronoun, typically at   │
+│           │ the beginning of a statement or assertion in speech or written text                                      │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Running condenser.                                                                                       │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -138,19 +150,21 @@
 │           │                                                                                                          │
 │           │ Get ready to see the list of features.                                                                   │
 │           │                                                                                                          │
-│           │ Feature 1: ['Forms of the verb "to be" or its contractions, especially when used with a first-person     │
-│           │ pronoun, indicating personal statements or reflections.\n', 'These forms of "to be" are typically        │
-│           │ followed by verbs or adjectives, suggesting a continuation of a personal statement or an expression of   │
-│           │ certainty or description']                                                                               │
-│           │ Feature 2: ['The contracted or full forms of the verb "to be" (am, are) when used with first-person      │
-│           │ pronouns.\n', 'The usage of forms of "to be" in contexts indicating a personal statement or action']     │
+│           │ Feature 1: Contractions or forms of the verb "to be" that are directly associated with the first-person  │
+│           │ pronoun "I".                                                                                             │
+│           │                                                                                                          │
+│           │ Feature 2: Personal statements or expressions involving the first-person pronoun "I" followed by a form  │
+│           │ of the verb "to be"                                                                                      │
+│           │ Feature 3: First-person statements using the verb "be" (am, is) to describe a state or opinion,          │
+│           │ particularly in contexts where the speaker is asserting a personal stance or perception.                 │
+│           │                                                                                                          │
+│           │ Feature 4: The use of the verb "be" conjugations (am, is) directly following a first-person pronoun,     │
+│           │ typically at the beginning of a statement or assertion in speech or written text                         │
 │           │                                                                                                          │
 │ Assistant │ Here is the condensed list of features after removing duplicates:                                        │
 │           │                                                                                                          │
-│           │ Feature 1: Forms of the verb "to be" or its contractions, especially when used with a first-person       │
-│           │ pronoun, indicating personal statements or reflections. These forms of "to be" are typically followed by │
-│           │ verbs or adjectives, suggesting a continuation of a personal statement or an expression of certainty or  │
-│           │ description.                                                                                             │
+│           │ Feature 1: Contractions or forms of the verb "to be" that are directly associated with the first-person  │
+│           │ pronoun "I".                                                                                             │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Running detection scoring.                                                                               │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -181,25 +195,15 @@
 │           │ Text examples:                                                                                           │
 │           │                                                                                                          │
 │           │ <EXPLANATION>                                                                                            │
-│ System    │ Running on explanation: Forms of the verb "to be" or its contractions, especially when used with a       │
-│           │ first-person pronoun, indicating personal statements or reflections. These forms of "to be" are          │
-│           │ typically followed by verbs or adjectives, suggesting a continuation of a personal statement or an       │
-│           │ expression of certainty or description.                                                                  │
+│ System    │ Running on explanation: Contractions or forms of the verb "to be" that are directly associated with the  │
+│           │ first-person pronoun "I".                                                                                │
 │ System    │ Processing batch 1 of 1                                                                                  │
-│ Assistant │ The following examples contain forms of the verb "to be" or its contractions, especially when used with  │
-│           │ a first-person pronoun, indicating personal statements or reflections:                                   │
+│ Assistant │ The following examples contain contractions or forms of the verb "to be" that are directly associated    │
+│           │ with the first-person pronoun "I":                                                                       │
 │           │                                                                                                          │
-│           │ Example 3: "I am sure there is a name for it, and I am sure one of my"                                   │
-│           │ Example 6: "I’m truly, truly trying"                                                                     │
-│           │ Example 7: "I'm sure he puts maximum"                                                                    │
-│           │ Example 10: "I am trying to check with"                                                                  │
-│           │ Example 11: "I’m sure he is not"                                                                         │
-│           │ Example 12: "I'm actually quite impressed and"                                                           │
-│           │ Example 15: "I obtained another computer, through less than sav"                                         │
-│           │ Example 19: "so I’m very strongly in favor"                                                              │
-│           │ Example 20: "I’m guessing you’"                                                                          │
+│           │ Example 1, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 20.             │
 │           │                                                                                                          │
-│           │ FINAL ANSWER: [3, 6, 7, 10, 11, 12, 15, 19, 20]                                                          │
+│           │ FINAL ANSWER: [1, 6, 7, 10, 11, 12, 13, 20]                                                              │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Running generation scoring.                                                                              │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -225,35 +229,40 @@
 │           │                                                                                                          │
 │           │                                                                                                          │
 │           │ <EXPLANATION>                                                                                            │
-│ System    │ Running on explanation: Forms of the verb "to be" or its contractions, especially when used with a       │
-│           │ first-person pronoun, indicating personal statements or reflections. These forms of "to be" are          │
-│           │ typically followed by verbs or adjectives, suggesting a continuation of a personal statement or an       │
-│           │ expression of certainty or description.                                                                  │
-│ Assistant │ Here are 10 examples of short text examples containing forms of the verb "to be" or its contractions,    │
-│           │ especially when used with a first-person pronoun, followed by verbs or adjectives. These examples        │
-│           │ include personal statements or reflections.                                                              │
+│ System    │ Running on explanation: Contractions or forms of the verb "to be" that are directly associated with the  │
+│           │ first-person pronoun "I".                                                                                │
+│ Assistant │ Here are 10 examples of short text samples where contractions or forms of the verb "to be" are directly  │
+│           │ associated with the first-person pronoun "I".                                                            │
 │           │                                                                                                          │
-│           │ Example 1: I am feeling incredibly joyful today!                                                         │
-│           │ Example 2: I'm not sure if I am ready to take on such a big responsibility.                              │
-│           │ Example 3: I am working on improving my skills every day.                                                │
-│           │ Example 4: I'm becoming more confident with each presentation I give.                                    │
-│           │ Example 5: I was hoping we could discuss the project updates.                                            │
-│           │ Example 6: I am worried that we might not meet the deadline.                                             │
-│           │ Example 7: I'm looking forward to the weekend to relax and unwind.                                       │
-│           │ Example 8: I've been thinking a lot about the future lately.                                             │
-│           │ Example 9: I'm learning to be more patient with myself.                                                  │
-│           │ Example 10: I am grateful for all the support I have received.                                           │
-│ System    │ Score: 121.94410705566406                                                                                │
+│           │ Example 1: I'm excited about the upcoming concert.                                                       │
+│           │ Example 2: I am thinking of visiting Paris next year.                                                    │
+│           │ Example 3: I'm not sure if this is the right way to go.                                                  │
+│           │ Example 4: I was at the store when I heard the news.                                                     │
+│           │ Example 5: I've been learning Spanish for three months now.                                              │
+│           │ Example 6: I am convinced that meditation can change lives.                                              │
+│           │ Example 7: I'm looking forward to our meeting tomorrow.                                                  │
+│           │ Example 8: I've always been fascinated by ancient history.                                               │
+│           │ Example 9: I am grateful for all your help.                                                              │
+│           │ Example 10: I was just wondering if you'd like to join me for dinner.                                    │
+│ System    │ Score: 0.683327317237854                                                                                 │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Results.                                                                                                 │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ System    │ Explanation 0:                                                                                           │
-│           │ Detection Score: (0.8, 0.1)                                                                              │
-│           │ Generation Score: 121.94410705566406                                                                     │
-│           │ Explanation: Forms of the verb "to be" or its contractions, especially when used with a first-person     │
-│           │ pronoun, indicating personal statements or reflections. These forms of "to be" are typically followed by │
-│           │ verbs or adjectives, suggesting a continuation of a personal statement or an expression of certainty or  │
-│           │ description.                                                                                             │
+│ System    │ Max Activation: 36.163490295410156                                                                       │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.8, 0.0)                                                                              │
+│           │ Generation Score: 0.683327317237854                                                                      │
+│           │ Explanation: Contractions or forms of the verb "to be" that are directly associated with the             │
+│           │ first-person pronoun "I".                                                                                │
 │           │                                                                                                          │
 │           │                                                                                                          │
 └───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 36.163490295410156
+
+Explanation 0:
+Detection Score: (0.8, 0.0)
+Generation Score: 0.683327317237854
+Explanation: Contractions or forms of the verb "to be" that are directly associated with the first-person pronoun "I".
+
+

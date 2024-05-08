@@ -1,0 +1,488 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  Some have even called on us to introduce a Netflix tax. Now, Justin<< Trudeau>> and Thomas<< │
+│           │ Mulcair>> have                                                                                           │
+│           │ Example 2:  the only quasi reason I can think of.                                                        │
+│           │                                                                                                          │
+│           │ Anyways, the<< RCMP>> are looking for help                                                               │
+│           │ Example 3: <|endoftext|>000<< kilometres>> during his travels,                                           │
+│           │ Example 4:  echoed by his friend, Rex McDougall from Wasagamack First<< Nation>>.                        │
+│           │                                                                                                          │
+│           │ "                                                                                                        │
+│           │ Example 5: <|endoftext|>.                                                                                │
+│           │                                                                                                          │
+│           │ Jorgenson also partnered with Roseau River First<< Nation>> to open a for                                │
+│           │ Example 6:  an award for taking that position.                                                           │
+│           │                                                                                                          │
+│           │ "We recognize that Prime Minister<< Trudeau>> has taken a very                                           │
+│           │ Example 7:  advance of the Istanbul meeting. But last month the Pikangikum First<< Nation>>, one of the  │
+│           │ Example 8:  called on us to introduce a Netflix tax. Now, Justin<< Trudeau>> and Thomas<< Mulcair>> have │
+│           │ left the door                                                                                            │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS: "Trudeau", "Mulcair", "RCMP", "kilometres", "Nation", "Nation", "Trudeau", "Nation",  │
+│           │ "Trudeau", "Mulcair".                                                                                    │
+│           │ PREVIOUS TOKENS: "Justin", "Thomas", "the", "", "First", "First", "Prime Minister", "First", "Justin",   │
+│           │ "Thomas".                                                                                                │
+│           │ NEXT TOKENS: "and Thomas", "have", "are", "during", ".", "to", "has", ",", "and Thomas", "have".         │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ Observations about activating tokens:                                                                    │
+│           │ - "Trudeau", "Mulcair", and "RCMP" are proper nouns related to Canadian figures or institutions.         │
+│           │ - "kilometres" is a unit of measurement.                                                                 │
+│           │ - "Nation" is repeated frequently, linked with indigenous groups.                                        │
+│           │                                                                                                          │
+│           │ Patterns in previous tokens:                                                                             │
+│           │ - Often include titles or modifiers like "First", "Prime Minister", "the".                               │
+│           │ - Sometimes include names ("Justin", "Thomas").                                                          │
+│           │                                                                                                          │
+│           │ Patterns in next tokens:                                                                                 │
+│           │ - Varied, sometimes continuation of a list, sometimes punctuation or linking verbs.                      │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The activating tokens are linked to proper nouns (specific names of people or groups, or specific      │
+│           │ terms like "kilometres").                                                                                │
+│           │ - There is a frequent association with Canadian content (Canadian political figures, indigenous groups,  │
+│           │ RCMP).                                                                                                   │
+│           │ - The activating tokens tend to be nouns.                                                                │
+│           │                                                                                                          │
+│           │ Let’s ensure all the bases of linguistic commonalities and links are covered. Looking for hidden         │
+│           │ patterns: Yes, the frequent association with speech or official titles and responses.                    │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ 1. Proper nouns, specifically related to Canada (Canadian political figures, indigenous groups, RCMP),   │
+│           │ consistently activate the neuron.                                                                        │
+│           │ 2. The neuron activates for nouns that appear in contexts of authority, measurement, or culturally       │
+│           │ significant terms, often followed by punctuation or conjunctions.                                        │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  Narbonne, a paleontologist at Queen's University in Kingston,<< Ont>>., who has been         │
+│           │ Example 2: OURCE: Annie Jacobson for the LA TimesCTV British<< Columbia>>                                │
+│           │                                                                                                          │
+│           │ Simon<< Fraser>> University is                                                                           │
+│           │ Example 3: <|endoftext|>                                                                                 │
+│           │ Senator LeBreton says she has no idea what Mr.<< Duffy>> is talking about.                               │
+│           │ Example 4: <|endoftext|>essed<< Liberals>> of Chretien                                                   │
+│           │ Example 5:  the Canada Institute at the Woodrow Wilson Centre in Washington.                             │
+│           │                                                                                                          │
+│           │ Mr<< Trudeau>> owes his celebrity to                                                                     │
+│           │ Example 6: <|endoftext|> really the future of the Albertan oil<< sands>>, then its effects               │
+│           │ Example 7:  States, by far Canada��s most important, was tense. Mr<< Trudeau>> replaces a scowl          │
+│           │ Example 8: , it becomes clear at very basic level that none of the four proposed tar<< sands>> pipelines │
+│           │ (KXL                                                                                                     │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS: "Ont", "Columbia", "Fraser", "Duffy", "Liberals", "Trudeau", "sands", "sands".        │
+│           │ PREVIOUS TOKENS: "Kingston,", "British", "Simon", "Mr.", "essed", "Mr", "Albertan oil", "tar".           │
+│           │ NEXT TOKENS: various, including ".", "University", "is talking about", "of Chretien", "owes", "then",    │
+│           │ "replaces", "pipelines".                                                                                 │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ - The activating tokens include abbreviated terms, last names, and specific nouns.                       │
+│           │ - Most of the activation contexts involve specific locations or nouns referring to particular groups or  │
+│           │ individuals.                                                                                             │
+│           │ - The context of the text varies from academic and geographical settings to political references.        │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - Activating tokens are typically proper nouns or geographically significant terms.                      │
+│           │ - Many of the activating tokens are part of a larger context that mentions specific places, entities, or │
+│           │ people.                                                                                                  │
+│           │ - The activating tokens often occur in text related to formal statements, news, or academic discussions. │
+│           │                                                                                                          │
+│           │ Reflecting on further patterns:                                                                          │
+│           │ - The activations seem to commonly occur in contexts involving formal, informative, or public discourse. │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Proper nouns, particularly those naming people or geographic locations, within contexts of formal or  │
+│           │ public discourse.                                                                                        │
+│           │ 2. Specific terms that are geographically significant or key to identifying specific entities or groups, │
+│           │ especially in text related to news, politics, or academia.                                               │
+│ System    │ Proper nouns, specifically related to Canada (Canadian political figures, indigenous groups, RCMP),      │
+│           │ consistently activate the neuron.                                                                        │
+│           │                                                                                                          │
+│           │ The neuron activates for nouns that appear in contexts of authority, measurement, or culturally          │
+│           │ significant terms, often followed by punctuation or conjunctions                                         │
+│           │ Proper nouns, particularly those naming people or geographic locations, within contexts of formal or     │
+│           │ public discourse.                                                                                        │
+│           │                                                                                                          │
+│           │ Specific terms that are geographically significant or key to identifying specific entities or groups,    │
+│           │ especially in text related to news, politics, or academia                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: Proper nouns, specifically related to Canada (Canadian political figures, indigenous groups,  │
+│           │ RCMP), consistently activate the neuron.                                                                 │
+│           │                                                                                                          │
+│           │ Feature 2: The neuron activates for nouns that appear in contexts of authority, measurement, or          │
+│           │ culturally significant terms, often followed by punctuation or conjunctions                              │
+│           │ Feature 3: Proper nouns, particularly those naming people or geographic locations, within contexts of    │
+│           │ formal or public discourse.                                                                              │
+│           │                                                                                                          │
+│           │ Feature 4: Specific terms that are geographically significant or key to identifying specific entities or │
+│           │ groups, especially in text related to news, politics, or academia                                        │
+│           │                                                                                                          │
+│ Assistant │ Here is the condensed list of distinct features:                                                         │
+│           │                                                                                                          │
+│           │ Feature 1: Proper nouns, specifically related to Canada (Canadian political figures, indigenous groups,  │
+│           │ RCMP), consistently activate the neuron.                                                                 │
+│           │                                                                                                          │
+│           │ Feature 2: The neuron activates for nouns that appear in contexts of authority, measurement, or          │
+│           │ culturally significant terms, often followed by punctuation or conjunctions.                             │
+│           │                                                                                                          │
+│           │ Feature 3: Proper nouns, particularly those naming people or geographic locations, within contexts of    │
+│           │ formal or public discourse.                                                                              │
+│           │                                                                                                          │
+│           │ Feature 4: Specific terms that are geographically significant or key to identifying specific entities or │
+│           │ groups, especially in text related to news, politics, or academia.                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Proper nouns, specifically related to Canada (Canadian political figures,        │
+│           │ indigenous groups, RCMP), consistently activate the neuron.                                              │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain proper nouns related to Canada, specifically Canadian political figures,  │
+│           │ indigenous groups, or RCMP:                                                                              │
+│           │                                                                                                          │
+│           │ Example 1: Mention of Justin Trudeau and Thomas Mulcair, Canadian political figures.                     │
+│           │ Example 3: Mention of the RCMP, a Canadian federal police service.                                       │
+│           │ Example 7: Mention of Wasagamack First Nation, an indigenous group in Canada.                            │
+│           │ Example 10: Mention of Roseau River First Nation, an indigenous group in Canada.                         │
+│           │ Example 11: Mention of Prime Minister Trudeau, a Canadian political figure.                              │
+│           │ Example 12: Mention of Pikangikum First Nation, an indigenous group in Canada.                           │
+│           │ Example 13: Mention of Justin Trudeau and Thomas Mulcair, Canadian political figures.                    │
+│           │ Example 19: Mention of Queen's University in Kingston, Ontario, Canada.                                  │
+│           │ Example 20: Mention of Simon Fraser University, a Canadian institution.                                  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 7, 10, 11, 12, 13, 19, 20]                                                          │
+│ System    │ Running on explanation: The neuron activates for nouns that appear in contexts of authority,             │
+│           │ measurement, or culturally significant terms, often followed by punctuation or conjunctions.             │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain nouns that appear in contexts of authority, measurement, or culturally    │
+│           │ significant terms, often followed by punctuation or conjunctions:                                        │
+│           │                                                                                                          │
+│           │ Example 1: "Netflix tax" is a culturally significant term followed by a period.                          │
+│           │ Example 6: "kilometres" is a measurement term followed by a comma.                                       │
+│           │ Example 7: "Wasagamack First Nation" is a culturally significant term followed by a period.              │
+│           │ Example 8: "Washington" is a term of authority followed by a comma.                                      │
+│           │ Example 10: "Roseau River First Nation" is a culturally significant term followed by a period.           │
+│           │ Example 11: "Prime Minister" is a term of authority followed by a period.                                │
+│           │ Example 12: "Pikangikum First Nation" is a culturally significant term followed by a comma.              │
+│           │ Example 19: "Queen's University" is a culturally significant term followed by a comma.                   │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 6, 7, 8, 10, 11, 12, 19]                                                               │
+│ System    │ Running on explanation: Proper nouns, particularly those naming people or geographic locations, within   │
+│           │ contexts of formal or public discourse.                                                                  │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain proper nouns naming people or geographic locations within contexts of     │
+│           │ formal or public discourse:                                                                              │
+│           │                                                                                                          │
+│           │ Example 1: Names "Justin Trudeau" and "Thomas Mulcair" are mentioned in a context likely related to      │
+│           │ political discourse.                                                                                     │
+│           │ Example 3: "RCMP" refers to the Royal Canadian Mounted Police, a geographic-specific entity in a formal  │
+│           │ context.                                                                                                 │
+│           │ Example 7: "Rex McDougall" and "Wasagamack First Nation" are mentioned, indicating personal and          │
+│           │ geographic names in a formal context.                                                                    │
+│           │ Example 8: "Washington" is a geographic location mentioned in a likely formal or public discourse        │
+│           │ context.                                                                                                 │
+│           │ Example 10: "Roseau River First Nation" is a geographic location mentioned in a formal context.          │
+│           │ Example 11: "Prime Minister Trudeau" refers to a person in a formal title, indicating a formal           │
+│           │ discourse.                                                                                               │
+│           │ Example 12: "Pikangikum First Nation" is a geographic location mentioned in a formal context.            │
+│           │ Example 13: Names "Justin Trudeau" and "Thomas Mulcair" are mentioned in a context likely related to     │
+│           │ political discourse.                                                                                     │
+│           │ Example 19: "Narbonne" and "Queen's University in Kingston, Ont." refer to a person and a geographic     │
+│           │ location in a formal context.                                                                            │
+│           │ Example 20: "Simon Fraser University" is a geographic location (institution) mentioned in a formal       │
+│           │ context.                                                                                                 │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 7, 8, 10, 11, 12, 13, 19, 20]                                                       │
+│ System    │ Running on explanation: Specific terms that are geographically significant or key to identifying         │
+│           │ specific entities or groups, especially in text related to news, politics, or academia.                  │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain specific terms that are geographically significant or key to identifying  │
+│           │ specific entities or groups:                                                                             │
+│           │                                                                                                          │
+│           │ Example 1: "Justin Trudeau" and "Thomas Mulcair" are names of Canadian political figures.                │
+│           │ Example 3: "RCMP" refers to the Royal Canadian Mounted Police, a specific entity.                        │
+│           │ Example 7: "Wasagamack First Nation" is a specific geographical and cultural group.                      │
+│           │ Example 8: "Washington" is a geographically significant term.                                            │
+│           │ Example 10: "Roseau River First Nation" is a specific geographical and cultural group.                   │
+│           │ Example 11: "Prime Minister Trudeau" refers to a specific political figure.                              │
+│           │ Example 12: "Pikangikum First Nation" is a specific geographical and cultural group.                     │
+│           │ Example 19: "Queen's University in Kingston, Ont." refers to a specific academic institution and its     │
+│           │ location.                                                                                                │
+│           │ Example 20: "Simon Fraser University" is a specific academic institution.                                │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 7, 8, 10, 11, 12, 19, 20]                                                           │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Proper nouns, specifically related to Canada (Canadian political figures,        │
+│           │ indigenous groups, RCMP), consistently activate the neuron.                                              │
+│ Assistant │ Here are 10 examples of short text samples containing proper nouns related to Canada, specifically       │
+│           │ focusing on Canadian political figures, indigenous groups, and the RCMP. Each example establishes the    │
+│           │ context before introducing the specific proper noun.                                                     │
+│           │                                                                                                          │
+│           │ Example 1: Prime Minister Justin Trudeau addressed the nation yesterday evening from Ottawa.             │
+│           │ Example 2: The RCMP investigated the case thoroughly, ensuring justice was served.                       │
+│           │ Example 3: The Cree Nation has played a significant role in advocating for indigenous rights in Canada.  │
+│           │ Example 4: During her tenure as Governor General, Julie Payette emphasized the importance of science and │
+│           │ technology.                                                                                              │
+│           │ Example 5: The Haida people are known for their rich cultural heritage and contributions to Canadian     │
+│           │ art.                                                                                                     │
+│           │ Example 6: The Royal Canadian Mounted Police (RCMP) Mounted Unit participated in the annual parade.      │
+│           │ Example 7: Chrystia Freeland, Canada's Deputy Prime Minister, spoke at the economic forum last week.     │
+│           │ Example 8: The Inuit communities in Nunavut face unique challenges due to their geographic location.     │
+│           │ Example 9: Former Prime Minister Stephen Harper was remembered for his economic policies.                │
+│           │ Example 10: The Assembly of First Nations held a conference to discuss treaty rights and land claims.    │
+│ System    │ Score: 14.8917818069458                                                                                  │
+│ System    │ Running on explanation: The neuron activates for nouns that appear in contexts of authority,             │
+│           │ measurement, or culturally significant terms, often followed by punctuation or conjunctions.             │
+│ Assistant │ Here are 10 examples of short text samples where nouns are used in contexts of authority, measurement,   │
+│           │ or culturally significant terms, often followed by punctuation or conjunctions. Each example clearly     │
+│           │ establishes the relevant context before featuring the noun, and includes appropriate punctuation or      │
+│           │ conjunctions following the noun.                                                                         │
+│           │                                                                                                          │
+│           │ Example 1: The judge, presiding over the case, issued a verdict.                                         │
+│           │ Example 2: In the experiment, the volume of the liquid was measured in liters, and the results were      │
+│           │ recorded.                                                                                                │
+│           │ Example 3: The president, addressing the nation, spoke of unity and peace.                               │
+│           │ Example 4: During the ceremony, the priest, anointed with sacred oils, prayed.                           │
+│           │ Example 5: At the museum, the artifact, a relic of ancient times, was displayed prominently.             │
+│           │ Example 6: In the kitchen, the chef measured the flour in cups, then added it to the bowl.               │
+│           │ Example 7: The general commanded the troops with authority, ensuring discipline and order.               │
+│           │ Example 8: The manuscript, a cornerstone of medieval literature, was carefully preserved.                │
+│           │ Example 9: He weighed the gold in grams; then, he recorded the value in his ledger.                      │
+│           │ Example 10: The mayor, during the festival, declared the day a holiday.                                  │
+│ System    │ Score: 7.325528144836426                                                                                 │
+│ System    │ Running on explanation: Proper nouns, particularly those naming people or geographic locations, within   │
+│           │ contexts of formal or public discourse.                                                                  │
+│ Assistant │ For this task, each example will contain proper nouns that name people or geographic locations, set      │
+│           │ within the context of formal or public discourse. I'll ensure the context is clear from the beginning of │
+│           │ each example.                                                                                            │
+│           │                                                                                                          │
+│           │ Example 1: In his address to the United Nations, President Emmanuel Macron discussed the economic        │
+│           │ challenges facing Europe.                                                                                │
+│           │                                                                                                          │
+│           │ Example 2: During the conference in Geneva, Dr. Susan Lee emphasized the importance of sustainable       │
+│           │ development in Asia.                                                                                     │
+│           │                                                                                                          │
+│           │ Example 3: The Mayor of London, Sadiq Khan, announced a new initiative on urban renewal during his       │
+│           │ speech at City Hall.                                                                                     │
+│           │                                                                                                          │
+│           │ Example 4: At the summit held in Tokyo, Prime Minister Yoshihide Suga spoke about strengthening ties     │
+│           │ with Southeast Asia.                                                                                     │
+│           │                                                                                                          │
+│           │ Example 5: The treaty was signed in Paris by leaders from France, Germany, and Italy, aiming to enhance  │
+│           │ cooperation.                                                                                             │
+│           │                                                                                                          │
+│           │ Example 6: Professor Johnson from Harvard University presented his research on climate change impacts in │
+│           │ the Arctic at the global environmental forum.                                                            │
+│           │                                                                                                          │
+│           │ Example 7: In her keynote speech at the World Health Organization in Geneva, Dr. Angela Hart discussed   │
+│           │ strategies to combat global pandemics.                                                                   │
+│           │                                                                                                          │
+│           │ Example 8: The peace talks in Jerusalem, involving representatives from Israel and Palestine, sought to  │
+│           │ address longstanding conflicts.                                                                          │
+│           │                                                                                                          │
+│           │ Example 9: At the annual meeting of the African Union in Addis Ababa, discussions focused on economic    │
+│           │ empowerment for women across the continent.                                                              │
+│           │                                                                                                          │
+│           │ Example 10: During the press conference at the White House, President Joe Biden outlined new policies to │
+│           │ address immigration issues along the U.S.-Mexico border.                                                 │
+│ System    │ Score: 6.694938659667969                                                                                 │
+│ System    │ Running on explanation: Specific terms that are geographically significant or key to identifying         │
+│           │ specific entities or groups, especially in text related to news, politics, or academia.                  │
+│ Assistant │ Here are 10 examples of short text examples containing specific terms that are geographically            │
+│           │ significant or key to identifying specific entities or groups, especially in contexts related to news,   │
+│           │ politics, or academia.                                                                                   │
+│           │                                                                                                          │
+│           │ Example 1: In recent news, the European Union has implemented stricter data privacy regulations to       │
+│           │ protect its citizens.                                                                                    │
+│           │                                                                                                          │
+│           │ Example 2: The research paper discusses the impact of the Silicon Valley tech boom on local housing      │
+│           │ markets.                                                                                                 │
+│           │                                                                                                          │
+│           │ Example 3: During the summit, NATO members pledged increased cooperation to address global security      │
+│           │ threats.                                                                                                 │
+│           │                                                                                                          │
+│           │ Example 4: The Amazon rainforest continues to face deforestation at an alarming rate, according to the   │
+│           │ latest environmental studies.                                                                            │
+│           │                                                                                                          │
+│           │ Example 5: Harvard University remains a leader in global education, attracting students from over 100    │
+│           │ countries.                                                                                               │
+│           │                                                                                                          │
+│           │ Example 6: The Brexit negotiations have deeply affected trade relations between the United Kingdom and   │
+│           │ the European Union.                                                                                      │
+│           │                                                                                                          │
+│           │ Example 7: The United Nations Security Council convened to discuss the ongoing conflict in Syria.        │
+│           │                                                                                                          │
+│           │ Example 8: Wall Street reacted negatively to the sudden change in Federal Reserve policies.              │
+│           │                                                                                                          │
+│           │ Example 9: The documentary highlighted the unique cultural practices of the Maasai tribes of East        │
+│           │ Africa.                                                                                                  │
+│           │                                                                                                          │
+│           │ Example 10: Scholars at the University of Tokyo have made significant breakthroughs in earthquake        │
+│           │ prediction technology.                                                                                   │
+│ System    │ Score: 5.3639421463012695                                                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 22.116073608398438                                                                       │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.9, 0.0)                                                                              │
+│           │ Generation Score: 14.8917818069458                                                                       │
+│           │ Explanation: Proper nouns, specifically related to Canada (Canadian political figures, indigenous        │
+│           │ groups, RCMP), consistently activate the neuron.                                                         │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.7, 0.1)                                                                              │
+│           │ Generation Score: 7.325528144836426                                                                      │
+│           │ Explanation: The neuron activates for nouns that appear in contexts of authority, measurement, or        │
+│           │ culturally significant terms, often followed by punctuation or conjunctions.                             │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.9, 0.1)                                                                              │
+│           │ Generation Score: 6.694938659667969                                                                      │
+│           │ Explanation: Proper nouns, particularly those naming people or geographic locations, within contexts of  │
+│           │ formal or public discourse.                                                                              │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (0.8, 0.1)                                                                              │
+│           │ Generation Score: 5.3639421463012695                                                                     │
+│           │ Explanation: Specific terms that are geographically significant or key to identifying specific entities  │
+│           │ or groups, especially in text related to news, politics, or academia.                                    │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 22.116073608398438
+
+Explanation 0:
+Detection Score: (0.9, 0.0)
+Generation Score: 14.8917818069458
+Explanation: Proper nouns, specifically related to Canada (Canadian political figures, indigenous groups, RCMP), 
+consistently activate the neuron.
+
+Explanation 1:
+Detection Score: (0.7, 0.1)
+Generation Score: 7.325528144836426
+Explanation: The neuron activates for nouns that appear in contexts of authority, measurement, or culturally significant
+terms, often followed by punctuation or conjunctions.
+
+Explanation 2:
+Detection Score: (0.9, 0.1)
+Generation Score: 6.694938659667969
+Explanation: Proper nouns, particularly those naming people or geographic locations, within contexts of formal or public
+discourse.
+
+Explanation 3:
+Detection Score: (0.8, 0.1)
+Generation Score: 5.3639421463012695
+Explanation: Specific terms that are geographically significant or key to identifying specific entities or groups, 
+especially in text related to news, politics, or academia.
+
+

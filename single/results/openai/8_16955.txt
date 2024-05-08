@@ -1,0 +1,475 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: a meaty ale.�� Notes Morris: ��They<< rejected it because they thought ��>>                   │
+│           │ Example 2: , I had a child," Newton said. "The<< people that needed to know>> have<< known for a>>       │
+│           │ Example 3:  her identity, fearing government reprisals.                                                  │
+│           │                                                                                                          │
+│           │ "I was<< very scared when I>> was<< first>>                                                              │
+│           │ Example 4:  with Australia".                                                                             │
+│           │                                                                                                          │
+│           │ "He<< was a sailor in the>> conv<<oys that protected Australian troops being taken>>                     │
+│           │ Example 5:  the U.S. president-elect.                                                                    │
+│           │                                                                                                          │
+│           │ "I<< wanted to meet with Trump today to>>                                                                │
+│           │ Example 6: << the repercussions would>> be<< massive.>> …<< I>> did not<< think things could get much    │
+│           │ worse.>>��                                                                                               │
+│           │                                                                                                          │
+│           │ Example 7:  three types of scenes," said the producer. "The boss stages<< were particularly difficult.   │
+│           │ The>> original<< game>>                                                                                  │
+│           │ Example 8: . You aren��t creating. You��re discovering what<< was there all the time,>>                  │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - "rejected it because they thought"                                                                     │
+│           │ - "people that needed to know", "known for a"                                                            │
+│           │ - "very scared when I", "first"                                                                          │
+│           │ - "was a sailor in the", "oys that protected Australian troops being taken"                              │
+│           │ - "wanted to meet with Trump today to"                                                                   │
+│           │ - "the repercussions would", "massive.", "I", "think things could get much worse."                       │
+│           │ - "were particularly difficult. The", "game"                                                             │
+│           │ - "was there all the time,"                                                                              │
+│           │                                                                                                          │
+│           │ PREVIOUS TOKENS:                                                                                         │
+│           │ - "They"                                                                                                 │
+│           │ - "The", "have"                                                                                          │
+│           │ - "I was", "was"                                                                                         │
+│           │ - "He", "conv"                                                                                           │
+│           │ - "I"                                                                                                    │
+│           │ - "", "be", "…", "did not"                                                                               │
+│           │ - "The boss stages", "original"                                                                          │
+│           │ - "what"                                                                                                 │
+│           │                                                                                                          │
+│           │ NEXT TOKENS:                                                                                             │
+│           │ - ""                                                                                                     │
+│           │ - "have", ""                                                                                             │
+│           │ - "was", ""                                                                                              │
+│           │ - "", ""                                                                                                 │
+│           │ - "", ""                                                                                                 │
+│           │ - "", ""                                                                                                 │
+│           │ - "", ""                                                                                                 │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ All activating tokens are either verbs or descriptive phrases, often appearing in direct speech or       │
+│           │ thought.                                                                                                 │
+│           │ Many activating tokens are verbs describing actions or states.                                           │
+│           │ Several activating tokens are part of explanatory or descriptive sentences.                              │
+│           │ Next tokens frequently appear empty or minimal, perhaps indicating sentence or thought completion.       │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - Frequent appearance within direct speech or representative thoughts.                                   │
+│           │ - Involvement of action or descriptive verbs.                                                            │
+│           │ - Many cases where activating tokens are part of longer explanatory or narrative phrases.                │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Verbs or descriptive phrases within direct speech or thought that detail actions, descriptions, or    │
+│           │ explanations.                                                                                            │
+│           │ 2. Verbs or phrases that complete a sentence's thought within speech, often carrying significant         │
+│           │ narrative or emotional weight.                                                                           │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  by cyclists<< of>> limited ability. …<< The>> third-streamers<< openly advocated policies    │
+│           │ that specifically targeted the weakest>>                                                                 │
+│           │ Example 2:  the minister responsible for the consultations, said, ��We<< felt it was important to>>      │
+│           │ hold<< a>> public                                                                                        │
+│           │ Example 3:  meaty ale.�� Notes Morris: ��They<< rejected it because they thought ��meat>>                │
+│           │ Example 4:  the campaign.                                                                                │
+│           │                                                                                                          │
+│           │ ��I think<< the>> Russians clearly<< intervened in the election,>>�� Podesta                             │
+│           │ Example 5: This is a battle we fight all the time. It was<< a debate about how that money>> should be    │
+│           │ Example 6: << me, and he>>'s always following me around the house. He adapted<< to the home life very    │
+│           │ easily>>                                                                                                 │
+│           │ Example 7: << he>>'s always following me around the house. He adapted<< to the home life very easily>>," │
+│           │ Justin told                                                                                              │
+│           │ Example 8: �a meaty ale.�� Notes Morris: ��They<< rejected it because they thought �>>                   │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ **Activating Tokens**:                                                                                   │
+│           │ - Example 1: "of", "The", "openly advocated policies that specifically targeted the weakest"             │
+│           │ - Example 2: "felt it was important to", "a"                                                             │
+│           │ - Example 3: "rejected it because they thought ‘meat"                                                    │
+│           │ - Example 4: "the", "intervened in the election,"                                                        │
+│           │ - Example 5: "a debate about how that money"                                                             │
+│           │ - Example 6: "me, and he", "to the home life very easily"                                                │
+│           │ - Example 7: "he", "to the home life very easily"                                                        │
+│           │ - Example 8: "rejected it because they thought ‘"                                                        │
+│           │                                                                                                          │
+│           │ **Previous Tokens**:                                                                                     │
+│           │ - Example 1: "cyclists", "…", "third-streamers"                                                          │
+│           │ - Example 2: "��We", "hold"                                                                              │
+│           │ - Example 3: "��They"                                                                                    │
+│           │ - Example 4: "��I think", "Russians clearly"                                                             │
+│           │ - Example 5: "It was"                                                                                    │
+│           │ - Example 6: "following", "adapted"                                                                      │
+│           │ - Example 7: "following", "adapted"                                                                      │
+│           │ - Example 8: "��They"                                                                                    │
+│           │                                                                                                          │
+│           │ **Next Tokens**:                                                                                         │
+│           │ - Example 1: "limited ability. …", "third-streamers", "<end of sentence>"                                │
+│           │ - Example 2: "hold", "public"                                                                            │
+│           │ - Example 3: "<end of sentence>"                                                                         │
+│           │ - Example 4: "<end of sentence>"                                                                         │
+│           │ - Example 5: "should be"                                                                                 │
+│           │ - Example 6: "'s always following", "<end of sentence>"                                                  │
+│           │ - Example 7: "'s always following", "<end of sentence>"                                                  │
+│           │ - Example 8: "<end of sentence>"                                                                         │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ - The activating tokens predominantly include verbs, nouns, or phrases that describe actions or states.  │
+│           │ - A recurrent theme involves changes or descriptions of states and actions, usually within dialogue or   │
+│           │ speech.                                                                                                  │
+│           │ - Several examples involve possessive statements or personal pronouns followed by verbs.                 │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - Many activating tokens occur within quoted speech or dialogue.                                         │
+│           │ - Commonly triggered by phrases indicating a change or a state.                                          │
+│           │ - Frequently involves personal pronouns or possession, particularly in the context of speech.            │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Phrases or tokens indicating changes, actions, or states, especially within dialogues or quoted       │
+│           │ speech.                                                                                                  │
+│           │ 2. Inclusion of personal pronouns or possessive forms, particularly when part of a larger action or      │
+│           │ state description in dialogues.                                                                          │
+│ System    │ Verbs or descriptive phrases within direct speech or thought that detail actions, descriptions, or       │
+│           │ explanations.                                                                                            │
+│           │                                                                                                          │
+│           │ Verbs or phrases that complete a sentence's thought within speech, often carrying significant narrative  │
+│           │ or emotional weight                                                                                      │
+│           │ Phrases or tokens indicating changes, actions, or states, especially within dialogues or quoted speech.  │
+│           │                                                                                                          │
+│           │ Inclusion of personal pronouns or possessive forms, particularly when part of a larger action or state   │
+│           │ description in dialogues                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: Verbs or descriptive phrases within direct speech or thought that detail actions,             │
+│           │ descriptions, or explanations.                                                                           │
+│           │                                                                                                          │
+│           │ Feature 2: Verbs or phrases that complete a sentence's thought within speech, often carrying significant │
+│           │ narrative or emotional weight                                                                            │
+│           │ Feature 3: Phrases or tokens indicating changes, actions, or states, especially within dialogues or      │
+│           │ quoted speech.                                                                                           │
+│           │                                                                                                          │
+│           │ Feature 4: Inclusion of personal pronouns or possessive forms, particularly when part of a larger action │
+│           │ or state description in dialogues                                                                        │
+│           │                                                                                                          │
+│ Assistant │ Here is the condensed list of distinct features:                                                         │
+│           │                                                                                                          │
+│           │ Feature 1: Verbs or descriptive phrases within direct speech or thought that detail actions,             │
+│           │ descriptions, or explanations.                                                                           │
+│           │ Feature 2: Verbs or phrases that complete a sentence's thought within speech, often carrying significant │
+│           │ narrative or emotional weight.                                                                           │
+│           │ Feature 3: Phrases or tokens indicating changes, actions, or states, especially within dialogues or      │
+│           │ quoted speech.                                                                                           │
+│           │ Feature 4: Inclusion of personal pronouns or possessive forms, particularly when part of a larger action │
+│           │ or state description in dialogues.                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Verbs or descriptive phrases within direct speech or thought that detail         │
+│           │ actions, descriptions, or explanations.                                                                  │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain verbs or descriptive phrases within direct speech or thought that detail  │
+│           │ actions, descriptions, or explanations:                                                                  │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 15, Example 16,  │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 15, 16, 20]                                                       │
+│ System    │ Running on explanation: Verbs or phrases that complete a sentence's thought within speech, often         │
+│           │ carrying significant narrative or emotional weight.                                                      │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain verbs or phrases that complete a sentence's thought within speech, often  │
+│           │ carrying significant narrative or emotional weight:                                                      │
+│           │                                                                                                          │
+│           │ Example 2, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 15,  │
+│           │ Example 16, Example 17, Example 18, Example 19, Example 20.                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [2, 3, 6, 7, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20]                                       │
+│ System    │ Running on explanation: Phrases or tokens indicating changes, actions, or states, especially within      │
+│           │ dialogues or quoted speech.                                                                              │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain phrases or tokens indicating changes, actions, or states, especially      │
+│           │ within dialogues or quoted speech:                                                                       │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 15, Example 16,  │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 15, 16, 20]                                                       │
+│ System    │ Running on explanation: Inclusion of personal pronouns or possessive forms, particularly when part of a  │
+│           │ larger action or state description in dialogues.                                                         │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain personal pronouns or possessive forms, particularly when part of a larger │
+│           │ action or state description in dialogues:                                                                │
+│           │                                                                                                          │
+│           │ Example 1, Example 2, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13,   │
+│           │ Example 15, Example 16, Example 17, Example 18, Example 19, Example 20.                                  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 3, 6, 7, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20]                                    │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Verbs or descriptive phrases within direct speech or thought that detail         │
+│           │ actions, descriptions, or explanations.                                                                  │
+│ Assistant │ Here are 10 examples of short text samples containing verbs or descriptive phrases within direct speech  │
+│           │ or thought that detail actions, descriptions, or explanations.                                           │
+│           │                                                                                                          │
+│           │ Example 1: She said, "I jog every morning to stay healthy."                                              │
+│           │                                                                                                          │
+│           │ Example 2: He thought, "Maybe I should paint the room blue to make it feel calmer."                      │
+│           │                                                                                                          │
+│           │ Example 3: "I'll fix the car tomorrow," he promised.                                                     │
+│           │                                                                                                          │
+│           │ Example 4: "Let's bake cookies this weekend," she suggested excitedly.                                   │
+│           │                                                                                                          │
+│           │ Example 5: He whispered, "I can solve this puzzle by rearranging the pieces."                            │
+│           │                                                                                                          │
+│           │ Example 6: "I drive slowly through the snow to avoid skidding," she explained.                           │
+│           │                                                                                                          │
+│           │ Example 7: She mused, "Growing my own herbs would enhance my cooking."                                   │
+│           │                                                                                                          │
+│           │ Example 8: "I learned to speak Spanish by practicing every day," he recounted.                           │
+│           │                                                                                                          │
+│           │ Example 9: He declared, "I will conquer my fear of heights by going skydiving."                          │
+│           │                                                                                                          │
+│           │ Example 10: "Watch me dive into the pool," she called out, ready to demonstrate.                         │
+│ System    │ Score: 3.5314483642578125                                                                                │
+│ System    │ Running on explanation: Verbs or phrases that complete a sentence's thought within speech, often         │
+│           │ carrying significant narrative or emotional weight.                                                      │
+│ Assistant │ Here are 10 examples of short text samples where verbs or phrases complete a sentence's thought within   │
+│           │ speech, often carrying significant narrative or emotional weight:                                        │
+│           │                                                                                                          │
+│           │ Example 1: "When she left, I felt like my world had crumbled," he whispered.                             │
+│           │                                                                                                          │
+│           │ Example 2: "If we don't act now, we may lose everything," the leader declared firmly.                    │
+│           │                                                                                                          │
+│           │ Example 3: "I never thought I'd say this, but I forgive you," she said, tears in her eyes.               │
+│           │                                                                                                          │
+│           │ Example 4: "Watch out for the car!" he shouted, saving her life.                                         │
+│           │                                                                                                          │
+│           │ Example 5: "One day, I'll make you proud," he promised softly.                                           │
+│           │                                                                                                          │
+│           │ Example 6: "This victory means more than you could imagine," the coach explained, eyes gleaming with     │
+│           │ pride.                                                                                                   │
+│           │                                                                                                          │
+│           │ Example 7: "I can't believe we did it," she exclaimed, overwhelmed with joy.                             │
+│           │                                                                                                          │
+│           │ Example 8: "He passed away peacefully," the nurse said, offering a comforting smile.                     │
+│           │                                                                                                          │
+│           │ Example 9: "Let's never speak of this again," he concluded, turning away.                                │
+│           │                                                                                                          │
+│           │ Example 10: "You are the love of my life," he confessed under the starlit sky.                           │
+│ System    │ Score: 3.668511152267456                                                                                 │
+│ System    │ Running on explanation: Phrases or tokens indicating changes, actions, or states, especially within      │
+│           │ dialogues or quoted speech.                                                                              │
+│ Assistant │ Here are 10 examples of text containing phrases or tokens indicating changes, actions, or states,        │
+│           │ specifically within dialogues or quoted speech:                                                          │
+│           │                                                                                                          │
+│           │ Example 1: "When I arrived," John explained, "the whole scene had changed dramatically."                 │
+│           │                                                                                                          │
+│           │ Example 2: Sarah whispered, "I feel a bit dizzy," clutching her forehead.                                │
+│           │                                                                                                          │
+│           │ Example 3: "Watch out!" he shouted suddenly as the ball flew towards the window.                         │
+│           │                                                                                                          │
+│           │ Example 4: "I can't believe how quickly he moved," she said, amazed at the agility displayed.            │
+│           │                                                                                                          │
+│           │ Example 5: "We'll start the project next week," announced the manager during the meeting.                │
+│           │                                                                                                          │
+│           │ Example 6: "I think it's going to rain," Tom predicted, looking at the dark clouds gathering.            │
+│           │                                                                                                          │
+│           │ Example 7: "I just got promoted!" exclaimed Lisa, her face beaming with joy.                             │
+│           │                                                                                                          │
+│           │ Example 8: "That sounds like a plan," he agreed, nodding in approval.                                    │
+│           │                                                                                                          │
+│           │ Example 9: "I quit!" she declared emphatically, slamming her papers on the desk.                         │
+│           │                                                                                                          │
+│           │ Example 10: "He passed away last night," Janet murmured, her voice filled with sorrow.                   │
+│ System    │ Score: 4.7217302322387695                                                                                │
+│ System    │ Running on explanation: Inclusion of personal pronouns or possessive forms, particularly when part of a  │
+│           │ larger action or state description in dialogues.                                                         │
+│ Assistant │ Here are 10 examples of short text samples containing personal pronouns or possessive forms as part of   │
+│           │ larger actions or states described in dialogues. The dialogue context will be established before the     │
+│           │ pronoun or possessive form is introduced.                                                                │
+│           │                                                                                                          │
+│           │ Example 1: "I can't believe he said that!" she exclaimed, dropping her fork in dismay.                   │
+│           │                                                                                                          │
+│           │ Example 2: John asked, "Do you know where my keys are?"                                                  │
+│           │                                                                                                          │
+│           │ Example 3: "We should hurry if we want to catch the train," Mark suggested, grabbing his coat.           │
+│           │                                                                                                          │
+│           │ Example 4: "You really think she'll agree to that?" Tom questioned skeptically.                          │
+│           │                                                                                                          │
+│           │ Example 5: "It's not what you think," she whispered, her eyes avoiding his.                              │
+│           │                                                                                                          │
+│           │ Example 6: "They never told us we'd need to bring our own supplies," the students complained             │
+│           │ collectively.                                                                                            │
+│           │                                                                                                          │
+│           │ Example 7: "I'll handle this," he said confidently, stepping forward to address the crowd.               │
+│           │                                                                                                          │
+│           │ Example 8: "Can you help me with my homework?" she asked, looking hopeful.                               │
+│           │                                                                                                          │
+│           │ Example 9: "We won! We actually won!" they shouted together, their joy uncontainable.                    │
+│           │                                                                                                          │
+│           │ Example 10: "Why won't you let me go with you?" he asked, his voice tinged with sadness.                 │
+│ System    │ Score: 3.155441999435425                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 7.30042028427124                                                                         │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.8, 0.2)                                                                              │
+│           │ Generation Score: 3.5314483642578125                                                                     │
+│           │ Explanation: Verbs or descriptive phrases within direct speech or thought that detail actions,           │
+│           │ descriptions, or explanations.                                                                           │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.9, 0.5)                                                                              │
+│           │ Generation Score: 3.668511152267456                                                                      │
+│           │ Explanation: Verbs or phrases that complete a sentence's thought within speech, often carrying           │
+│           │ significant narrative or emotional weight.                                                               │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.8, 0.2)                                                                              │
+│           │ Generation Score: 4.7217302322387695                                                                     │
+│           │ Explanation: Phrases or tokens indicating changes, actions, or states, especially within dialogues or    │
+│           │ quoted speech.                                                                                           │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (1.0, 0.5)                                                                              │
+│           │ Generation Score: 3.155441999435425                                                                      │
+│           │ Explanation: Inclusion of personal pronouns or possessive forms, particularly when part of a larger      │
+│           │ action or state description in dialogues.                                                                │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 7.30042028427124
+
+Explanation 0:
+Detection Score: (0.8, 0.2)
+Generation Score: 3.5314483642578125
+Explanation: Verbs or descriptive phrases within direct speech or thought that detail actions, descriptions, or 
+explanations.
+
+Explanation 1:
+Detection Score: (0.9, 0.5)
+Generation Score: 3.668511152267456
+Explanation: Verbs or phrases that complete a sentence's thought within speech, often carrying significant narrative or 
+emotional weight.
+
+Explanation 2:
+Detection Score: (0.8, 0.2)
+Generation Score: 4.7217302322387695
+Explanation: Phrases or tokens indicating changes, actions, or states, especially within dialogues or quoted speech.
+
+Explanation 3:
+Detection Score: (1.0, 0.5)
+Generation Score: 3.155441999435425
+Explanation: Inclusion of personal pronouns or possessive forms, particularly when part of a larger action or state 
+description in dialogues.
+
+

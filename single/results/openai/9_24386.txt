@@ -1,0 +1,478 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  by drinking wine?<<                                                                          │
+│           │                                                                                                          │
+│           │ >>The 2010 British student demonstrations awoke<< the>> austerity<< generation. The 2011>> Chilean       │
+│           │ Winter                                                                                                   │
+│           │ Example 2: planes heading for his borders<<. It is not far>>-<<fetched to posit that he might give the   │
+│           │ orders>>                                                                                                 │
+│           │ Example 3:  and then<< sees>> U.S. warplanes heading for his borders<<. It is not far>>-<<fetched>>      │
+│           │ Example 4:  and<< the initial popularity he gained was>> more than<< just>> relief at Blair going<<.     │
+│           │ Voters wanted a>> new approach                                                                           │
+│           │ Example 5:  more than<< just>> relief at Blair going<<. Voters wanted a>> new approach<<. Brown had the  │
+│           │ capacity>> and<< the>>                                                                                   │
+│           │ Example 6:  that<< I had>> read<< it>> before<<. By the time the>> plane landed<<, I had attained the>>  │
+│           │ ��                                                                                                       │
+│           │ Example 7:  no way to build a world of interconnected systems that was completely secure<<. Americans    │
+│           │ had>> spent the past decade                                                                              │
+│           │ Example 8: << seriously>> and then<< sees>> U.S. warplanes heading for his borders<<. It is not far>>-   │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - Example 1: "<< >>", "the", "austerity", "the", "2011"                                                  │
+│           │ - Example 2: ".", "It is not far", "-", "fetched to posit that he might give the orders"                 │
+│           │ - Example 3: "sees", ".", "It is not far", "-", "fetched"                                                │
+│           │ - Example 4: "the initial popularity he gained was", "more than", "just", "relief at Blair going",       │
+│           │ "Voters wanted a", "new approach"                                                                        │
+│           │ - Example 5: "more than", "just", "relief at Blair going", "Voters wanted a", "new approach", "Brown had │
+│           │ the capacity", "and", "the"                                                                              │
+│           │ - Example 6: "I had", "read", "it", "before", "By the time the", "plane landed", "I had attained the",   │
+│           │ "��"                                                                                                     │
+│           │ - Example 7: "no way to build a world of interconnected systems that was completely secure", "Americans  │
+│           │ had", "spent the past decade"                                                                            │
+│           │ - Example 8: "seriously", "and then", "sees", "U.S. warplanes heading for his borders", "It is not far", │
+│           │ "-"                                                                                                      │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ - Many activating tokens are full clauses or parts of clauses.                                           │
+│           │ - Activating tokens are often surrounded by punctuation or special characters like quotation marks or    │
+│           │ periods.                                                                                                 │
+│           │ - In several instances, activating tokens include comparative phrases ("more than", "just") or modifiers │
+│           │ ("seriously", "initial").                                                                                │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - Many activating tokens appear to relate to important, sometimes complex, descriptions or statements.   │
+│           │ - The use of punctuation or special characters often accompanies the activating tokens.                  │
+│           │ - Comparative or modifying phrases frequently trigger activation.                                        │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Explanations for what causes the neuron to activate:                                                     │
+│           │                                                                                                          │
+│           │ 1. Complex or significant statements, often encapsulating an important aspect of the context, surrounded │
+│           │ by punctuation or special characters.                                                                    │
+│           │ 2. The use of comparative or modifying phrases within significant descriptive or conclusive statements.  │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  conviction that<< I had>> read<< it>> before<<. By the time the>> plane landed<<, I had      │
+│           │ attained the>> �                                                                                         │
+│           │ Example 2: <<. The 2011>> Chilean Winter<< frightened>> tight-belted administrators the<<                │
+│           │ world>>-round<<.>> And<< now,>> Quebec                                                                   │
+│           │ Example 3:  drinking wine?<<                                                                             │
+│           │                                                                                                          │
+│           │ >>The 2010 British student demonstrations awoke<< the>> austerity<< generation. The 2011>> Chilean       │
+│           │ Winter<< frightened>>                                                                                    │
+│           │ Example 4:  disturbing video of Syrian rebels beheading a child near the city of Aleppo<<. It had>>      │
+│           │ caused a minor                                                                                           │
+│           │ Example 5:  the reproductive process those very<< men>> on whose offspring a nation depended<<. The      │
+│           │ immediate result of the vice,>>                                                                          │
+│           │ Example 6: , elimination from the reproductive process those very<< men>> on whose offspring a nation    │
+│           │ depended<<. The immediate result of>>                                                                    │
+│           │ Example 7:  elimination from the reproductive process those very<< men>> on whose offspring a nation     │
+│           │ depended<<. The immediate result of the>>                                                                │
+│           │ Example 8: �� and join the fight against tax evasion and offshore secrecy<<.>>                           │
+│           │ <<                                                                                                       │
+│           │ He could have>> looked no                                                                                │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - "I had", "it", "By the time the", "plane landed", "I had attained the"                                 │
+│           │ - ". The 2011", "Chilean Winter", "frightened", "world", "-round."                                       │
+│           │ - "The 2010 British student demonstrations awoke", "the", "austerity", "generation. The 2011", "Chilean  │
+│           │ Winter", "frightened"                                                                                    │
+│           │ - "It had"                                                                                               │
+│           │ - "men", "The immediate result of the vice,"                                                             │
+│           │ - "men", "The immediate result of"                                                                       │
+│           │ - "men", "The immediate result of the"                                                                   │
+│           │ - "He could have"                                                                                        │
+│           │                                                                                                          │
+│           │ PREVIOUS TOKENS:                                                                                         │
+│           │ - "conviction that", "read", "before", "�"                                                               │
+│           │ - "\"", "administrators the", "And", "Quebec"                                                            │
+│           │ - "drinking wine?", ""                                                                                   │
+│           │ - "Aleppo", "caused a minor"                                                                             │
+│           │ - "those very", "on whose offspring a nation depended"                                                   │
+│           │ - "those very", "on whose offspring a nation depended"                                                   │
+│           │ - "those very", "on whose offspring a nation depended"                                                   │
+│           │ - "tax evasion and offshore secrecy", ""                                                                 │
+│           │                                                                                                          │
+│           │ NEXT TOKENS:                                                                                             │
+│           │ - "before", "�"                                                                                          │
+│           │ - "And", "Quebec"                                                                                        │
+│           │ - ""                                                                                                     │
+│           │ - "caused a minor"                                                                                       │
+│           │ - "on whose offspring a nation depended", ""                                                             │
+│           │ - "on whose offspring a nation depended", ""                                                             │
+│           │ - "on whose offspring a nation depended", ""                                                             │
+│           │ - ""                                                                                                     │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ Patterns in activating tokens include:                                                                   │
+│           │ - Phrases indicating actions or states ("I had", "It had", "He could have").                             │
+│           │ - References to specific events or entities ("The 2011", "Chilean Winter", "men").                       │
+│           │ - Endings of sentences or clauses, punctuation-induced breaks (".", "<<.>>", "-round.").                 │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - Activating tokens often include verbs or verb phrases, especially in past or conditional tenses.       │
+│           │ - Many activating tokens are related to specific, possibly historical or significant events ("Chilean    │
+│           │ Winter", "2010 British student demonstrations").                                                         │
+│           │ - Activations frequently occur near the end of statements or before punctuation, suggesting a pattern in │
+│           │ syntax processing.                                                                                       │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Verbs or verb phrases indicating past actions or conditional statements, particularly those           │
+│           │ reflecting significant events or actions.                                                                │
+│           │ 2. Tokens that appear at the end of sentences or clauses, particularly those that are followed by        │
+│           │ significant punctuation or breaks in text.                                                               │
+│ System    │ Complex or significant statements, often encapsulating an important aspect of the context, surrounded by │
+│           │ punctuation or special characters.                                                                       │
+│           │                                                                                                          │
+│           │ The use of comparative or modifying phrases within significant descriptive or conclusive statements      │
+│           │ Verbs or verb phrases indicating past actions or conditional statements, particularly those reflecting   │
+│           │ significant events or actions.                                                                           │
+│           │                                                                                                          │
+│           │ Tokens that appear at the end of sentences or clauses, particularly those that are followed by           │
+│           │ significant punctuation or breaks in text                                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: Complex or significant statements, often encapsulating an important aspect of the context,    │
+│           │ surrounded by punctuation or special characters.                                                         │
+│           │                                                                                                          │
+│           │ Feature 2: The use of comparative or modifying phrases within significant descriptive or conclusive      │
+│           │ statements                                                                                               │
+│           │ Feature 3: Verbs or verb phrases indicating past actions or conditional statements, particularly those   │
+│           │ reflecting significant events or actions.                                                                │
+│           │                                                                                                          │
+│           │ Feature 4: Tokens that appear at the end of sentences or clauses, particularly those that are followed   │
+│           │ by significant punctuation or breaks in text                                                             │
+│           │                                                                                                          │
+│ Assistant │ Here is the list of distinct features based on your input:                                               │
+│           │                                                                                                          │
+│           │ Feature 1: Complex or significant statements, often encapsulating an important aspect of the context,    │
+│           │ surrounded by punctuation or special characters.                                                         │
+│           │                                                                                                          │
+│           │ Feature 2: The use of comparative or modifying phrases within significant descriptive or conclusive      │
+│           │ statements.                                                                                              │
+│           │                                                                                                          │
+│           │ Feature 3: Verbs or verb phrases indicating past actions or conditional statements, particularly those   │
+│           │ reflecting significant events or actions.                                                                │
+│           │                                                                                                          │
+│           │ Feature 4: Tokens that appear at the end of sentences or clauses, particularly those that are followed   │
+│           │ by significant punctuation or breaks in text.                                                            │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Complex or significant statements, often encapsulating an important aspect of    │
+│           │ the context, surrounded by punctuation or special characters.                                            │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain complex or significant statements, often encapsulating an important       │
+│           │ aspect of the context, surrounded by punctuation or special characters:                                  │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 12, Example 13, Example 14, Example 20.  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 12, 13, 14, 20]                                                           │
+│ System    │ Running on explanation: The use of comparative or modifying phrases within significant descriptive or    │
+│           │ conclusive statements.                                                                                   │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain the use of comparative or modifying phrases within significant            │
+│           │ descriptive or conclusive statements:                                                                    │
+│           │                                                                                                          │
+│           │ Example 3: "It is not far-fetched to posit that he might give the orders" uses a modifying phrase "It is │
+│           │ not far-fetched to posit" to describe a significant possibility.                                         │
+│           │ Example 6: "It is not far-fetched" modifies the statement about seeing U.S. warplanes, adding a layer of │
+│           │ speculation about the likelihood of an event.                                                            │
+│           │ Example 7: "more than just relief at Blair going" uses a comparative phrase to describe the initial      │
+│           │ popularity gained.                                                                                       │
+│           │ Example 10: "more than just relief at Blair going" again uses a comparative phrase to describe the       │
+│           │ initial popularity.                                                                                      │
+│           │ Example 12: "no way to build a world of interconnected systems that was completely secure" uses a        │
+│           │ modifying phrase to describe the impossibility of achieving complete security in interconnected systems. │
+│           │ Example 13: "It is not far-" (presumably leading to "far-fetched") modifies the statement about seeing   │
+│           │ U.S. warplanes, suggesting a speculation about the likelihood of an event.                               │
+│           │ Example 20: "frightened tight-belted administrators the world-round" uses a modifying phrase to describe │
+│           │ the global impact of the Chilean Winter.                                                                 │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [3, 6, 7, 10, 12, 13, 20]                                                                  │
+│ System    │ Running on explanation: Verbs or verb phrases indicating past actions or conditional statements,         │
+│           │ particularly those reflecting significant events or actions.                                             │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain verbs or verb phrases indicating past actions or conditional statements,  │
+│           │ particularly those reflecting significant events or actions:                                             │
+│           │                                                                                                          │
+│           │ Example 1: "awoke"                                                                                       │
+│           │ Example 2: "had been used", "was removed"                                                                │
+│           │ Example 4: "was a threat"                                                                                │
+│           │ Example 5: "was going to wrap"                                                                           │
+│           │ Example 7: "gained", "wanted"                                                                            │
+│           │ Example 10: "wanted", "had the capacity"                                                                 │
+│           │ Example 11: "had read", "had attained"                                                                   │
+│           │ Example 12: "had spent"                                                                                  │
+│           │ Example 14: "is let off"                                                                                 │
+│           │ Example 19: "had read", "had attained"                                                                   │
+│           │ Example 20: "frightened"                                                                                 │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 2, 4, 5, 7, 10, 11, 12, 14, 19, 20]                                                    │
+│ System    │ Running on explanation: Tokens that appear at the end of sentences or clauses, particularly those that   │
+│           │ are followed by significant punctuation or breaks in text.                                               │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens that appear at the end of sentences or clauses, particularly those │
+│           │ that are followed by significant punctuation or breaks in text:                                          │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 5, Example 6, Example 7, Example 8, Example 10, Example 11, Example 12,    │
+│           │ Example 13, Example 14, Example 15, Example 16, Example 18, Example 19, Example 20.                      │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20]                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Complex or significant statements, often encapsulating an important aspect of    │
+│           │ the context, surrounded by punctuation or special characters.                                            │
+│ Assistant │ Here are 10 examples of short text samples containing complex or significant statements, often           │
+│           │ encapsulating an important aspect of the context, surrounded by punctuation or special characters. To    │
+│           │ ensure accuracy, each example will begin with establishing the context before introducing the feature.   │
+│           │                                                                                                          │
+│           │ Example 1: In a discussion about climate change, the speaker emphasized, "We must act now to save our    │
+│           │ planet!" and the crowd cheered in agreement.                                                             │
+│           │                                                                                                          │
+│           │ Example 2: During a heated debate on education reform, she pointedly remarked, "*Education is the        │
+│           │ foundation of our future!* We cannot afford to neglect it."                                              │
+│           │                                                                                                          │
+│           │ Example 3: Reflecting on technological advancements, the article stated, "[Technology will continue to   │
+│           │ shape our lives in ways we cannot yet foresee.]"                                                         │
+│           │                                                                                                          │
+│           │ Example 4: In a book about personal development, the author writes, "{Embrace change, for it is the only │
+│           │ constant in life.}"                                                                                      │
+│           │                                                                                                          │
+│           │ Example 5: As the CEO concluded his speech on corporate ethics, he stressed, "<Integrity is the          │
+│           │ cornerstone of our business.>"                                                                           │
+│           │                                                                                                          │
+│           │ Example 6: During a conference on mental health, the keynote speaker highlighted, "|Stigma around mental │
+│           │ health must be eradicated for progress to be made.|"                                                     │
+│           │                                                                                                          │
+│           │ Example 7: In an email about teamwork, the manager included, "#Teamwork divides the task and multiplies  │
+│           │ the success.#"                                                                                           │
+│           │                                                                                                          │
+│           │ Example 8: In a newsletter discussing economic policies, the editor noted, "Economic equality is         │
+│           │ essential for a stable society; we all must strive for it."                                              │
+│           │                                                                                                          │
+│           │ Example 9: At the end of a documentary about wildlife conservation, the narrator solemnly declared,      │
+│           │ "(Every species has a role to play in our ecosystem.)"                                                   │
+│           │                                                                                                          │
+│           │ Example 10: While giving advice on career choices, the mentor expressed, "`Choose a job you love, and    │
+│           │ you will never have to work a day in your life.`"                                                        │
+│ System    │ Score: 3.3548290729522705                                                                                │
+│ System    │ Running on explanation: The use of comparative or modifying phrases within significant descriptive or    │
+│           │ conclusive statements.                                                                                   │
+│ Assistant │ Here are 10 examples of short text samples containing comparative or modifying phrases within            │
+│           │ significant descriptive or conclusive statements.                                                        │
+│           │                                                                                                          │
+│           │ Example 1: Unsurprisingly, the Eiffel Tower, taller than most buildings in Paris, remains a symbol of    │
+│           │ French ingenuity.                                                                                        │
+│           │ Example 2: The novel, arguably one of the best this century, captivates its readers from the first page. │
+│           │ Example 3: The Grand Canyon, significantly larger than any other canyon in the area, offers breathtaking │
+│           │ views.                                                                                                   │
+│           │ Example 4: The concert, undoubtedly the highlight of the summer, exceeded all our expectations.          │
+│           │ Example 5: Quantum computers, far more powerful than traditional computers, could revolutionize data     │
+│           │ processing.                                                                                              │
+│           │ Example 6: His performance, easily the best of the night, earned him a standing ovation.                 │
+│           │ Example 7: The smartphone, slightly lighter than its predecessor, fits perfectly in the palm of your     │
+│           │ hand.                                                                                                    │
+│           │ Example 8: The treaty, less a compromise than a capitulation, effectively ended the conflict.            │
+│           │ Example 9: This legislation, more comprehensive than the previous version, aims to address all           │
+│           │ underlying issues.                                                                                       │
+│           │ Example 10: Her latest film, perhaps her finest work, has been nominated for several awards.             │
+│ System    │ Score: 0.0                                                                                               │
+│ System    │ Running on explanation: Verbs or verb phrases indicating past actions or conditional statements,         │
+│           │ particularly those reflecting significant events or actions.                                             │
+│ Assistant │ Here are 10 examples of short text samples that contain verbs or verb phrases indicating past actions or │
+│           │ conditional statements, particularly reflecting significant events or actions. Each example will ensure  │
+│           │ the presence of the described feature, varying its position within the sentence.                         │
+│           │                                                                                                          │
+│           │ Example 1: If she had known the truth, she would have spoken up.                                         │
+│           │ Example 2: The Titanic sank after hitting an iceberg.                                                    │
+│           │ Example 3: Had I reached the station earlier, I could have caught the last train.                        │
+│           │ Example 4: They built the entire bridge in just two years.                                               │
+│           │ Example 5: If he had tried a little harder, he might have won the race.                                  │
+│           │ Example 6: She graduated top of her class last year.                                                     │
+│           │ Example 7: If the weather had been better, we could have gone hiking.                                    │
+│           │ Example 8: The Wright brothers flew the first powered airplane.                                          │
+│           │ Example 9: If the company had invested in new technology, it might have dominated the market.            │
+│           │ Example 10: Neil Armstrong walked on the moon in 1969.                                                   │
+│ System    │ Score: 0.09899361431598663                                                                               │
+│ System    │ Running on explanation: Tokens that appear at the end of sentences or clauses, particularly those that   │
+│           │ are followed by significant punctuation or breaks in text.                                               │
+│ Assistant │ Here are 10 examples of short text samples where specific tokens appear at the end of sentences or       │
+│           │ clauses, followed by significant punctuation such as periods, exclamation points, question marks, or     │
+│           │ breaks in text.                                                                                          │
+│           │                                                                                                          │
+│           │ Example 1: She went to the store and bought apples.                                                      │
+│           │ Example 2: What time is it?                                                                              │
+│           │ Example 3: Wow, that was incredible!                                                                     │
+│           │ Example 4: He opened the book; it was old.                                                               │
+│           │ Example 5: Dogs are great pets, especially because they are loyal.                                       │
+│           │ Example 6: When she arrived, everyone cheered!                                                           │
+│           │ Example 7: It's not what you think; I was there.                                                         │
+│           │ Example 8: Are you coming with us?                                                                       │
+│           │ Example 9: The sun sets in the west.                                                                     │
+│           │ Example 10: Finally, he understood why.                                                                  │
+│ System    │ Score: 0.37514257431030273                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 8.001972198486328                                                                        │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.8, 0.1)                                                                              │
+│           │ Generation Score: 3.3548290729522705                                                                     │
+│           │ Explanation: Complex or significant statements, often encapsulating an important aspect of the context,  │
+│           │ surrounded by punctuation or special characters.                                                         │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (0.7, 0.0)                                                                              │
+│           │ Generation Score: 0.0                                                                                    │
+│           │ Explanation: The use of comparative or modifying phrases within significant descriptive or conclusive    │
+│           │ statements.                                                                                              │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (0.7, 0.4)                                                                              │
+│           │ Generation Score: 0.09899361431598663                                                                    │
+│           │ Explanation: Verbs or verb phrases indicating past actions or conditional statements, particularly those │
+│           │ reflecting significant events or actions.                                                                │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (1.0, 0.6)                                                                              │
+│           │ Generation Score: 0.37514257431030273                                                                    │
+│           │ Explanation: Tokens that appear at the end of sentences or clauses, particularly those that are followed │
+│           │ by significant punctuation or breaks in text.                                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 8.001972198486328
+
+Explanation 0:
+Detection Score: (0.8, 0.1)
+Generation Score: 3.3548290729522705
+Explanation: Complex or significant statements, often encapsulating an important aspect of the context, surrounded by 
+punctuation or special characters.
+
+Explanation 1:
+Detection Score: (0.7, 0.0)
+Generation Score: 0.0
+Explanation: The use of comparative or modifying phrases within significant descriptive or conclusive statements.
+
+Explanation 2:
+Detection Score: (0.7, 0.4)
+Generation Score: 0.09899361431598663
+Explanation: Verbs or verb phrases indicating past actions or conditional statements, particularly those reflecting 
+significant events or actions.
+
+Explanation 3:
+Detection Score: (1.0, 0.6)
+Generation Score: 0.37514257431030273
+Explanation: Tokens that appear at the end of sentences or clauses, particularly those that are followed by significant 
+punctuation or breaks in text.
+
+

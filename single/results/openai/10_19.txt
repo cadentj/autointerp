@@ -52,71 +52,79 @@
 │           │ Example 8:  Muslim kids? Do we only care about the Christian ones? I��<<m>> not Muslim, so               │
 │           │                                                                                                          │
 │ Assistant │ Step 1.                                                                                                  │
-│           │ ACTIVATING TOKENS: "m", "m", "m", "m", "m", "m", "m".                                                    │
-│           │ PREVIOUS TOKENS: "I", "I", "no", "I", "I", "he ", "I", "I".                                              │
-│           │ NEXT TOKENS: " going", " playing", " going", " to", " to", " learning", " not", " not".                  │
+│           │ ACTIVATING TOKENS: "m" in each example.                                                                  │
+│           │ PREVIOUS TOKENS: "I��", "I��", "I��", "I��", "I��", "I��", "I��", "I��".                                 │
+│           │ NEXT TOKENS: " going", " playing", " going", " here", " so", " learning", " not", " not".                │
 │           │                                                                                                          │
 │           │ Step 2.                                                                                                  │
-│           │ The activating token is always "m".                                                                      │
-│           │ The previous tokens are all contracted forms of "I" (first person singular).                             │
-│           │ The next tokens are mostly about actions or states.                                                      │
+│           │ The activating tokens are consistently "m".                                                              │
+│           │ The previous tokens are consistently "I��", a corrupted or encoded form of "I'm".                        │
+│           │ The next tokens start with various verbs or adjectives ("going", "playing", "here", "so", "learning",    │
+│           │ "not").                                                                                                  │
 │           │                                                                                                          │
 │           │ Step 3.                                                                                                  │
-│           │ - The activating token is part of the first person singular present tense of verbs.                      │
-│           │ - The examples involve a person performing an action or being in a state.                                │
+│           │ - The activations consistently occur with the token "m" following a corrupted or encoded form of "I'm".  │
+│           │ - The contexts of activations involve statements of being, action, or state directly linked to the first │
+│           │ person narrator ("I").                                                                                   │
 │           │                                                                                                          │
-│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
-│           │ similarities? No, I'm sure I've got them all.                                                            │
+│           │ Let me look again to see if these patterns are clear and consistent across all examples. They are indeed │
+│           │ consistent.                                                                                              │
 │           │                                                                                                          │
 │           │ Step 4.                                                                                                  │
 │           │ Two explanations for what causes the neuron to activate:                                                 │
 │           │                                                                                                          │
-│           │ 1. The first person singular present tense of verbs, typically contractions like "I'm".                  │
-│           │ 2. Contractions of "I" followed by an action or state.                                                   │
+│           │ 1. The token "m" following a corrupted or encoded form of "I'm" in a variety of statements involving     │
+│           │ being, action, or state.                                                                                 │
+│           │ 2. The token "m" as part of a contraction expressing the first person singular, especially in emotional  │
+│           │ or action-driven contexts.                                                                               │
 │ System    │ Processing batch 2 of 2                                                                                  │
 │ System    │ Query 1 of 1                                                                                             │
 │ System    │ Running on examples:                                                                                     │
 │           │ Example 1: <|endoftext|> reconstruction��, but because I��<<m>> evidence-based and                       │
 │           │ Example 2:  and innovate on until we create something that we all appreciate. I��<<m>> excited to see    │
 │           │ what                                                                                                     │
-│           │ Example 3:  the city,�� Rep. Jackson said. ��I��<<m>> sure the mayor is                                  │
-│           │ Example 4:  bad year in Augusta, I said to myself, ��I��<<m>> sick of this.                              │
-│           │ Example 5:  Nothing against those that hold belts, and fight big shows. I��<<m>> sure those achievements │
+│           │ Example 3:  of the May 1968 graffitists wrote: ��I��<<m>> not a servant of                               │
+│           │ Example 4:  the city,�� Rep. Jackson said. ��I��<<m>> sure the mayor is                                  │
+│           │ Example 5:  bad year in Augusta, I said to myself, ��I��<<m>> sick of this.                              │
+│           │ Example 6:  Nothing against those that hold belts, and fight big shows. I��<<m>> sure those achievements │
 │           │ are                                                                                                      │
-│           │ Example 6: , right? How are you approaching combat in this one? I��<<m>> guessing you��                  │
-│           │ Example 7:  would lead to more data that is recorded and openly available. I��<<m>> sure Edward Snowden  │
-│           │ would                                                                                                    │
-│           │ Example 8:  and the stuff that I do and that we do together that I��<<m>> super proud of is              │
+│           │ Example 7: , right? How are you approaching combat in this one? I��<<m>> guessing you��                  │
+│           │ Example 8: ocks. It was a pretty high-achieving school. I��<<m>> not                                     │
 │           │                                                                                                          │
 │ Assistant │ Step 1.                                                                                                  │
-│           │ ACTIVATING TOKENS: "m".                                                                                  │
-│           │ PREVIOUS TOKENS: "I$", "I$", "I$",..., "I$".                                                             │
-│           │ NEXT TOKENS: all tokens that start a sentence or phrase, sometimes descriptive of emotions.              │
+│           │ ACTIVATING TOKENS: "m" (in all examples).                                                                │
+│           │ PREVIOUS TOKENS: "I��" (in all examples).                                                                │
+│           │ NEXT TOKENS: "evidence-based", "excited", "not a servant", "sure", "sick", "sure", "guessing", "not".    │
 │           │                                                                                                          │
 │           │ Step 2.                                                                                                  │
-│           │ The activating token is always "m", a part of the phrase "I'm".                                          │
-│           │ The previous tokens are all "I$", part of the "I'm" phrase.                                              │
-│           │ The next tokens start a sentence or phrase, often describing emotions or opinions.                       │
+│           │ The activating token "m" consistently appears in contexts suggestive of the contraction "I'm".           │
+│           │ The previous tokens are always "I��", representing a corrupted or encoded form of "I".                   │
+│           │ The next tokens indicate various states or feelings, often starting sentences that provide additional    │
+│           │ information about the speaker's state of mind or opinions.                                               │
 │           │                                                                                                          │
 │           │ Step 3.                                                                                                  │
-│           │ - The activating token "m" is part of the phrase "I'm".                                                  │
-│           │ - The phrase "I'm" is a contraction of "I am".                                                           │
+│           │ - All examples where the neuron activates occur right after "I��", suggesting a form of "I'm".           │
+│           │ - The texts all involve expressions of the speaker's state, intentions, or feelings.                     │
 │           │                                                                                                          │
-│           │ Let me review my results to see if I missed anything. Is there a pattern I'm missing? No, it seems I     │
-│           │ have caught all.                                                                                         │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The activating token appears within informal or casual expressions, and is common in conversational or │
+│           │ subjective statements.                                                                                   │
 │           │                                                                                                          │
 │           │ Step 4.                                                                                                  │
 │           │ Two explanations for what causes the neuron to activate:                                                 │
 │           │                                                                                                          │
-│           │ 1. The neuron activates on the token "m" as part of the phrase "I'm", a contraction of "I am".           │
-│           │ 2. The neuron activates on the transition from "I" to "am", representing the start of a sentence or      │
-│           │ phrase.                                                                                                  │
-│ System    │ The first person singular present tense of verbs, typically contractions like "I'm".                     │
+│           │ 1. The token "m" used as part of "I'm" in contexts expressing personal states or opinions.               │
+│           │ 2. Activation on "m" following "I��" which is a pattern in conversational or informal text.              │
+│ System    │ The token "m" following a corrupted or encoded form of "I'm" in a variety of statements involving being, │
+│           │ action, or state.                                                                                        │
 │           │                                                                                                          │
-│           │ Contractions of "I" followed by an action or stateThe neuron activates on the token "m" as part of the   │
-│           │ phrase "I'm", a contraction of "I am".                                                                   │
+│           │ The token "m" as part of a contraction expressing the first person singular, especially in emotional or  │
+│           │ action-driven contexts                                                                                   │
+│           │ The token "m" used as part of "I'm" in contexts expressing personal states or opinions.                  │
 │           │                                                                                                          │
-│           │ The neuron activates on the transition from "I" to "am", representing the start of a sentence or phrase  │
+│           │ Activation on "m" following "I��" which is a pattern in conversational or informal text                  │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Running condenser.                                                                                       │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -135,21 +143,22 @@
 │           │                                                                                                          │
 │           │ Get ready to see the list of features.                                                                   │
 │           │                                                                                                          │
-│           │ Feature 1: ['The first person singular present tense of verbs, typically contractions like "I\'m".\n',   │
-│           │ 'Contractions of "I" followed by an action or state']                                                    │
-│           │ Feature 2: ['The neuron activates on the token "m" as part of the phrase "I\'m", a contraction of "I     │
-│           │ am".\n', 'The neuron activates on the transition from "I" to "am", representing the start of a sentence  │
-│           │ or phrase']                                                                                              │
+│           │ Feature 1: The token "m" following a corrupted or encoded form of "I'm" in a variety of statements       │
+│           │ involving being, action, or state.                                                                       │
 │           │                                                                                                          │
-│ Assistant │ After analyzing the features, I've condensed the list to remove duplicates and similar features. Here is │
-│           │ the resulting list:                                                                                      │
+│           │ Feature 2: The token "m" as part of a contraction expressing the first person singular, especially in    │
+│           │ emotional or action-driven contexts                                                                      │
+│           │ Feature 3: The token "m" used as part of "I'm" in contexts expressing personal states or opinions.       │
 │           │                                                                                                          │
-│           │ Feature 1: Contractions of "I" followed by an action or state, typically "I'm".                          │
-│           │ Feature 2: The neuron activates on the transition from "I" to "am", representing the start of a sentence │
-│           │ or phrase.                                                                                               │
+│           │ Feature 4: Activation on "m" following "I��" which is a pattern in conversational or informal text       │
 │           │                                                                                                          │
-│           │ I removed the duplicate feature that referred to the token "m" as part of the phrase "I'm", as it's      │
-│           │ already covered by the first feature. Let me know if you have any further questions!                     │
+│ Assistant │ Here is the condensed list of distinct features:                                                         │
+│           │                                                                                                          │
+│           │ Feature 1: The token "m" following a corrupted or encoded form of "I'm" in a variety of statements       │
+│           │ involving being, action, or state.                                                                       │
+│           │ Feature 2: The token "m" as part of a contraction expressing the first person singular, especially in    │
+│           │ emotional or action-driven contexts.                                                                     │
+│           │ Feature 3: Activation on "m" following "I��" which is a pattern in conversational or informal text.      │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Running detection scoring.                                                                               │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -180,19 +189,29 @@
 │           │ Text examples:                                                                                           │
 │           │                                                                                                          │
 │           │ <EXPLANATION>                                                                                            │
-│ System    │ Running on explanation: Contractions of "I" followed by an action or state, typically "I'm".             │
+│ System    │ Running on explanation: The token "m" following a corrupted or encoded form of "I'm" in a variety of     │
+│           │ statements involving being, action, or state.                                                            │
 │ System    │ Processing batch 1 of 1                                                                                  │
-│ Assistant │ The following examples contain contractions of "I" followed by an action or state, typically "I'm":      │
+│ Assistant │ The following examples contain the token "m" following a corrupted or encoded form of "I'm":             │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 11, Example 19.                                                 │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 11, 19]                                                                          │
+│ System    │ Running on explanation: The token "m" as part of a contraction expressing the first person singular,     │
+│           │ especially in emotional or action-driven contexts.                                                       │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain the token "m" as part of a contraction expressing the first person        │
+│           │ singular, especially in emotional or action-driven contexts:                                             │
 │           │                                                                                                          │
 │           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
 │           │ Example 20.                                                                                              │
 │           │                                                                                                          │
 │           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
-│ System    │ Running on explanation: The neuron activates on the transition from "I" to "am", representing the start  │
-│           │ of a sentence or phrase.                                                                                 │
+│ System    │ Running on explanation: Activation on "m" following "I��" which is a pattern in conversational or        │
+│           │ informal text.                                                                                           │
 │ System    │ Processing batch 1 of 1                                                                                  │
-│ Assistant │ The following examples contain the transition from "I" to "am", representing the start of a sentence or  │
-│           │ phrase:                                                                                                  │
+│ Assistant │ The following examples contain the feature "Activation on 'm' following 'I’m'" which is a pattern in     │
+│           │ conversational or informal text:                                                                         │
 │           │                                                                                                          │
 │           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
 │           │ Example 20.                                                                                              │
@@ -223,55 +242,95 @@
 │           │                                                                                                          │
 │           │                                                                                                          │
 │           │ <EXPLANATION>                                                                                            │
-│ System    │ Running on explanation: Contractions of "I" followed by an action or state, typically "I'm".             │
-│ Assistant │ Here are 10 examples of short text samples containing contractions of "I" followed by an action or       │
-│           │ state, typically "I'm".                                                                                  │
+│ System    │ Running on explanation: The token "m" following a corrupted or encoded form of "I'm" in a variety of     │
+│           │ statements involving being, action, or state.                                                            │
+│ Assistant │ Here are 10 examples of short text examples containing the token "m" following a corrupted or encoded    │
+│           │ form of "I'm" in a variety of statements involving being, action, or state.                              │
 │           │                                                                                                          │
-│           │ I'll make sure to vary the position of the feature in the sentence and use different actions and states. │
+│           │ Example 1: "I@m feeling quite cheerful today!"                                                           │
+│           │ Example 2: "Honestly, I#m just tired of all this rain."                                                  │
+│           │ Example 3: "In the report, it says I%m responsible for the next presentation."                           │
+│           │ Example 4: "On my blog, I!m writing about my latest travel adventures."                                  │
+│           │ Example 5: "I$m excited about the new job offer!"                                                        │
+│           │ Example 6: "During the meeting, I*m expected to lead the discussion."                                    │
+│           │ Example 7: "In the email, I%am confirming my attendance at the conference."                              │
+│           │ Example 8: "On my profile, it states that I&am an avid reader."                                          │
+│           │ Example 9: "I*m ready to start the project as soon as possible."                                         │
+│           │ Example 10: "In her message, she mentioned that I*m her best friend."                                    │
+│ System    │ Score: 26.864805221557617                                                                                │
+│ System    │ Running on explanation: The token "m" as part of a contraction expressing the first person singular,     │
+│           │ especially in emotional or action-driven contexts.                                                       │
+│ Assistant │ Here are 10 examples of short text samples containing the token "m" as part of a contraction expressing  │
+│           │ the first person singular, especially in emotional or action-driven contexts:                            │
 │           │                                                                                                          │
-│           │ Example 1: I'm going to the store later.                                                                 │
-│           │ Example 2: Since I'm tired, I think I'll go to bed early.                                                │
-│           │ Example 3: My friends are waiting for me, but I'm running late.                                          │
-│           │ Example 4: I'm so excited for the concert tonight!                                                       │
-│           │ Example 5: The teacher asked me why I'm not doing my homework.                                           │
-│           │ Example 6: I'm not sure what to wear to the party, can you help me?                                      │
-│           │ Example 7: I'm feeling really under the weather today, think I need to stay home.                        │
-│           │ Example 8: My mom is worried because I'm not eating enough.                                              │
-│           │ Example 9: I'm almost finished with this project, just need to add a few more details.                   │
-│           │ Example 10: I'm really looking forward to the weekend, need a break from work.                           │
-│ System    │ Score: 280.7781677246094                                                                                 │
-│ System    │ Running on explanation: The neuron activates on the transition from "I" to "am", representing the start  │
-│           │ of a sentence or phrase.                                                                                 │
-│ Assistant │ Here are 10 examples of short text samples that contain the transition from "I" to "am", which the       │
-│           │ neuron is designed to activate on.                                                                       │
+│           │ Example 1: I'm so excited for the concert tonight!                                                       │
+│           │ Example 2: I'm really scared of heights, but I'll try zip lining.                                        │
+│           │ Example 3: Watch me as I'm jumping off the diving board!                                                 │
+│           │ Example 4: I'm thrilled to announce that I've got the job!                                               │
+│           │ Example 5: I can't believe I'm actually meeting my favorite author.                                      │
+│           │ Example 6: I'm running as fast as I can to catch the bus!                                                │
+│           │ Example 7: I'm feeling overwhelmed with all this homework.                                               │
+│           │ Example 8: I'm trying my best to learn this new dance routine.                                           │
+│           │ Example 9: I'm heartbroken over the news of my pet passing away.                                         │
+│           │ Example 10: I'm determined to finish this marathon, no matter what.                                      │
+│ System    │ Score: 12.644255638122559                                                                                │
+│ System    │ Running on explanation: Activation on "m" following "I��" which is a pattern in conversational or        │
+│           │ informal text.                                                                                           │
+│ Assistant │ Here are 10 examples of short text samples containing the pattern "I'm" in conversational or informal    │
+│           │ text.                                                                                                    │
 │           │                                                                                                          │
-│           │ Example 1: I am going to the store.                                                                      │
-│           │ Example 2: When I am happy, I smile.                                                                     │
-│           │ Example 3: The sentence started with "I am" and then continued.                                          │
-│           │ Example 4: I am the one who ate the last cookie.                                                         │
-│           │ Example 5: The phrase "I am" is often used to begin a sentence.                                          │
-│           │ Example 6: What I am trying to say is that I love you.                                                   │
-│           │ Example 7: I am not sure what to do in this situation.                                                   │
-│           │ Example 8: The quote started with "I am the king" and ended with "of the world".                         │
-│           │ Example 9: When I am tired, I go to sleep.                                                               │
-│           │ Example 10: The sentence "I am here" was written on the wall.                                            │
-│           │                                                                                                          │
-│           │ Note: I've made sure to vary the position of the "I am" transition within the sentence, as well as the   │
-│           │ context in which it appears.                                                                             │
-│ System    │ Score: 276.7933654785156                                                                                 │
+│           │ Example 1: I'm really tired today, can we reschedule?                                                    │
+│           │ Example 2: Guess what? I'm going to the concert next week!                                               │
+│           │ Example 3: I'm not sure if I left the stove on, could you check for me?                                  │
+│           │ Example 4: Sorry I'm late, traffic was a nightmare.                                                      │
+│           │ Example 5: I'm thinking of adopting a cat soon.                                                          │
+│           │ Example 6: I'm so excited for the weekend, can't wait to relax!                                          │
+│           │ Example 7: Can't talk right now, I'm in a meeting.                                                       │
+│           │ Example 8: I'm craving sushi, want to grab some later?                                                   │
+│           │ Example 9: I'm not feeling well, I think I might have caught a cold.                                     │
+│           │ Example 10: I'm looking forward to our trip next month!                                                  │
+│ System    │ Score: 10.261656761169434                                                                                │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Section   │ Results.                                                                                                 │
 ├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ System    │ Explanation 0:                                                                                           │
-│           │ Detection Score: (1.0, 0.0)                                                                              │
-│           │ Generation Score: 280.7781677246094                                                                      │
-│           │ Explanation: Contractions of "I" followed by an action or state, typically "I'm".                        │
+│ System    │ Max Activation: 92.44401550292969                                                                        │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.5, 0.0)                                                                              │
+│           │ Generation Score: 26.864805221557617                                                                     │
+│           │ Explanation: The token "m" following a corrupted or encoded form of "I'm" in a variety of statements     │
+│           │ involving being, action, or state.                                                                       │
 │           │                                                                                                          │
 │           │ Explanation 1:                                                                                           │
 │           │ Detection Score: (1.0, 0.0)                                                                              │
-│           │ Generation Score: 276.7933654785156                                                                      │
-│           │ Explanation: The neuron activates on the transition from "I" to "am", representing the start of a        │
-│           │ sentence or phrase.                                                                                      │
+│           │ Generation Score: 12.644255638122559                                                                     │
+│           │ Explanation: The token "m" as part of a contraction expressing the first person singular, especially in  │
+│           │ emotional or action-driven contexts.                                                                     │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 10.261656761169434                                                                     │
+│           │ Explanation: Activation on "m" following "I��" which is a pattern in conversational or informal text.    │
 │           │                                                                                                          │
 │           │                                                                                                          │
 └───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 92.44401550292969
+
+Explanation 0:
+Detection Score: (0.5, 0.0)
+Generation Score: 26.864805221557617
+Explanation: The token "m" following a corrupted or encoded form of "I'm" in a variety of statements involving being, 
+action, or state.
+
+Explanation 1:
+Detection Score: (1.0, 0.0)
+Generation Score: 12.644255638122559
+Explanation: The token "m" as part of a contraction expressing the first person singular, especially in emotional or 
+action-driven contexts.
+
+Explanation 2:
+Detection Score: (1.0, 0.0)
+Generation Score: 10.261656761169434
+Explanation: Activation on "m" following "I��" which is a pattern in conversational or informal text.
+
+

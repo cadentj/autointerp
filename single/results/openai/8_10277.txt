@@ -1,0 +1,416 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: ard��s going to take the bullet. Not that I have anything<< against>> St<<oppard>>.           │
+│           │ Example 2:  own. That��s a perfectly reasonable arrangement. I have no<< problems with that>>. I have    │
+│           │ Example 3:  media, but our personal relationship has become stronger over the years. I<< respect that>>. │
+│           │ I understand<< that>>                                                                                    │
+│           │ Example 4:  around the country to loosen restrictions around pot. ��I don't<< agree with it>>, and the   │
+│           │ Example 5:  story off campus was swift. Some celebrated the decision.                                    │
+│           │                                                                                                          │
+│           │ I<< support the>> #DukeCall                                                                              │
+│           │ Example 6:  or traffic in incandescent light bulbs.                                                      │
+│           │                                                                                                          │
+│           │ I have a<< problem with this.>>                                                                          │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Example 7: ,�� said Mansour. ��I don��t understand<< the urgency on this>>.                              │
+│           │ Example 8:  grapevine of Thai murmurs. I prefer the latter, really. Nothing<< against those>> that hold  │
+│           │ belts                                                                                                    │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS: "against", "oppard", "problems with that", "respect that", "agree with it", "support  │
+│           │ the", "problem with this.", "the urgency on this", "against those".                                      │
+│           │ PREVIOUS TOKENS: "anything", "St", "no", "I", "don't", "I", "a", "don't understand", "Nothing".          │
+│           │ NEXT TOKENS: "Stoppard", ".", ".", ", and the", "#DukeCall", "said Mansour.", "that hold belts".         │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ Observations:                                                                                            │
+│           │ - Activating tokens such as "against", "respect", "agree with", "support", "problem with", and "urgency  │
+│           │ on" are related to opinions or stances.                                                                  │
+│           │ - These tokens are mostly phrases or parts of phrases expressing attitudes or judgments about something. │
+│           │ - The previous tokens are often verbs like "have", "don't", or pronouns like "I", or articles like "a".  │
+│           │ - The next tokens typically continue or conclude the sentence, indicating that these activated tokens    │
+│           │ often appear near the end of a clause or sentence.                                                       │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The activating tokens express opinions, disagreements, or support.                                     │
+│           │ - These tokens are associated with expressions of personal stance or judgment.                           │
+│           │ - The context often involves communicative verbs or phrases like "have", "don't", "understand",          │
+│           │ suggesting an expression of personal viewpoint.                                                          │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The neuron activates on tokens and phrases that express personal opinions or stances, especially      │
+│           │ those involving disagreement, support, or respect.                                                       │
+│           │ 2. The neuron is sensitive to expressions that conclude or punctuate a sentiment or opinion within a     │
+│           │ spoken or written statement, often signaled by surrounding punctuation or conjunctions.                  │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: ashtrabhakti), nationalism, and there��s nothing<< wrong in that>>. It will                   │
+│           │ Example 2:                                                                                               │
+│           │                                                                                                          │
+│           │ ��…here��s the big picture! No shame<< in>> being single.                                                │
+│           │                                                                                                          │
+│           │ Example 3:  Rubio was the first to pick up on it: "I don't understand<< why>> his hands are the          │
+│           │ Example 4: <|endoftext|> of it. K<<udos to our>> kitchen<< staff>>                                       │
+│           │ Example 5: <|endoftext|> of it. K<<udos to our>> kitchen<< staff for>>                                   │
+│           │ Example 6:  the country to loosen restrictions around pot. ��I don't<< agree with it>>, and the federal  │
+│           │ Example 7: rashtrabhakti), nationalism, and there��s nothing<< wrong in that>>. It                       │
+│           │ Example 8:  think it's<< misguided>>, the places that have. So I don't<< agree with that>>. And I        │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - "wrong in that"                                                                                        │
+│           │ - "in"                                                                                                   │
+│           │ - "why"                                                                                                  │
+│           │ - "udos to our", "staff"                                                                                 │
+│           │ - "udos to our", "staff for"                                                                             │
+│           │ - "agree with it"                                                                                        │
+│           │ - "wrong in that"                                                                                        │
+│           │ - "misguided", "agree with that"                                                                         │
+│           │                                                                                                          │
+│           │ PREVIOUS TOKENS:                                                                                         │
+│           │ - "nothing"                                                                                              │
+│           │ - "No shame"                                                                                             │
+│           │ - "I don't understand"                                                                                   │
+│           │ - "K"                                                                                                    │
+│           │ - "K"                                                                                                    │
+│           │ - "I don't"                                                                                              │
+│           │ - "nothing"                                                                                              │
+│           │ - "think it's", "So I don't"                                                                             │
+│           │                                                                                                          │
+│           │ NEXT TOKENS:                                                                                             │
+│           │ - ". It will"                                                                                            │
+│           │ - "being single."                                                                                        │
+│           │ - "his hands are the"                                                                                    │
+│           │ - "kitchen"                                                                                              │
+│           │ - "kitchen"                                                                                              │
+│           │ - ", and the federal"                                                                                    │
+│           │ - ". It"                                                                                                 │
+│           │ - ". And I"                                                                                              │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens:                                                                                   │
+│           │ - Often include prepositions or phrases involving judgment or opinion.                                   │
+│           │ - Appear within longer phrases that express an opinion or stance.                                        │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - Activating tokens are part of phrases that express a judgment or opinion.                              │
+│           │ - Activating tokens are often followed or preceded by a punctuation mark that indicates a pause or break │
+│           │ in speech (e.g., commas and periods).                                                                    │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Expressions of judgment or opinion involving specific prepositions.                                   │
+│           │ 2. Tokens that are part of phrases indicating opinion or judgment, particularly when followed by         │
+│           │ punctuation marks indicating pauses.                                                                     │
+│ System    │ The neuron activates on tokens and phrases that express personal opinions or stances, especially those   │
+│           │ involving disagreement, support, or respect.                                                             │
+│           │                                                                                                          │
+│           │ The neuron is sensitive to expressions that conclude or punctuate a sentiment or opinion within a spoken │
+│           │ or written statement, often signaled by surrounding punctuation or conjunctions                          │
+│           │ Expressions of judgment or opinion involving specific prepositions.                                      │
+│           │                                                                                                          │
+│           │ Tokens that are part of phrases indicating opinion or judgment, particularly when followed by            │
+│           │ punctuation marks indicating pauses                                                                      │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: The neuron activates on tokens and phrases that express personal opinions or stances,         │
+│           │ especially those involving disagreement, support, or respect.                                            │
+│           │                                                                                                          │
+│           │ Feature 2: The neuron is sensitive to expressions that conclude or punctuate a sentiment or opinion      │
+│           │ within a spoken or written statement, often signaled by surrounding punctuation or conjunctions          │
+│           │ Feature 3: Expressions of judgment or opinion involving specific prepositions.                           │
+│           │                                                                                                          │
+│           │ Feature 4: Tokens that are part of phrases indicating opinion or judgment, particularly when followed by │
+│           │ punctuation marks indicating pauses                                                                      │
+│           │                                                                                                          │
+│ Assistant │ Here is the condensed list of distinct features:                                                         │
+│           │                                                                                                          │
+│           │ Feature 1: The neuron activates on tokens and phrases that express personal opinions or stances,         │
+│           │ especially those involving disagreement, support, or respect.                                            │
+│           │ Feature 2: The neuron is sensitive to expressions that conclude or punctuate a sentiment or opinion      │
+│           │ within a spoken or written statement, often signaled by surrounding punctuation or conjunctions.         │
+│           │ Feature 3: Expressions of judgment or opinion involving specific prepositions.                           │
+│           │ Feature 4: Tokens that are part of phrases indicating opinion or judgment, particularly when followed by │
+│           │ punctuation marks indicating pauses.                                                                     │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The neuron activates on tokens and phrases that express personal opinions or     │
+│           │ stances, especially those involving disagreement, support, or respect.                                   │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens and phrases that express personal opinions or stances, especially  │
+│           │ those involving disagreement, support, or respect:                                                       │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
+│ System    │ Running on explanation: The neuron is sensitive to expressions that conclude or punctuate a sentiment or │
+│           │ opinion within a spoken or written statement, often signaled by surrounding punctuation or conjunctions. │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain expressions that conclude or punctuate a sentiment or opinion within a    │
+│           │ spoken or written statement, often signaled by surrounding punctuation or conjunctions:                  │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
+│ System    │ Running on explanation: Expressions of judgment or opinion involving specific prepositions.              │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain expressions of judgment or opinion involving specific prepositions:       │
+│           │                                                                                                          │
+│           │ Example 1: "Not that I have anything against Stoppard."                                                  │
+│           │ Example 3: "I have no problems with that."                                                               │
+│           │ Example 6: "I respect that. I understand that."                                                          │
+│           │ Example 7: "I don't agree with it."                                                                      │
+│           │ Example 10: "I support the #DukeCall."                                                                   │
+│           │ Example 11: "I have a problem with this."                                                                │
+│           │ Example 12: "I don’t understand the urgency on this."                                                    │
+│           │ Example 13: "I prefer the latter, really. Nothing against those that hold belts."                        │
+│           │ Example 19: "there’s nothing wrong in that."                                                             │
+│           │ Example 20: "No shame in being single."                                                                  │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
+│ System    │ Running on explanation: Tokens that are part of phrases indicating opinion or judgment, particularly     │
+│           │ when followed by punctuation marks indicating pauses.                                                    │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain tokens that are part of phrases indicating opinion or judgment,           │
+│           │ particularly when followed by punctuation marks indicating pauses:                                       │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The neuron activates on tokens and phrases that express personal opinions or     │
+│           │ stances, especially those involving disagreement, support, or respect.                                   │
+│ Assistant │ Here are 10 examples of short text samples containing tokens and phrases that express personal opinions  │
+│           │ or stances, especially those involving disagreement, support, or respect.                                │
+│           │                                                                                                          │
+│           │ Example 1: I strongly disagree with the new tax reforms; they will only burden the middle class.         │
+│           │ Example 2: In my opinion, the best movie of the year was definitely "Sunset Boulevard."                  │
+│           │ Example 3: I completely support the measures taken to improve public health.                             │
+│           │ Example 4: Honestly, I believe that electric cars are the future of transportation.                      │
+│           │ Example 5: I must say, I have immense respect for teachers who adapt to online teaching.                 │
+│           │ Example 6: Personally, I think that investing in renewable energy is the way to go.                      │
+│           │ Example 7: I can't support the decision to cut funding for the arts; it's a vital part of our culture.   │
+│           │ Example 8: I disagree with the idea that technology is distancing us; in many ways, it connects us more. │
+│           │ Example 9: I have to admit, I really admire people who can speak multiple languages fluently.            │
+│           │ Example 10: Frankly, I feel that community gardens are a fantastic initiative for urban areas.           │
+│ System    │ Score: 3.4009499549865723                                                                                │
+│ System    │ Running on explanation: The neuron is sensitive to expressions that conclude or punctuate a sentiment or │
+│           │ opinion within a spoken or written statement, often signaled by surrounding punctuation or conjunctions. │
+│ Assistant │ Here are 10 examples of short text examples containing expressions that conclude or punctuate a          │
+│           │ sentiment or opinion, often signaled by surrounding punctuation or conjunctions.                         │
+│           │                                                                                                          │
+│           │ Example 1: The meal was delicious, but the service was slow; however, I would go back because the food   │
+│           │ was worth the wait.                                                                                      │
+│           │ Example 2: I thought the movie was going to be boring, yet it turned out to be incredibly engaging!      │
+│           │ Example 3: She's usually not fond of action films; nonetheless, she enjoyed this one a lot.              │
+│           │ Example 4: The book was quite lengthy and at times, tedious; nonetheless, the ending made it all         │
+│           │ worthwhile.                                                                                              │
+│           │ Example 5: It rained all day during our beach outing; still, we managed to have a good time.             │
+│           │ Example 6: He's not the best at what he does; even so, he brings a lot of passion to his work.           │
+│           │ Example 7: The software is expensive and complicated to use; however, it’s the best on the market for    │
+│           │ professional designers.                                                                                  │
+│           │ Example 8: They were late to the meeting again; nonetheless, their contribution was critical for the     │
+│           │ project's success.                                                                                       │
+│           │ Example 9: The car is not the most economical choice; still, it offers the comfort and style I prefer.   │
+│           │ Example 10: I know you think it's a minor issue; however, it's important to me and needs to be           │
+│           │ addressed.                                                                                               │
+│ System    │ Score: 0.9280972480773926                                                                                │
+│ System    │ Running on explanation: Expressions of judgment or opinion involving specific prepositions.              │
+│ Assistant │ Here are 10 examples of short text samples containing expressions of judgment or opinion that            │
+│           │ incorporate specific prepositions.                                                                       │
+│           │                                                                                                          │
+│           │ Example 1: I am totally against the idea of working on weekends.                                         │
+│           │ Example 2: She is really fond of classical music.                                                        │
+│           │ Example 3: They were quite disappointed with the final outcome of the project.                           │
+│           │ Example 4: I'm all for trying new things, but this might be too much.                                    │
+│           │ Example 5: He is exceptionally good at mathematics.                                                      │
+│           │ Example 6: We are very excited about the upcoming vacation.                                              │
+│           │ Example 7: She is deeply concerned about the environmental impact.                                       │
+│           │ Example 8: They are usually skeptical of promises made during election campaigns.                        │
+│           │ Example 9: He was visibly upset with the changes in the company policy.                                  │
+│           │ Example 10: I am entirely satisfied with the results of the renovation.                                  │
+│ System    │ Score: 1.7413990497589111                                                                                │
+│ System    │ Running on explanation: Tokens that are part of phrases indicating opinion or judgment, particularly     │
+│           │ when followed by punctuation marks indicating pauses.                                                    │
+│ Assistant │ Below are 10 examples of text containing tokens that are part of phrases indicating opinion or judgment, │
+│           │ particularly when followed by punctuation marks indicating pauses (e.g., commas, semicolons, or dashes). │
+│           │                                                                                                          │
+│           │ Example 1: Honestly, I think the movie was stunning; however, the plot was weak.                         │
+│           │ Example 2: In my opinion, the new policy could be detrimental to our growth.                             │
+│           │ Example 3: Surprisingly, the sequel was even better than the original.                                   │
+│           │ Example 4: Frankly, I expected more from such a renowned author.                                         │
+│           │ Example 5: Arguably, she is one of the best violinists of her generation.                                │
+│           │ Example 6: Without a doubt, this has been one of the harshest winters we've faced.                       │
+│           │ Example 7: Ideally, we would implement changes sooner rather than later.                                 │
+│           │ Example 8: Clearly, there was a misunderstanding between the two parties.                                │
+│           │ Example 9: Unquestionably, he is the right person for the job.                                           │
+│           │ Example 10: Fortunately, the weather held up for the outdoor ceremony.                                   │
+│ System    │ Score: 1.6611149311065674                                                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Max Activation: 15.043194770812988                                                                       │
+│           │                                                                                                          │
+│           │ Explanation 0:                                                                                           │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 3.4009499549865723                                                                     │
+│           │ Explanation: The neuron activates on tokens and phrases that express personal opinions or stances,       │
+│           │ especially those involving disagreement, support, or respect.                                            │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 0.9280972480773926                                                                     │
+│           │ Explanation: The neuron is sensitive to expressions that conclude or punctuate a sentiment or opinion    │
+│           │ within a spoken or written statement, often signaled by surrounding punctuation or conjunctions.         │
+│           │                                                                                                          │
+│           │ Explanation 2:                                                                                           │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 1.7413990497589111                                                                     │
+│           │ Explanation: Expressions of judgment or opinion involving specific prepositions.                         │
+│           │                                                                                                          │
+│           │ Explanation 3:                                                                                           │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 1.6611149311065674                                                                     │
+│           │ Explanation: Tokens that are part of phrases indicating opinion or judgment, particularly when followed  │
+│           │ by punctuation marks indicating pauses.                                                                  │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+Max Activation: 15.043194770812988
+
+Explanation 0:
+Detection Score: (1.0, 0.0)
+Generation Score: 3.4009499549865723
+Explanation: The neuron activates on tokens and phrases that express personal opinions or stances, especially those 
+involving disagreement, support, or respect.
+
+Explanation 1:
+Detection Score: (1.0, 0.0)
+Generation Score: 0.9280972480773926
+Explanation: The neuron is sensitive to expressions that conclude or punctuate a sentiment or opinion within a spoken or
+written statement, often signaled by surrounding punctuation or conjunctions.
+
+Explanation 2:
+Detection Score: (1.0, 0.0)
+Generation Score: 1.7413990497589111
+Explanation: Expressions of judgment or opinion involving specific prepositions.
+
+Explanation 3:
+Detection Score: (1.0, 0.0)
+Generation Score: 1.6611149311065674
+Explanation: Tokens that are part of phrases indicating opinion or judgment, particularly when followed by punctuation 
+marks indicating pauses.
+
+
