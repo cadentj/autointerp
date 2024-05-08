@@ -18,7 +18,7 @@ class EnvConfig:
 @dataclass
 class ExplainerConfig:
     max_tokens : int = 2000
-    temperature : float = 0.8
+    temperature : float = 1.5
 
     batch_size: int = 8
     n_batches : int = 2
@@ -56,4 +56,4 @@ class DetectionScorerConfig:
 @dataclass
 class GenerationScorerConfig:
     n_examples : int = 10
-    temperature : float = 0.7
+    temperature : float = 0.5

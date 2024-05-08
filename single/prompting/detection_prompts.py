@@ -29,21 +29,9 @@ FINAL ANSWER: [3, 4]
 """
 
 def get_simple_detection_template(examples, explanation):
-  template =  f"""
-  <|begin_of_text|>
+  prompt = f"{DSCORER_SYSTEM_PROMPT}\n\n{DSCORER_EXAMPLE}\n\nFeature explanation: {explanation}\n\nText examples:\n\n{examples}"
 
-  <|start_header_id|>system<|end_header_id|>
-  \n\n{DSCORER_SYSTEM_PROMPT}
-  <|eot_id|>
-
-  <|start_header_id|>user<|end_header_id|>
-  \n\nFeature explanation: {explanation}\n\nText examples:\n\n{examples}
-  <|eot_id|>
-
-  <|start_header_id|>assistant<|end_header_id|>
-  \n\n"""
-
-  return template
+  return prompt
 
 def get_detection_template(examples, explanation):
 

@@ -1,3 +1,5 @@
+import os
+
 import torch as t
 import openai
 import replicate
@@ -5,7 +7,6 @@ from rich.console import Console
 from rich.table import Table
 from transformers import AutoTokenizer
 
-from config import PROVIDER
 from keys import OAI
 
 def gen(
@@ -14,9 +15,10 @@ def gen(
         generation_kwargs={},
         verbose=True
     ):
-    if PROVIDER == "openai":
+    provider = os.environ.get("PROVIDER")
+    if provider == "openai":
         return gen_openai(prompt, postprocess, generation_kwargs, verbose)
-    elif PROVIDER == "replicate":
+    elif provider == "replicate":
         return gen_replicate(prompt, postprocess, generation_kwargs, verbose)
     
 
@@ -50,6 +52,7 @@ def gen_replicate(prompt, postprocess, generation_kwargs={}, verbose=True):
     prompt_str = tokenizer.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True)
 
     query = {
+        "prompt":"",
         "prompt_template": prompt_str,
         **generation_kwargs
     }
@@ -68,7 +71,7 @@ def gen_replicate(prompt, postprocess, generation_kwargs={}, verbose=True):
         processed_output = "FAILED"
 
     if verbose:
-        return processed_output, output
+        return processed_output, output_str
 
     return processed_output
 
@@ -98,7 +101,12 @@ def log(
     role: str,
     message: str
 ):
-    state.history.append({"role": role, "message": message})
+    if state.lock is not None:
+        with state.lock:
+            state.history.append({"role": role, "message": message})
+
+    else:
+        print("No lock available in ThreadState.")
 
 
 def log_conversation(

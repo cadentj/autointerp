@@ -1,0 +1,259 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  couple of those plays he even finished off one foot in the paint, we<< are>> challenging him │
+│           │ more to                                                                                                  │
+│           │ Example 2: like formation. I<< am>> sure there is a name for it, and I<< am>> sure one of my             │
+│           │ Example 3:  simultaneously, which encourages more intuitive shooting.��                                  │
+│           │                                                                                                          │
+│           │ I��<<m truly>>, truly trying                                                                             │
+│           │ Example 4: <|endoftext|> is just not a player worth investing in. I<<'m>> sure he puts maximum           │
+│           │ Example 5:  road, having broken through the front line west of Zlitan. I<< am>> trying to check with     │
+│           │ Example 6:  order, the protests or how Dr. King was treated. I��<<m>> sure he is not                     │
+│           │ Example 7:  an ARG?                                                                                      │
+│           │                                                                                                          │
+│           │ A smattering of hands go up. I<<'m actually quite>> impressed and                                        │
+│           │ Example 8:  also seems to add a new love interest to the movie, and The Wrap<< is>> reporting that       │
+│           │ Kristen Wi                                                                                               │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS: "are", "am", "m truly", "'m", "am", "m", "'m actually quite", "is".                   │
+│           │ PREVIOUS TOKENS: "we", "I", "I", "I", "I", "I", "I", "The Wrap".                                         │
+│           │ NEXT TOKENS: "challenging", "sure", "truly", "sure", "trying", "sure", "impressed", "reporting".         │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ The activating tokens are all forms of the verb "to be" (are, am, is) or contractions involving "am"     │
+│           │ (I'm, I'm truly, I'm actually quite).                                                                    │
+│           │ The previous tokens are generally pronouns ("I", "we") or a noun phrase ("The Wrap").                    │
+│           │ The next tokens are generally verbs ("challenging", "sure", "trying", "reporting") or adjectives         │
+│           │ ("impressed").                                                                                           │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - All examples where the neuron activates involve forms of the verb "to be" or its contractions.         │
+│           │ - These tokens are associated with a subject pronoun or noun phrase and often lead into a verb or        │
+│           │ adjective.                                                                                               │
+│           │ - The activating tokens tend to be linked with expressing certainty or ongoing action.                   │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Forms of the verb "to be" or its contractions, especially when used with a first-person pronoun,      │
+│           │ indicating personal statements or reflections.                                                           │
+│           │ 2. These forms of "to be" are typically followed by verbs or adjectives, suggesting a continuation of a  │
+│           │ personal statement or an expression of certainty or description.                                         │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  thing you can��t fake or mislead, and so I��<<m very strongly>> in favor                     │
+│           │ Example 2: , right? How are you approaching combat in this one? I��<<m>> guessing you��                  │
+│           │ Example 3:  coaching candidates every year. Just to help you form an opinion rapidly, I<< am>> going to  │
+│           │ profile the                                                                                              │
+│           │ Example 4:  book is fully designed and just about ready to go to the printer. I<<'m just>> waiting to    │
+│           │ add                                                                                                      │
+│           │ Example 5:                                                                                               │
+│           │ Chris Nov-16-2016 5:58 PM Hahaha I<<'m>> with                                                            │
+│           │ Example 6:  bare minimum (i.e. production costs) for everyone, so I<< am>> thinking something I could    │
+│           │ Example 7: pless Danni isn't headed for whoredom in a vacuum. We<<'re>> provided with the following      │
+│           │ Example 8:  and the Hearst Brands. We had such scale on About, that we<<'re>> launching these new brands │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS: "m very strongly", "m", "am", "'m just", "'m", "am", "'re", "'re".                    │
+│           │ PREVIOUS TOKENS: "I", "I", "I", "I", "I", "I", "We", "we".                                               │
+│           │ NEXT TOKENS: " in favor", " guessing you", " going to profile the", " waiting to add", " with", "        │
+│           │ thinking something I could", " provided with the", " launching these new brands".                        │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ - The activating tokens are all contracted or full forms of "am" or "are".                               │
+│           │ - The previous tokens are personal pronouns ("I", "We").                                                 │
+│           │ - The next tokens vary, but often they indicate the following action or state of being.                  │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The activating tokens are all forms of the verb "to be", used in the first-person singular or plural.  │
+│           │ - The examples all involve a subject pronoun preceding the verb.                                         │
+│           │ - The verb is either in its contracted (with a preceding pronoun) or full form.                          │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The contracted or full forms of the verb "to be" (am, are) when used with first-person pronouns.      │
+│           │ 2. The usage of forms of "to be" in contexts indicating a personal statement or action.                  │
+│ System    │ Forms of the verb "to be" or its contractions, especially when used with a first-person pronoun,         │
+│           │ indicating personal statements or reflections.                                                           │
+│           │                                                                                                          │
+│           │ These forms of "to be" are typically followed by verbs or adjectives, suggesting a continuation of a     │
+│           │ personal statement or an expression of certainty or descriptionThe contracted or full forms of the verb  │
+│           │ "to be" (am, are) when used with first-person pronouns.                                                  │
+│           │                                                                                                          │
+│           │ The usage of forms of "to be" in contexts indicating a personal statement or action                      │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: ['Forms of the verb "to be" or its contractions, especially when used with a first-person     │
+│           │ pronoun, indicating personal statements or reflections.\n', 'These forms of "to be" are typically        │
+│           │ followed by verbs or adjectives, suggesting a continuation of a personal statement or an expression of   │
+│           │ certainty or description']                                                                               │
+│           │ Feature 2: ['The contracted or full forms of the verb "to be" (am, are) when used with first-person      │
+│           │ pronouns.\n', 'The usage of forms of "to be" in contexts indicating a personal statement or action']     │
+│           │                                                                                                          │
+│ Assistant │ Here is the condensed list of features after removing duplicates:                                        │
+│           │                                                                                                          │
+│           │ Feature 1: Forms of the verb "to be" or its contractions, especially when used with a first-person       │
+│           │ pronoun, indicating personal statements or reflections. These forms of "to be" are typically followed by │
+│           │ verbs or adjectives, suggesting a continuation of a personal statement or an expression of certainty or  │
+│           │ description.                                                                                             │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Forms of the verb "to be" or its contractions, especially when used with a       │
+│           │ first-person pronoun, indicating personal statements or reflections. These forms of "to be" are          │
+│           │ typically followed by verbs or adjectives, suggesting a continuation of a personal statement or an       │
+│           │ expression of certainty or description.                                                                  │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain forms of the verb "to be" or its contractions, especially when used with  │
+│           │ a first-person pronoun, indicating personal statements or reflections:                                   │
+│           │                                                                                                          │
+│           │ Example 3: "I am sure there is a name for it, and I am sure one of my"                                   │
+│           │ Example 6: "I’m truly, truly trying"                                                                     │
+│           │ Example 7: "I'm sure he puts maximum"                                                                    │
+│           │ Example 10: "I am trying to check with"                                                                  │
+│           │ Example 11: "I’m sure he is not"                                                                         │
+│           │ Example 12: "I'm actually quite impressed and"                                                           │
+│           │ Example 15: "I obtained another computer, through less than sav"                                         │
+│           │ Example 19: "so I’m very strongly in favor"                                                              │
+│           │ Example 20: "I’m guessing you’"                                                                          │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [3, 6, 7, 10, 11, 12, 15, 19, 20]                                                          │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: Forms of the verb "to be" or its contractions, especially when used with a       │
+│           │ first-person pronoun, indicating personal statements or reflections. These forms of "to be" are          │
+│           │ typically followed by verbs or adjectives, suggesting a continuation of a personal statement or an       │
+│           │ expression of certainty or description.                                                                  │
+│ Assistant │ Here are 10 examples of short text examples containing forms of the verb "to be" or its contractions,    │
+│           │ especially when used with a first-person pronoun, followed by verbs or adjectives. These examples        │
+│           │ include personal statements or reflections.                                                              │
+│           │                                                                                                          │
+│           │ Example 1: I am feeling incredibly joyful today!                                                         │
+│           │ Example 2: I'm not sure if I am ready to take on such a big responsibility.                              │
+│           │ Example 3: I am working on improving my skills every day.                                                │
+│           │ Example 4: I'm becoming more confident with each presentation I give.                                    │
+│           │ Example 5: I was hoping we could discuss the project updates.                                            │
+│           │ Example 6: I am worried that we might not meet the deadline.                                             │
+│           │ Example 7: I'm looking forward to the weekend to relax and unwind.                                       │
+│           │ Example 8: I've been thinking a lot about the future lately.                                             │
+│           │ Example 9: I'm learning to be more patient with myself.                                                  │
+│           │ Example 10: I am grateful for all the support I have received.                                           │
+│ System    │ Score: 121.94410705566406                                                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.8, 0.1)                                                                              │
+│           │ Generation Score: 121.94410705566406                                                                     │
+│           │ Explanation: Forms of the verb "to be" or its contractions, especially when used with a first-person     │
+│           │ pronoun, indicating personal statements or reflections. These forms of "to be" are typically followed by │
+│           │ verbs or adjectives, suggesting a continuation of a personal statement or an expression of certainty or  │
+│           │ description.                                                                                             │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘

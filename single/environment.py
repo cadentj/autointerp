@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import threading
+from threading import Lock
 import os
 
 import torch as t
@@ -24,25 +25,29 @@ class ThreadState:
     max_act: float
     layer: int
     feature_id: int
+    lock: Lock = None
+
+    def __post_init__(self):
+        self.lock = Lock()  # Initialize the lock when a ThreadState object is created
+
 
 class Environment: 
     def __init__(
         self,
         model, 
-        sae_list,
+        sae,
         cfg: EnvConfig,
         provider: str,
     ):  
         self.model = model
-        self.sae_list = sae_list
+        self.sae = sae
         self.cfg = cfg
         self.provider = provider
-        self.lock = threading.Lock()
+        self.lock = Lock()
 
 
     def execute(
-        self, 
-        layer: int, 
+        self,
         feature_id: int, 
         explainer_cfg: ExplainerConfig, 
         condenser_cfg: CondenserConfig, 
@@ -50,7 +55,7 @@ class Environment:
         gen_scorer_cfg: GenerationScorerConfig
     ):
         with self.lock:
-            state = self.load_feature(feature_id, explainer_cfg, condenser_cfg, d_scorer_cfg, gen_scorer_cfg)
+            state = self.load_id(feature_id, explainer_cfg, condenser_cfg, d_scorer_cfg, gen_scorer_cfg)
 
         self.run_feature(state)
         
@@ -71,7 +76,7 @@ class Environment:
             minibatch_size=self.cfg.minibatch_size
         )
 
-    def load_feature(
+    def load_id(
         self,
         feature_id: int, # index of feature
         explainer_cfg: ExplainerConfig,
@@ -185,7 +190,7 @@ class Environment:
             with self.model.trace(batch):
                 activations = self.model.transformer.h[layer].input[0][0]
 
-                middle = self.sae_list[layer](activations)
+                middle = self.sae(activations)
 
                 acts = middle[1]
                 acts.save()
@@ -223,7 +228,7 @@ class Environment:
         d_scores_list = self.d_scorer.score(explanation_list)
         print("Detection Scorer completed.")
 
-        g_scores_list = self.gen_scorer.score(explanation_list, self.sae_list[state.layer])
+        g_scores_list = self.gen_scorer.score(explanation_list, self.sae)
         print("Generation Scorer completed.")
 
         results = ""

@@ -142,18 +142,6 @@ def get_explainer_template(examples):
     return prompt
 
 def get_simple_explainer_template(examples):
-    template =  f"""
-    <|begin_of_text|>
+    prompt = f"{SYSTEM_PROMPT}\n\n{examples}"
 
-    <|start_header_id|>system<|end_header_id|>
-    \n\n{SYSTEM_PROMPT}
-    <|eot_id|>
-
-    <|start_header_id|>user<|end_header_id|>
-    \n\n{examples}
-    <|eot_id|>
-
-    <|start_header_id|>assistant<|end_header_id|>
-    \n\n"""
-
-    return template
+    return prompt

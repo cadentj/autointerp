@@ -1,0 +1,299 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  Syria. A total of 216 people have been resettled under scheme so<< far>>.                    │
+│           │                                                                                                          │
+│           │ Mr                                                                                                       │
+│           │ Example 2: <|endoftext|>ender and chain-guard, but no hassles thus<< far>>. Plus, I                      │
+│           │ Example 3: Metal Gear Solid V has received collectively over 60 industry accolades and awards thus<<     │
+│           │ far>>,�� says                                                                                            │
+│           │ Example 4:  troops were involved in operations across the country. What has the war cost so<< far>>? The │
+│           │ US has                                                                                                   │
+│           │ Example 5:  they each have recorded an OBP of.547 and.512 thus<< far>> this season. Amanda               │
+│           │ Example 6:  told the Associated Press on Tuesday that the way the indictment has been handled so<< far>> │
+│           │ suggests there are problems                                                                              │
+│           │ Example 7:  maximizes profits? You have options.                                                         │
+│           │                                                                                                          │
+│           │ What I have done so<< far>>, is mine for                                                                 │
+│           │ Example 8:  the most fit for purpose, professional investment vehicles possible; a mission validated     │
+│           │ thus<< far>> by the response to                                                                          │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "far", "far", "far", "far", "far", "far", "far", "far".                               │
+│           │ PREVIOUS TOKENS: "so", "thus", "thus", "so", "thus", "so", "so", "thus".                                 │
+│           │ NEXT TOKENS: ".", ".", ",", ".",=?, ".", ".",("."대학교).                                                │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating token is always "far".                                                                    │
+│           │ The previous tokens are always "so" or "thus".                                                           │
+│           │ The next tokens are mostly punctuation marks.                                                            │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The activating token is "far", with a preceding "so" or "thus".                                        │
+│           │ - The examples involve quantifiable progress or measurement.                                             │
+│           │                                                                                                          │
+│           │ Let me think carefully. Did I miss any patterns in the text examples? Are there any more linguistic      │
+│           │ similarities? Yes, I missed one:                                                                         │
+│           │                                                                                                          │
+│           │ - The activiating token "far" is used to indicate an extent or a current state.                          │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. The token "far" when preceded by "so" or "thus", indicating extent or progress.                       │
+│           │ 2. Expressions of quantifiable measurement or progress, specifically involving "far".                    │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  today a No 10 spokesman today insisted no proposal had been put to Britain so<< far>>.       │
+│           │                                                                                                          │
+│           │ At                                                                                                       │
+│           │ Example 2: � said Dasgupta. ��But we haven't seen anything so<< far>>." Even though the                  │
+│           │ Example 3:  a work permit and admitted to finding it difficult to build a new life so<< far>> away       │
+│           │ Example 4:  its development roadmap, but also the ideas of its development team, have so<< far>> been    │
+│           │ sparse since the                                                                                         │
+│           │ Example 5:  literally the matchup that the post-season can live or die on. So<< far>>, in 4 games        │
+│           │ Example 6:  Thursday that I had, I would have gone home more than satisfied. So<< far>>, the experience  │
+│           │ had                                                                                                      │
+│           │ Example 7: <|endoftext|> been given very little in the way of playing time to this<< point>>, took       │
+│           │ immediate advantage                                                                                      │
+│           │ Example 8: �But we haven't seen anything so<< far>>." Even though the results to<< date>> have been      │
+│           │ negative,                                                                                                │
+│           │                                                                                                          │
+│ Assistant │ Step 1.                                                                                                  │
+│           │ ACTIVATING TOKENS: "far", "far", "far", "far", "far", "far", "point", "date".                            │
+│           │ PREVIOUS TOKENS: "so", "so", "it", "have", "So", "So", "to", "the".                                      │
+│           │ NEXT TOKENS: all sentences continuing with the thought or explaining the context.                        │
+│           │                                                                                                          │
+│           │ Step 2.                                                                                                  │
+│           │ The activating tokens are mostly "far".                                                                  │
+│           │ The previous tokens are "so" or words indicating a specific context.                                     │
+│           │ The next tokens often specify the context or continue the thought.                                       │
+│           │                                                                                                          │
+│           │ Step 3.                                                                                                  │
+│           │ - The neuron activates on adverbs and nouns indicating a point or extent in time.                        │
+│           │ - The activating token often follows "so" or a similar word.                                             │
+│           │                                                                                                          │
+│           │ Let me look again for patterns in the examples. Are there any links or hidden linguistic commonalities   │
+│           │ that I missed? Yes, I missed one:                                                                        │
+│           │                                                                                                          │
+│           │ - The activating token is part of a phrase implying a sense of up to this moment or up to a certain      │
+│           │ point.                                                                                                   │
+│           │                                                                                                          │
+│           │ Step 4.                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Adverbs and nouns indicating a point or extent in time, often following "so" or similar words.        │
+│           │ 2. Phrases conveying the idea of up to this moment or up to a certain point in time, enabling            │
+│           │ contextualization.                                                                                       │
+│ System    │ The token "far" when preceded by "so" or "thus", indicating extent or progress.                          │
+│           │                                                                                                          │
+│           │ Expressions of quantifiable measurement or progress, specifically involving "far"Adverbs and nouns       │
+│           │ indicating a point or extent in time, often following "so" or similar words.                             │
+│           │                                                                                                          │
+│           │ Phrases conveying the idea of up to this moment or up to a certain point in time, enabling               │
+│           │ contextualization                                                                                        │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: ['The token "far" when preceded by "so" or "thus", indicating extent or progress.\n',         │
+│           │ 'Expressions of quantifiable measurement or progress, specifically involving "far"']                     │
+│           │ Feature 2: ['Adverbs and nouns indicating a point or extent in time, often following "so" or similar     │
+│           │ words.\n', 'Phrases conveying the idea of up to this moment or up to a certain point in time, enabling   │
+│           │ contextualization']                                                                                      │
+│           │                                                                                                          │
+│ Assistant │ After analyzing the features, I've condensed the list to remove duplicates and similar features. Here is │
+│           │ the resulting list:                                                                                      │
+│           │                                                                                                          │
+│           │ Feature 1: The token "far" when preceded by "so" or "thus", indicating extent or progress.               │
+│           │ Feature 2: Adverbs and nouns indicating a point or extent in time, often following "so" or similar       │
+│           │ words.                                                                                                   │
+│           │                                                                                                          │
+│           │ The original features were quite similar, but I've preserved the unique details in each feature to       │
+│           │ ensure that no important information is lost.                                                            │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The token "far" when preceded by "so" or "thus", indicating extent or progress.  │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain the token "far" when preceded by "so" or "thus", indicating extent or     │
+│           │ progress:                                                                                                │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
+│ System    │ Running on explanation: Adverbs and nouns indicating a point or extent in time, often following "so" or  │
+│           │ similar words.                                                                                           │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain adverbs and nouns indicating a point or extent in time, often following   │
+│           │ "so" or similar words:                                                                                   │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 6, Example 7, Example 10, Example 11, Example 12, Example 13, Example 19,  │
+│           │ Example 20.                                                                                              │
+│           │                                                                                                          │
+│           │ These examples contain words or phrases such as "so far", "thus far", "up to now", or similar            │
+│           │ constructions that indicate a point or extent in time.                                                   │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 6, 7, 10, 11, 12, 13, 19, 20]                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The token "far" when preceded by "so" or "thus", indicating extent or progress.  │
+│ Assistant │ Here are 10 examples of short text samples containing the token "far" when preceded by "so" or "thus",   │
+│           │ indicating extent or progress.                                                                           │
+│           │                                                                                                          │
+│           │ I'll make sure to pay close attention to the exact detail of the feature, ensuring that "far" is always  │
+│           │ preceded by "so" or "thus" and indicating extent or progress.                                            │
+│           │                                                                                                          │
+│           │ Example 1: We've come so far in just a few months, it's incredible.                                      │
+│           │ Example 2: The company has thus far exceeded all quarterly projections.                                  │
+│           │ Example 3: I've gotten so far in this video game, I don't want to stop playing.                          │
+│           │ Example 4: The new policy has thus far resulted in significant cost savings.                             │
+│           │ Example 5: We've made so far more progress on this project than I expected.                              │
+│           │ Example 6: The researchers have thus far identified three new species in the rainforest.                 │
+│           │ Example 7: I've read so far into this novel, I'm hooked.                                                 │
+│           │ Example 8: The charity has thus far raised over a million dollars for the cause.                         │
+│           │ Example 9: We've gotten so far ahead of schedule, we can take a well-deserved break.                     │
+│           │ Example 10: The team has thus far demonstrated exceptional skill and teamwork.                           │
+│           │                                                                                                          │
+│           │ Let me know if these examples meet the requirements!                                                     │
+│ System    │ Score: 160.97845458984375                                                                                │
+│ System    │ Running on explanation: Adverbs and nouns indicating a point or extent in time, often following "so" or  │
+│           │ similar words.                                                                                           │
+│ Assistant │ Here are 10 examples of short text samples containing adverbs and nouns indicating a point or extent in  │
+│           │ time, often following "so" or similar words.                                                             │
+│           │                                                                                                          │
+│           │ Example 1: I'm so far ahead of schedule that I'll finish by tomorrow morning.                            │
+│           │ Example 2: We're getting close, so by next week we should have a working prototype.                      │
+│           │ Example 3: It's been ages since I've seen her, so I'm guessing it'll be around Christmas when we catch   │
+│           │ up again.                                                                                                │
+│           │ Example 4: I'm so exhausted that I need a week off to recover.                                           │
+│           │ Example 5: The project is so behind that we'll be lucky to meet the deadline by the end of the month.    │
+│           │ Example 6: It's been so long since I've been to the gym that I'll probably need a month to get back in   │
+│           │ shape.                                                                                                   │
+│           │ Example 7: We've come so far in just a year that I'm excited to see where we'll be by this time next     │
+│           │ year.                                                                                                    │
+│           │ Example 8: I'm so hungry that I could eat a whole pizza by myself tonight.                               │
+│           │ Example 9: It's been so quiet lately that I think we'll see a surge in sales by the summer.              │
+│           │ Example 10: The company has grown so much in the past quarter that we expect to reach our target by the  │
+│           │ end of the year.                                                                                         │
+│           │                                                                                                          │
+│           │ In each example, I've included an adverb or noun indicating a point or extent in time, often following   │
+│           │ "so" or similar words, as per the feature description.                                                   │
+│ System    │ Score: 166.43617248535156                                                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Explanation 0:                                                                                           │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 160.97845458984375                                                                     │
+│           │ Explanation: The token "far" when preceded by "so" or "thus", indicating extent or progress.             │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (1.0, 0.0)                                                                              │
+│           │ Generation Score: 166.43617248535156                                                                     │
+│           │ Explanation: Adverbs and nouns indicating a point or extent in time, often following "so" or similar     │
+│           │ words.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘

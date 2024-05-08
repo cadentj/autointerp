@@ -1,0 +1,369 @@
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Role      ┃ Content                                                                                                  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Section   │ Running explainer.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │  You are a meticulous AI researcher conducting an important investigation into a certain neuron in a     │
+│           │ language model.                                                                                          │
+│           │                                                                                                          │
+│           │ You will be given a list of text examples on which the neuron activates. The specific tokens which cause │
+│           │ the neuron to activate will appear between delimiters like <<this>>. If a sequence of consecutive tokens │
+│           │ all cause the neuron to activate, the entire sequence of tokens will be contained between delimiters     │
+│           │ <<just like this>>.                                                                                      │
+│           │                                                                                                          │
+│           │ Your task is to understand what features of the input text cause the neuron to activate.                 │
+│           │                                                                                                          │
+│           │ You must follow these steps:                                                                             │
+│           │                                                                                                          │
+│           │ Step 1: For each text example in turn, note which tokens (i.e. words, fragments of words, or symbols)    │
+│           │ caused the neuron to activate. Then note which tokens came before the activating tokens. Then note which │
+│           │ tokens came after the activating tokens.                                                                 │
+│           │ Step 2: Look for patterns in the tokens you noted down in Step 1.                                        │
+│           │ Step 3: Write down several general shared features of the text examples.                                 │
+│           │ Step 4: Look at the shared features you found, as well as patterns in the tokens you wrote down in Steps │
+│           │ 1 and 2, to produce 3 explanations for what features of text cause the neuron to activate. The final 2   │
+│           │ lines of your output must consist of your 2 explanations.                                                │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │                                                                                                          │
+│           │ - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature  │
+│           │ is relevant to the explanation, or it isn't. There is no in between.                                     │
+│           │ - Think very carefully and show your work.                                                               │
+│           │                                                                                                          │
+│           │ Get ready to see the list of text examples.                                                              │
+│           │                                                                                                          │
+│           │ <EXAMPLES>                                                                                               │
+│ System    │ Processing batch 1 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1:  it was a solid 22 episodes. The introduction<< of>> characters<< like>> Mon-El<<,>> Lena     │
+│           │ Luthor<< and>> M                                                                                         │
+│           │ Example 2:  solid 22 episodes. The introduction<< of>> characters<< like>> Mon-El<<,>> Lena Luthor<<     │
+│           │ and>> M��gan                                                                                             │
+│           │ Example 3:  as a whole, it was a solid 22 episodes. The introduction<< of>> characters<< like>>          │
+│           │ Mon-El<<,>>                                                                                              │
+│           │ Example 4: ptower. Only an idiot would try to raid the place," his<< companion, a>> young gray-          │
+│           │ Example 5:  eggs! I won��t spoil them!                                                                   │
+│           │                                                                                                          │
+│           │ Celeste<< and Pet>>al also got                                                                           │
+│           │ Example 6:  Xeno's skull.                                                                                │
+│           │                                                                                                          │
+│           │ Atra Miles<<,>> Aev<<itus, and>> Blossom held little value                                               │
+│           │ Example 7:  though Xeno's skull.                                                                         │
+│           │                                                                                                          │
+│           │ Atra Miles<<,>> Aev<<itus, and>> Blossom held little                                                     │
+│           │ Example 8:  of the best villainesses in the series<<),>> her fellow onscreen Bond Girl<<,>> Claudine     │
+│           │ Auger                                                                                                    │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS:                                                                                       │
+│           │ - "of", "like", ",", "and"                                                                               │
+│           │ - "companion, a"                                                                                         │
+│           │ - "and Pet"                                                                                              │
+│           │ - ",", "itus, and"                                                                                       │
+│           │ - ",", "itus, and"                                                                                       │
+│           │ - ")," ",", "and"                                                                                        │
+│           │ PREVIOUS TOKENS:                                                                                         │
+│           │ - "introduction", "characters", "Mon-El", "Lena Luthor"                                                  │
+│           │ - "his"                                                                                                  │
+│           │ - "Celeste"                                                                                              │
+│           │ - "Atra Miles", "Aev"                                                                                    │
+│           │ - "Atra Miles", "Aev"                                                                                    │
+│           │ - "series", "Bond Girl"                                                                                  │
+│           │ NEXT TOKENS:                                                                                             │
+│           │ - "characters", "Mon-El", "Lena Luthor", "M"                                                             │
+│           │ - "young"                                                                                                │
+│           │ - "also"                                                                                                 │
+│           │ - "Blossom"                                                                                              │
+│           │ - "Blossom"                                                                                              │
+│           │ - "her"                                                                                                  │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ Patterns observed:                                                                                       │
+│           │ - Activating tokens include conjunctions, punctuation marks, and prepositions that are used to connect   │
+│           │ names or entities ("of", "like", ",", "and").                                                            │
+│           │ - They often precede or follow nouns or titles.                                                          │
+│           │ - They are part of lists or enumerations of characters or items.                                         │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The activating tokens are used in lists or descriptions involving multiple entities.                   │
+│           │ - The activating tokens include grammatical elements that link parts of sentences, especially in lists   │
+│           │ or descriptions.                                                                                         │
+│           │ - The activating tokens often appear near proper nouns or nouns.                                         │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Three general shared features of the text examples:                                                      │
+│           │ - Usage in lists or descriptions involving multiple entities.                                            │
+│           │ - Grammatical linking elements in sentences.                                                             │
+│           │ - Proximity to proper nouns or nouns.                                                                    │
+│           │                                                                                                          │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │ 1. The neuron activates on grammatical elements like prepositions ("of"), conjunctions ("and"), and      │
+│           │ punctuation (",") which are used to link multiple entities in lists or descriptions.                     │
+│           │ 2. The neuron activates on elements that structure sentence parts around proper nouns, playing a crucial │
+│           │ role in the listing or detailing of characters or items in a narrative context.                          │
+│ System    │ Processing batch 2 of 2                                                                                  │
+│ System    │ Query 1 of 1                                                                                             │
+│ System    │ Running on examples:                                                                                     │
+│           │ Example 1: <|endoftext|> the series with Lana<< and>> writer J. Michael                                  │
+│           │ Example 2:  The situation is complicated, and the interplay between Rarity<<,>> Applejack<<, and>> Sugar │
+│           │ Sweet is an                                                                                              │
+│           │ Example 3: . The situation is complicated, and the interplay between Rarity<<,>> Applejack<<, and>>      │
+│           │ Sugar Sweet is                                                                                           │
+│           │ Example 4:                                                                                               │
+│           │                                                                                                          │
+│           │ And there��<<s>> little William<<,>> Oliver��s<< son,>> forced to be the                                 │
+│           │ Example 5:  2009 SIGGRAPH Competition. Bananas tells the funny story of a monkey<< named>> Bruce<<,>>    │
+│           │ who�                                                                                                     │
+│           │ Example 6: << Princess>> Vara to her rightful place on the royal throne and<< defeat>> Xax<< and>>       │
+│           │ Kreel��                                                                                                  │
+│           │ Example 7:  eccentric and perhaps perverted by many citizens of the Coalition<<.>> Karpal<<, a>>         │
+│           │ gleisner astronomer                                                                                      │
+│           │ Example 8:  the season as a whole, it was a solid 22 episodes. The introduction<< of>> characters<<      │
+│           │ like>> Mon-                                                                                              │
+│           │                                                                                                          │
+│ Assistant │ Step 1:                                                                                                  │
+│           │ ACTIVATING TOKENS: "and", ",", "s", "named", "defeat", ".", "of", "like".                                │
+│           │ PREVIOUS TOKENS: "Lana", "Rarity", "Applejack", "��", "monkey", "Vara", "Coalition", "characters".       │
+│           │ NEXT TOKENS: "writer", "Applejack", "Sugar Sweet", "little William", "Bruce", "Xax", "Karpal", "Mon-".   │
+│           │                                                                                                          │
+│           │ Step 2:                                                                                                  │
+│           │ The activating tokens are generally conjunctions, prepositions, or punctuation that link elements in a   │
+│           │ list, a description, or a sequence of actions.                                                           │
+│           │ The previous tokens are often nouns, indicating subjects or objects being linked or described.           │
+│           │ The next tokens generally continue or add detail to the subject matter introduced by the previous        │
+│           │ tokens.                                                                                                  │
+│           │                                                                                                          │
+│           │ Step 3:                                                                                                  │
+│           │ - The examples contain grammatical structures involving conjunctions, prepositions, or punctuation that  │
+│           │ function to organize complex lists or compound sentences.                                                │
+│           │ - The activating tokens often appear in contexts where additional information about a noun or subject is │
+│           │ being introduced or detailed.                                                                            │
+│           │ - The neuron activates frequently at points in the text that connect or continue thoughts and ideas.     │
+│           │                                                                                                          │
+│           │ Step 4:                                                                                                  │
+│           │ Two explanations for what causes the neuron to activate:                                                 │
+│           │                                                                                                          │
+│           │ 1. Conjunctions, prepositions, or punctuation marks that serve to link elements within lists,            │
+│           │ descriptions, or sequences of actions.                                                                   │
+│           │ 2. Tokens that organize and clarify relationships and hierarchies between multiple subjects or concepts. │
+│ System    │ The neuron activates on grammatical elements like prepositions ("of"), conjunctions ("and"), and         │
+│           │ punctuation (",") which are used to link multiple entities in lists or descriptions.                     │
+│           │                                                                                                          │
+│           │ The neuron activates on elements that structure sentence parts around proper nouns, playing a crucial    │
+│           │ role in the listing or detailing of characters or items in a narrative contextConjunctions,              │
+│           │ prepositions, or punctuation marks that serve to link elements within lists, descriptions, or sequences  │
+│           │ of actions.                                                                                              │
+│           │                                                                                                          │
+│           │ Tokens that organize and clarify relationships and hierarchies between multiple subjects or concepts     │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running condenser.                                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous assistant to a linguisics professor.                               │
+│           │                                                                                                          │
+│           │ You will be presented with a list of features of text.                                                   │
+│           │                                                                                                          │
+│           │ Some of the features might be essentially the same, just worded differently. Your task is to get rid of  │
+│           │ these duplicates, resulting in a shorter, condensed list of features. Output the list of features, one   │
+│           │ per line, starting with "Feature 1: " and so on.                                                         │
+│           │                                                                                                          │
+│           │ Only get rid of duplicates if the features are exactly the same as each other, or extremely close.       │
+│           │                                                                                                          │
+│           │ Do not throw away any details. E.g. if a certain word or string of characters is referenced in a         │
+│           │ feature, this is key information that must appear in your output.                                        │
+│           │                                                                                                          │
+│           │ Get ready to see the list of features.                                                                   │
+│           │                                                                                                          │
+│           │ Feature 1: ['The neuron activates on grammatical elements like prepositions ("of"), conjunctions         │
+│           │ ("and"), and punctuation (",") which are used to link multiple entities in lists or descriptions.\n',    │
+│           │ 'The neuron activates on elements that structure sentence parts around proper nouns, playing a crucial   │
+│           │ role in the listing or detailing of characters or items in a narrative context']                         │
+│           │ Feature 2: ['Conjunctions, prepositions, or punctuation marks that serve to link elements within lists,  │
+│           │ descriptions, or sequences of actions.\n', 'Tokens that organize and clarify relationships and           │
+│           │ hierarchies between multiple subjects or concepts']                                                      │
+│           │                                                                                                          │
+│ Assistant │ Here is the condensed list of distinct features:                                                         │
+│           │                                                                                                          │
+│           │ Feature 1: The neuron activates on grammatical elements like prepositions ("of"), conjunctions ("and"),  │
+│           │ and punctuation (","), which are used to link multiple entities in lists or descriptions. The neuron     │
+│           │ also activates on elements that structure sentence parts around proper nouns, playing a crucial role in  │
+│           │ the listing or detailing of characters or items in a narrative context.                                  │
+│           │ Feature 2: Conjunctions, prepositions, or punctuation marks that serve to link elements within lists,    │
+│           │ descriptions, or sequences of actions. Tokens that organize and clarify relationships and hierarchies    │
+│           │ between multiple subjects or concepts.                                                                   │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running detection scoring.                                                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You are an intelligent and meticulous linguistics researcher.                                            │
+│           │                                                                                                          │
+│           │ You will be given a certain feature of text, such as "male pronouns" or "text with negative sentiment".  │
+│           │                                                                                                          │
+│           │ You will then be given several text examples. Some examples possess the feature, but some do not. Your   │
+│           │ task is to determine which examples possess the feature.                                                 │
+│           │                                                                                                          │
+│           │ The last line of your answer must have the form FINAL ANSWER:                                            │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: male pronouns and names.                                                            │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ Example 1: "unfortunately", but we knew that later, a great deal of money would                          │
+│           │ Example 2: of the president, but after the process had stopped, he stated that                           │
+│           │ Example 3: Reuters (2017) 27th March 2018                                                                │
+│           │                                                                                                          │
+│           │ ---- CORRESPONDENT Michael Pearce                                                                        │
+│           │ Example 4: every day for hours and hours, Sarah tried her hardest to                                     │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ Feature explanation: <MIXED EXAMPLES>                                                                    │
+│           │                                                                                                          │
+│           │ Text examples:                                                                                           │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The neuron activates on grammatical elements like prepositions ("of"),           │
+│           │ conjunctions ("and"), and punctuation (","), which are used to link multiple entities in lists or        │
+│           │ descriptions. The neuron also activates on elements that structure sentence parts around proper nouns,   │
+│           │ playing a crucial role in the listing or detailing of characters or items in a narrative context.        │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain grammatical elements like prepositions, conjunctions, and punctuation     │
+│           │ used to link multiple entities in lists or descriptions, and structure sentence parts around proper      │
+│           │ nouns:                                                                                                   │
+│           │                                                                                                          │
+│           │ Example 1, Example 3, Example 5, Example 6, Example 7, Example 8, Example 9, Example 11, Example 12,     │
+│           │ Example 13, Example 15, Example 18, Example 20.                                                          │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 5, 6, 7, 8, 9, 11, 12, 13, 15, 18, 20]                                              │
+│ System    │ Running on explanation: Conjunctions, prepositions, or punctuation marks that serve to link elements     │
+│           │ within lists, descriptions, or sequences of actions. Tokens that organize and clarify relationships and  │
+│           │ hierarchies between multiple subjects or concepts.                                                       │
+│ System    │ Processing batch 1 of 1                                                                                  │
+│ Assistant │ The following examples contain conjunctions, prepositions, or punctuation marks that serve to link       │
+│           │ elements within lists, descriptions, or sequences of actions:                                            │
+│           │                                                                                                          │
+│           │ Example 1: "like Mon-El, Lena Luthor and M" uses commas to link characters in a list.                    │
+│           │ Example 3: "like Mon-El, Lena Luthor and M’gan" uses commas to link characters in a list.                │
+│           │ Example 4: "it’s afraid to confront. We also need stand-" uses "also" to link ideas.                     │
+│           │ Example 5: "There could be fireworks yet to come because several of" uses "because" to link cause and    │
+│           │ effect.                                                                                                  │
+│           │ Example 6: "like Mon-El," uses "like" to introduce an example.                                           │
+│           │ Example 7: "his companion, a young gray-" uses a comma to link descriptors.                              │
+│           │ Example 8: "Speaking of Wall Street" uses "Speaking of" to link the conversation topic.                  │
+│           │ Example 9: "And help is what he got last night." uses "And" to continue the narrative.                   │
+│           │ Example 10: "Celeste and Petal also got" uses "and" to link subjects.                                    │
+│           │ Example 11: "Atra Miles, Aevitus, and Blossom held little value" uses commas to link characters in a     │
+│           │ list.                                                                                                    │
+│           │ Example 12: "Atra Miles, Aevitus, and Blossom held little" uses commas to link characters in a list.     │
+│           │ Example 13: "her fellow onscreen Bond Girl, Claudine Auger" uses a comma to link descriptors.            │
+│           │ Example 14: "until January. State law says major contributions should be reported" uses a period to      │
+│           │ separate sentences and clarify the sequence.                                                             │
+│           │ Example 15: "encompasses (i) the genetic diversity of" uses parentheses to organize elements within the  │
+│           │ description.                                                                                             │
+│           │ Example 16: "enters the public domain and may be used or" uses "and" to link actions.                    │
+│           │ Example 17: "Plastic leaks.”" does not contain relevant linking elements.                                │
+│           │ Example 18: "and they need to inform everyone via email of the office move." uses "and" to link actions. │
+│           │ Example 19: "with Lana and writer J. Michael" uses "and" to link subjects.                               │
+│           │ Example 20: "Rarity, Applejack, and Sugar Sweet is an" uses commas to link characters in a list.         │
+│           │                                                                                                          │
+│           │ FINAL ANSWER: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20]                           │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Running generation scoring.                                                                              │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ User      │ You will be presented with a description of a certain feature of text, e.g. "male names" or "text with   │
+│           │ positive sentiment".                                                                                     │
+│           │                                                                                                          │
+│           │ Your task is to come up with 10 examples of short text samples that contain the exact feature that was   │
+│           │ described to you.                                                                                        │
+│           │                                                                                                          │
+│           │ Guidelines:                                                                                              │
+│           │ - You must pay extremely careful attention to the exact details of the feature being decribed.           │
+│           │ - Every single example you write must possess the feature.                                               │
+│           │ - Try to keep the examples varied.                                                                       │
+│           │ - Unless the feature description explicitly refers to position within a sentence, you should make sure   │
+│           │ to vary the position in the sentence at which the feature appears. E.g. the word/token at which the      │
+│           │ feature appears should not always be at the start of the sentence.                                       │
+│           │ - IMPORTANT: If the feature explanation involves some broader context of the text, you must establish    │
+│           │ the context at the start of each example. By the time the feature appears in the example, the context    │
+│           │ must already have been established.                                                                      │
+│           │                                                                                                          │
+│           │ Think carefully first. Then output the list of examples, one per line, starting with "Example 1: " and   │
+│           │ so on.                                                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+│           │ <EXPLANATION>                                                                                            │
+│ System    │ Running on explanation: The neuron activates on grammatical elements like prepositions ("of"),           │
+│           │ conjunctions ("and"), and punctuation (","), which are used to link multiple entities in lists or        │
+│           │ descriptions. The neuron also activates on elements that structure sentence parts around proper nouns,   │
+│           │ playing a crucial role in the listing or detailing of characters or items in a narrative context.        │
+│ Assistant │ Here are 10 examples of short text samples containing the described feature: prepositions ("of"),        │
+│           │ conjunctions ("and"), and punctuation (",") used to link multiple entities in lists or descriptions,     │
+│           │ particularly around proper nouns within a narrative context.                                             │
+│           │                                                                                                          │
+│           │ Example 1: In the story of "The Three Musketeers," the adventures of Athos, Porthos, and Aramis are      │
+│           │ enthralling.                                                                                             │
+│           │                                                                                                          │
+│           │ Example 2: The painting depicted the goddesses of love, war, and wisdom: Aphrodite, Athena, and Ares.    │
+│           │                                                                                                          │
+│           │ Example 3: Among the ruins of Rome, the legends of Caesar, Nero, and Augustus still echo through the     │
+│           │ ages.                                                                                                    │
+│           │                                                                                                          │
+│           │ Example 4: The tale revolves around the lives of Elizabeth, Mr. Darcy, and Jane, characters filled with  │
+│           │ complexities and charm.                                                                                  │
+│           │                                                                                                          │
+│           │ Example 5: The documentary covers the ecosystems of the Amazon, the Sahara, and the Arctic, highlighting │
+│           │ the diverse life forms each supports.                                                                    │
+│           │                                                                                                          │
+│           │ Example 6: The menu featured the specialties of the chef: pasta, risotto, and tiramisu, each dish more   │
+│           │ delicious than the last.                                                                                 │
+│           │                                                                                                          │
+│           │ Example 7: The conference discussed the works of Shakespeare, Chaucer, and Milton, exploring the         │
+│           │ evolution of English literature.                                                                         │
+│           │                                                                                                          │
+│           │ Example 8: In the kingdom of Narnia, the fates of Peter, Susan, Edmund, and Lucy are forever             │
+│           │ intertwined.                                                                                             │
+│           │                                                                                                          │
+│           │ Example 9: The museum displayed artifacts from the dynasties of China: the Tang, the Ming, and the Qing, │
+│           │ each offering a glimpse into the past.                                                                   │
+│           │                                                                                                          │
+│           │ Example 10: The film explored the rivalries of Batman, Superman, and Wonder Woman, delving into the      │
+│           │ complexities of their relationships.                                                                     │
+│ System    │ Score: 81.30706024169922                                                                                 │
+│ System    │ Running on explanation: Conjunctions, prepositions, or punctuation marks that serve to link elements     │
+│           │ within lists, descriptions, or sequences of actions. Tokens that organize and clarify relationships and  │
+│           │ hierarchies between multiple subjects or concepts.                                                       │
+│ Assistant │ Here are 10 examples of short text samples containing conjunctions, prepositions, or punctuation marks   │
+│           │ that serve to link elements within lists, descriptions, or sequences of actions, emphasizing their role  │
+│           │ in organizing and clarifying relationships and hierarchies between subjects or concepts.                 │
+│           │                                                                                                          │
+│           │ Example 1: For breakfast, I had eggs, bacon, and toast.                                                  │
+│           │ Example 2: She needed to buy groceries, clean the house, and pick up the kids from school.               │
+│           │ Example 3: The car was fast, efficient, but surprisingly affordable.                                     │
+│           │ Example 4: On weekends, I like to read, watch movies, or go hiking.                                      │
+│           │ Example 5: He was tall, dark, and handsome.                                                              │
+│           │ Example 6: The tour includes visits to the museum, the park, and the historical monument.                │
+│           │ Example 7: To make a cake, you need flour, sugar, eggs, and butter.                                      │
+│           │ Example 8: She moved the chair into the corner, placed the lamp beside it, and threw a blanket over the  │
+│           │ back.                                                                                                    │
+│           │ Example 9: During the meeting, we discussed budgeting, marketing strategies, and future hiring plans.    │
+│           │ Example 10: The recipe called for chopping the onions, frying the garlic, and then adding the tomatoes.  │
+│ System    │ Score: 79.46682739257812                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Section   │ Results.                                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ System    │ Explanation 0:                                                                                           │
+│           │ Detection Score: (0.8, 0.5)                                                                              │
+│           │ Generation Score: 81.30706024169922                                                                      │
+│           │ Explanation: The neuron activates on grammatical elements like prepositions ("of"), conjunctions         │
+│           │ ("and"), and punctuation (","), which are used to link multiple entities in lists or descriptions. The   │
+│           │ neuron also activates on elements that structure sentence parts around proper nouns, playing a crucial   │
+│           │ role in the listing or detailing of characters or items in a narrative context.                          │
+│           │                                                                                                          │
+│           │ Explanation 1:                                                                                           │
+│           │ Detection Score: (1.0, 0.8)                                                                              │
+│           │ Generation Score: 79.46682739257812                                                                      │
+│           │ Explanation: Conjunctions, prepositions, or punctuation marks that serve to link elements within lists,  │
+│           │ descriptions, or sequences of actions. Tokens that organize and clarify relationships and hierarchies    │
+│           │ between multiple subjects or concepts.                                                                   │
+│           │                                                                                                          │
+│           │                                                                                                          │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
