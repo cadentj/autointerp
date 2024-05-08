@@ -67,6 +67,8 @@ def run(
         state = env.load_id(feature_id, explainer_cfg, condenser_cfg, d_scorer_cfg, gen_scorer_cfg)
         env.run_feature(state)
 
+    del env, model, sae
+
 
 def load_sae(
     layer: int
@@ -84,7 +86,7 @@ def load_sae(
 
 run("openai", 10, [11, 19, 33, 20, 7000])
 
-# run("replicate", 9, [23735, 23839, 24007, 24386, 21503])
+run("replicate", 9, [23735, 23839, 24007, 24386, 21503])
 
-# run("replicate", 8, [16955, 15269, 10277, 14407, 6236])
+run("replicate", 8, [16955, 15269, 10277, 14407, 6236])
 
