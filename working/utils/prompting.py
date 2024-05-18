@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 import openai
+import os
+import replicate
 
 class Client(ABC):
     def __init__(self, model: str):
@@ -8,11 +10,6 @@ class Client(ABC):
     @abstractmethod
     def generate(self, prompt: str) -> str:
         pass
-
-    # @abstractmethod
-    # def parse_args(self, args: dict) -> dict:
-    #     pass
-
 
 class OpenAI(Client):
     def __init__(self, model: str, api_key: str):
@@ -25,6 +22,23 @@ class OpenAI(Client):
             messages=[{"role": "system", "content": prompt}]
         ).choices[0].message.content
     
+class Replicate(Client):
+    def __init__(self, model: str, api_key: str):
+        super().__init__(model)
+        os.environ["REPLICATE_API_TOKEN"] = api_key
+    
+    def generate(self, prompt: str) -> str:
+
+        prompt = {
+            "prompt":"",
+            "prompt_template": prompt,
+        }
+            
+        return replicate.run(
+            self.model,
+            input=prompt
+        )
+    
 
 def get_client(provider: str, api_key: str):
     if provider is None or api_key is None:
@@ -33,3 +47,7 @@ def get_client(provider: str, api_key: str):
     if provider == "openai":
         model = "gpt-4o"
         return OpenAI(model, api_key)
+    
+    if provider == "replicate":
+        model = "meta/meta-llama-3-70b-instruct"
+        return Replicate(model, api_key)

@@ -19,9 +19,13 @@ class Debater(Agent):
         add: callable
     ):
         response = self.client.generate(
-            prompt, 
-            **generation_args
+            prompt
         )
 
-        add(self.id, response)
+        turn = {
+            "user": prompt,
+            "assistant": response
+        }
+        
+        add(turn)
 

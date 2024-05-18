@@ -3,7 +3,7 @@ from .base import Environment
 from .debater import Debater
 from typing import List
 from .history import History
-
+from functools import partial
 import threading
 
 from .prompts import opening_prompt, round_start_prompt
@@ -23,25 +23,27 @@ class Debate(Environment):
     def run(self):
         pass
 
-    def execute_round(
-        self, 
-        round: int
-    ):
+    def execute_round(self, round: int):
         threads = []
-
-        add = lambda id, response: self.history.add(id, response, round)
 
         prompts = self.build_round_prompts(round)
 
-        for i, d in enumerate(self.agents):
+        for d in self.agents:
+            history_adder = partial(self.history.add, d.id, round=round)
+
             thread = threading.Thread(
                 target=d.execute,
-                args=(prompts[d.id], {}, add),
+                args=(
+                    prompts[d.id], 
+                    {}, 
+                    lambda response, adder=history_adder: adder(response)
+                ),
             )
+            
             threads.append(thread)
             thread.start()
-        
-        for i, t in enumerate(threads):
+
+        for t in threads:
             t.join()
 
     def build_round_prompts(
@@ -60,9 +62,11 @@ class Debate(Environment):
                 )
 
                 prompts[d.id] = round_start_prompt.format(
-                    other_responses
+                    other_responses=other_responses
                 )
 
         return prompts
+    
+    
             
 
