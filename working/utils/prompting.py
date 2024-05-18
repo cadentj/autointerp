@@ -13,6 +13,7 @@ class Client(ABC):
     # def parse_args(self, args: dict) -> dict:
     #     pass
 
+
 class OpenAI(Client):
     def __init__(self, model: str, api_key: str):
         super().__init__(model)
@@ -24,11 +25,11 @@ class OpenAI(Client):
             messages=[{"role": "system", "content": prompt}]
         ).choices[0].message.content
     
-    
 
 def get_client(provider: str, api_key: str):
     if provider is None or api_key is None:
         return None 
 
     if provider == "openai":
-        return OpenAI(provider, api_key)
+        model = "gpt-4o"
+        return OpenAI(model, api_key)
