@@ -1,7 +1,13 @@
-/sam_dictionaries/*
-/jbloom_dictionaries/*
+# Ignore directories
+sam_dictionaries/
+jbloom_dictionaries/
+mats_sae_training/
+
+# Ignore all __pycache__ directories
 __pycache__/
 
+# Ignore all keys.py files in any directory
 keys.py
+config.yaml
 
-/mats_sae_training
+working/config.yaml
