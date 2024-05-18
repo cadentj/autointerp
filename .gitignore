@@ -2,6 +2,6 @@
 /jbloom_dictionaries/*
 __pycache__/
 
-/single/keys.py
+keys.py
 
 /mats_sae_training
