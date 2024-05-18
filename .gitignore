@@ -8,6 +8,3 @@ __pycache__/
 
 # Ignore all keys.py files in any directory
 keys.py
-config.yaml
-
-working/config.yaml

@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from . import CONFIG
 import openai
 
 class Client(ABC):
@@ -9,6 +8,10 @@ class Client(ABC):
     @abstractmethod
     def generate(self, prompt: str) -> str:
         pass
+
+    # @abstractmethod
+    # def parse_args(self, args: dict) -> dict:
+    #     pass
 
 class OpenAI(Client):
     def __init__(self, model: str, api_key: str):
@@ -20,11 +23,12 @@ class OpenAI(Client):
             model=self.model,
             messages=[{"role": "system", "content": prompt}]
         ).choices[0].message.content
+    
+    
 
 def get_client(provider: str, api_key: str):
+    if provider is None or api_key is None:
+        return None 
+
     if provider == "openai":
         return OpenAI(provider, api_key)
-    
-def create(prompt: str):
-    if CONFIG.API.PROVIDER == "openai":
-        return OpenAI(CONFIG.API.PROVIDER, CONFIG.API.APIKEY).generate(prompt)
