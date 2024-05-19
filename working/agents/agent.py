@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from ..utils.prompting import Client
+from ..utils.api import Client
 
 class Agent(ABC):
 

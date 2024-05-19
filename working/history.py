@@ -25,7 +25,30 @@ class History():
         last_round.pop(id)
         return last_round
     
-    def to_html(self, save_path: str):
+    def save(self):
+        import pickle
+        import os 
+        
+        PATH = os.path.dirname(os.path.abspath(__file__))
+        
+        html = self.to_html()
+
+        # get number of folders in results directory
+        num_folders = len(os.listdir(PATH + "/results"))
+
+        save_dir = PATH + f"/results/run_{num_folders}"
+
+        os.mkdir(save_dir)
+
+        save_path = "/results.html"
+        with open(save_dir + save_path, 'w') as f:
+            f.write(html)
+
+        save_path = "/history.pkl"
+        with open(save_dir + save_path, 'wb') as f:
+            pickle.dump(self.history, f)
+        
+    def to_html(self):
 
         html = ""
         
@@ -61,5 +84,4 @@ class History():
             content = judge['content'].replace('\n', '<br />')
             html += f"<p>{content}</p>"
 
-        with open(save_path, 'w') as f:
-            f.write(html)
+        return html

@@ -1,6 +1,6 @@
 from . import Agent
 
-from ..utils.prompting import Client
+from ..utils.api import Client
 
 class Debater(Agent):  
     
