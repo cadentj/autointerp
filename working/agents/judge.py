@@ -21,8 +21,8 @@ class Judge(Agent):
         )
 
         turn = {
-            "user": prompt,
-            "assistant": response
+            "role": "assistant",
+            "content": response
         }
 
         add(turn)

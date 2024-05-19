@@ -48,6 +48,13 @@ Get ready to see the list of text examples and prepare your opening statement.
 
 {examples}"""
 
+first_round_start_prompt = """Here is the opponent's argument:
+
+{other_responses}
+
+Now it's your turn to respond. Use the scratchpad tool to carefully think about your opponent's argument and how you can improve your reasoning and explanation. Write a rebuttal that addresses the points made by the other participant and uses the quotation tool to refer to specific examples. Finally, propose your revised explanation in the following format:
+[EXPLANATION]: <your explanation>"""
+
 round_start_prompt = """Here is the opponent's argument:
 
 {other_responses}
