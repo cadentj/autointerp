@@ -1,0 +1,1 @@
+from .debate import Debate

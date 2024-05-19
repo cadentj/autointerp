@@ -71,3 +71,14 @@ For each argument, provide feedback as to the quality of the reasoning and expla
 Here are the debaters' arguments:
 
 {debater_arguments}"""
+
+examples = """Example 1: reconstruction��, but because I��<<m>> evidence-based and
+Example 2: and innovate on until we create something that we all appreciate. I��<<m>> excited to see
+what
+Example 3: of the May 1968 graffitists wrote: ��I��<<m>> not a servant of
+Example 4: the city,�� Rep. Jackson said. ��I��<<m>> sure the mayor is
+Example 5: bad year in Augusta, I said to myself, ��I��<<m>> sick of this.
+Example 6: Nothing against those that hold belts, and fight big shows. I��<<m>> sure those achievements
+are
+Example 7: , right? How are you approaching combat in this one? I��<<m>> guessing you��
+Example 8: ocks. It was a pretty high-achieving school. I��<<m>> not"""

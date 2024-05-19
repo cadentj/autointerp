@@ -3,15 +3,14 @@ from collections import defaultdict
 class History():
 
     def __init__(self):
-        self.history = defaultdict(lambda: defaultdict(dict))
+        self.history = defaultdict(list)
 
     def add(
         self,
         id: str,
         turn: dict,
-        round: int
     ) -> None:
-        self.history[id][round] = turn
+        self.history[id].append(turn)
 
     def get_other_responses(
         self,
@@ -22,14 +21,17 @@ class History():
         other_responses.pop(id)
         return other_responses
     
-    def get_judge_evaluation(
+    def get_judge(
         self,
-        round: int
     ) -> str:
-        return self.get_round(round)["judge"]["assistant"]
+        return self.history["judge"]
 
-    def get_debate_round(
+    def get_round(
         self,
-        round: int
+        round: int,
     ) -> list:
-        return {id: response[round] for id, response in self.history.items() if id != "judge"}
+        return {
+            id: response[round] 
+            for id, response in self.history.items()
+        }
+    

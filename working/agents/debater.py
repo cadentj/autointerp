@@ -1,16 +1,18 @@
-from .base import Agent
+from . import Agent
 
-from .utils.prompting import Client
+from ..utils.prompting import Client
 
-class Judge(Agent):  
+class Debater(Agent):  
     
     def __init__(
         self,
-        client: Client,
+        client: Client, 
+        id: int,
     ):
         super().__init__(client)
+        self.id = id
 
-    def __call__(
+    def execute(
         self,
         prompt: str, 
         generation_args: dict,
@@ -21,8 +23,8 @@ class Judge(Agent):
         )
 
         turn = {
-            "user": prompt,
-            "assistant": response
+            "role": "assistant",
+            "content": response
         }
 
         add(turn)

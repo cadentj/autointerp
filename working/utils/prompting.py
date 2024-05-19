@@ -19,7 +19,7 @@ class OpenAI(Client):
     def generate(self, prompt: str) -> str:
         return self.client.chat.completions.create(
             model=self.model,
-            messages=[{"role": "system", "content": prompt}]
+            messages=prompt
         ).choices[0].message.content
     
 class Replicate(Client):
