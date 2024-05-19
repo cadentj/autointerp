@@ -2,17 +2,15 @@ from .base import Agent
 
 from .utils.prompting import Client
 
-class Debater(Agent):  
+class Judge(Agent):  
     
     def __init__(
         self,
-        client: Client, 
-        id: int,
+        client: Client,
     ):
         super().__init__(client)
-        self.id = id
 
-    def execute(
+    def __call__(
         self,
         prompt: str, 
         generation_args: dict,
