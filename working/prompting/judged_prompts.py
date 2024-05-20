@@ -2,7 +2,7 @@
 l = '<<'
 r = '>>'
 
-OPENING = f"""You are a meticulous AI researcher engaged in a debate regarding the correct explanation for the behavior of a certain neuron in a language model. Your goal is to offer the most accurate, convincing, and well-reasoned explanation for the neuron. A judge will evaluate you and your opponent's argument based on the quality of your reasoning and the evidence you provide.
+OPENING = f"""You are a meticulous AI researcher engaged in a debate on the correct explanation for the behavior of a certain neuron in a language model. Your goal is to offer the most accurate, convincing, and well-reasoned explanation for the neuron. A judge will evaluate you and your opponent's argument based on the quality of your reasoning and the evidence you provide.
 
 There are two tools available to you during the debate:
 

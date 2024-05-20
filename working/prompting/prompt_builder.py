@@ -1,6 +1,6 @@
 from ..history import History
 from ..tools import Quote
-from ..utils.prompts import opening_prompt, round_start_prompt, judge_prompt, examples
+from .judged_prompts import judge_prompt, examples
 
 
 def format_list(
@@ -25,7 +25,10 @@ class PromptBuilder():
         self.debate = debate
         self.quote = Quote(top_examples)
 
-    def build_history(self):
+    def build_history(
+        self,
+        opening_prompt: str,
+    ):
 
         prompt = opening_prompt.format(
             examples=examples
@@ -65,15 +68,24 @@ class PromptBuilder():
 
         self.history.add("judge", turn)
     
-    def build_debater_prompt(self):
+    def build_debater_prompt(
+        self,
+        round_start_prompt: str
+    ):
         for debater in self.debate.debaters:
             other_responses = self.history.get_other_responses(debater.id)
-            judge_evaluation = self.history.get_last_judgement()
 
-            prompt = round_start_prompt.format(
-                other_responses=other_responses,
-                judge_evaluation=judge_evaluation
-            )
+            if "judge" in self.history.history:
+                judge_evaluation = self.history.get_last_judgement()
+
+                prompt = round_start_prompt.format(
+                    other_responses=other_responses,
+                    judge_evaluation=judge_evaluation
+                )
+            else:
+                prompt = round_start_prompt.format(
+                    other_responses=other_responses
+                )
 
             turn = {
                 "role" : "user",

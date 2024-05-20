@@ -54,8 +54,13 @@ class History():
     def to_html(self):
 
         html = ""
+
+        include_judge = False
+
+        if "judge" in self.history:
+            include_judge = True
+            judge_transcripts = self.history["judge"][1::2]
         
-        judge_transcripts = self.history["judge"][1::2]
         debater_transcripts = [
             value[1::2] for key, value in self.history.items() 
             if key != "judge"
@@ -81,10 +86,12 @@ class History():
 
             html += f"<div style='padding: 10px;'>"
 
-            judge = judge_transcripts[round]
+            if include_judge:
+                judge = judge_transcripts[round]
 
-            html += f"<h3>Judge</h3>"
-            content = judge['content'].replace('\n', '<br />')
+                html += f"<h3>Judge</h3>"
+                content = judge['content'].replace('\n', '<br />')
+
             html += f"<p>{content}</p>"
 
         return html

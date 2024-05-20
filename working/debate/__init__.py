@@ -1,1 +1,2 @@
-from .debate import Debate
+from .judged import JudgedDebate
+from .collaborative import CollabDebate

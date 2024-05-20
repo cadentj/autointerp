@@ -1,40 +1,27 @@
 import threading
 from typing import List
 from functools import partial
+from abc import ABC, abstractmethod
 
 from ..agents import Debater
-from ..agents import Judge
 from ..history import History
-from ..utils import PromptBuilder
 
-class Debate():
+class Debate(ABC):
     
     def __init__(
         self,
         debaters: List[Debater],
-        judge: Judge
-    ):
-        
+    ):        
         self.history = History()
         self.debaters = debaters
-        self.judge = judge
 
-        self.prompt_builder = PromptBuilder(self)
-        
-        self.prompt_builder.build_history()
-
+    @abstractmethod
     def run(
         self,
         max_rounds: int = 3,
     ):
-        for _ in range(max_rounds):
-            self.debate()
-            self.prompt_builder.build_judge_prompt()
-            self.judge_round()
-            self.prompt_builder.build_debater_prompt()
-
-        self.history.save()        
-        
+        pass    
+    
     def debate(self):
         threads = []
 
@@ -55,17 +42,6 @@ class Debate():
 
         for t in threads:
             t.join()
-
-
-    def judge_round(self):
-
-        prompt = [self.history.history['judge'][-1]]
-
-        self.judge.execute(
-            prompt,
-            {},
-            lambda turn: self.history.add("judge", turn)
-        )
 
     
 
