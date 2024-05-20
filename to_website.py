@@ -16,12 +16,19 @@ html_file_paths = get_html_files(base_directory)
 
 # %%
 
-
+import shutil
 def create_index_html(paths, output_dir):
 
     links = ""
     for path in paths:
-        links += f'<li><a href="{path}">{path}</a></li>'
+
+        feature = path.split('/')[-2]
+
+        shutil.copy(path, f'./docs/{feature}.html')
+
+        new_path = f'{feature}.html'
+
+        links += f'<li><a href="{new_path}">{feature}</a></li>'
 
     html_content = f'''
     <!DOCTYPE html>
