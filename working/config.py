@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 @dataclass
 class CacheConfig:
-    num_batches: int = 2_250
-    minibatch_size: int = 150
+    num_batches: int = 1_800
+    minibatch_size: int = 200
     seed: int = 22
 
     batch_len: int = 128
@@ -16,4 +16,4 @@ class CacheConfig:
     r: str = ">>"
 
 
-    activation_threshold: float = 0.4
+    activation_threshold: float = 0.5

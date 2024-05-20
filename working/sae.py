@@ -90,11 +90,14 @@ class ActivationCache:
         for batch in tqdm(tok_batches):
 
             with self.model.trace(batch):
-                activations = self.model.transformer.h[layer].input[0][0]
+                # activations = self.model.transformer.h[layer].input[0][0]
 
-                middle = self.sae(activations)
+                # middle = self.sae(activations)
 
-                acts = middle[1]
+                # acts = middle[1]
+
+                activations = self.model.gpt_neox.layers[layer].output[0]
+                acts = self.sae.encoder(activations)
                 acts.save()
 
             acts = acts.value.detach().cpu()
@@ -116,7 +119,7 @@ class ActivationCache:
     def fix(self, string):
         string = string.replace(self.cfg.r+self.cfg.l, "")
         string = string.replace("{", "{{").replace("}", "}}")
-        return string
+        return string   
 
     def load_webtext(self, batch_len) -> Dataset:
         """Load OpenWebText. Uses `tokenize_and_concatenate` to split

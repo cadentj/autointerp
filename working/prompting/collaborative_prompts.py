@@ -21,6 +21,7 @@ Guidelines:
 - Avoid using words like "often", "particularly" or "especially" in your explanations. Either a feature is relevant to the explanation, or it isn't. There is no in between.
 - Think very carefully and show your work.
 - Please don't use extra formatting like markdown.
+- The last line of your response must be the formatted explanation.
 
 Here are several example explanations."""
 
@@ -119,24 +120,18 @@ AGENT_START = f"""Now, it's your turn to propose an argument. Here is a list of 
 
 opening_prompt = f"{SYSTEM_PROMPT}\n{EXAMPLE_1}\n{RESPONSE_1}\n{EXAMPLE_2}\n{RESPONSE_2}\n{EXAMPLE_3}\n{RESPONSE_3}\n{AGENT_START}"
 
-round_start_prompt = """Here are the processes from other agents:
+round_start_prompt = """Other agents analysed the same neuron but were given slightly different top activating examples. Here are the processes from other agents on the same neuron:
 [OTHER RESPONSES]
 {other_responses}
 [/OTHER RESPONSES]
 
-Now it's your turn to respond. Closely examine your reasoning and the reasoning of other agents and provide an updated explanation for the neuron's activation. Propose your explanation in the following format: 
-[EXPLANATION]: <your explanation>"""
+Now it's your turn to respond. You must follow these steps:
 
-examples = """Example 1: reconstruction��, but because I��<<m>> evidence-based and
-Example 2: and innovate on until we create something that we all appreciate. I��<<m>> excited to see
-what
-Example 3: of the May 1968 graffitists wrote: ��I��<<m>> not a servant of
-Example 4: the city,�� Rep. Jackson said. ��I��<<m>> sure the mayor is
-Example 5: bad year in Augusta, I said to myself, ��I��<<m>> sick of this.
-Example 6: Nothing against those that hold belts, and fight big shows. I��<<m>> sure those achievements
-are
-Example 7: , right? How are you approaching combat in this one? I��<<m>> guessing you��
-Example 8: ocks. It was a pretty high-achieving school. I��<<m>> not"""
+Step 1: Think step by step through the other agents' most important points. Reason carefully about how you can improve your own response, or if there is anything you missed.
+Step 2: Offer an updated explanation for the neuron, interleaving your own thoughts with the other agents' insights.
+
+Please finish with your explanation in this format.
+[EXPLANATION]: <your explanation>"""
 
 
 

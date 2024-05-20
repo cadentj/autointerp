@@ -33,7 +33,6 @@ class PromptBuilder():
         seed: int = 22
     ):
         if split:
-
             import random 
             random.seed(seed)
             random.shuffle(self.top_examples)
@@ -46,7 +45,7 @@ class PromptBuilder():
 
             for i, debater in enumerate(self.debate.debaters):
                 prompt = opening_prompt.format(
-                    examples = format_list(split_examples[i])
+                    examples = format_list(split_examples[i], leading=f"Example")
                 )
 
                 turn = {
@@ -55,6 +54,7 @@ class PromptBuilder():
                 }
 
                 self.history.add(debater.id, turn)
+                self.history.add_examples(debater.id, split_examples[i])
 
         else: 
             prompt = opening_prompt.format(
@@ -68,6 +68,7 @@ class PromptBuilder():
 
             for debater in self.debate.debaters:
                 self.history.add(debater.id, turn)
+                self.history.add_examples("all", self.top_examples)
         
 
     def parse_argument(self, debater):

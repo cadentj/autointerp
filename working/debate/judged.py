@@ -36,9 +36,7 @@ class JudgedDebate(Debate):
             self.judge_round()
             self.prompt_builder.build_debater_prompt(
                 round_start_prompt
-            )
-
-        self.history.save()        
+            )  
         
     def judge_round(self):
 

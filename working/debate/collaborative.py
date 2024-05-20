@@ -31,9 +31,7 @@ class CollabDebate(Debate):
             self.debate()
             self.prompt_builder.build_debater_prompt(
                 round_start_prompt
-            )
-
-        self.history.save()        
+            )    
 
     
 
