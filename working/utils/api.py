@@ -68,5 +68,5 @@ def get_client(provider: str, api_key: str):
         return Replicate(model, api_key)
 
     if provider == "groq":
-        model = "llama3-70b-8192"
+        model = "llama3-8b-8192"
         return Groq(model, api_key)

@@ -1,6 +1,6 @@
 from ..history import History
 from ..tools import Quote
-from ..utils.prompts import opening_prompt, first_round_start_prompt, judge_prompt, examples
+from ..utils.prompts import opening_prompt, round_start_prompt, judge_prompt, examples
 
 
 def format_list(
@@ -49,8 +49,13 @@ class PromptBuilder():
 
     def build_judge_prompt(
         self,
-        arguments
     ):
+        arguments = []
+
+        for d in self.debate.debaters:
+            argument = self.parse_argument(d)
+            arguments.append(argument)
+
         turn = {
             "role" : "user",
             "content" : judge_prompt.format(
@@ -60,29 +65,19 @@ class PromptBuilder():
 
         self.history.add("judge", turn)
     
-    def build_debater_prompt(self, debater):
-        other_responses = self.history.get_other_responses(debater.id)
+    def build_debater_prompt(self):
+        for debater in self.debate.debaters:
+            other_responses = self.history.get_other_responses(debater.id)
+            judge_evaluation = self.history.get_last_judgement()
 
-        prompt = first_round_start_prompt.format(
-            other_responses=other_responses
-        )
+            prompt = round_start_prompt.format(
+                other_responses=other_responses,
+                judge_evaluation=judge_evaluation
+            )
 
-        turn = {
-            "role" : "user",
-            "content" : prompt
-        }
+            turn = {
+                "role" : "user",
+                "content" : prompt
+            }
 
-        self.history.add(debater.id, turn)
-
-    def build(self):
-
-        arguments = []
-
-        for d in self.debate.debaters:
-            argument = self.parse_argument(d)
-
-            arguments.append(argument)
-
-            self.build_debater_prompt(d)
-
-        self.build_judge_prompt(arguments)
+            self.history.add(debater.id, turn)

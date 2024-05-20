@@ -2,9 +2,7 @@
 l = '<<'
 r = '>>'
 
-OPENING = f"""You are a meticulous AI researcher engaged in a debate regarding the correct explanation for the behavior of a certain neuron in a language model.
-
-Your goal is to offer the most accurate, convincing, and well-reasoned explanation for the neuron. A judge will evaluate you and your opponent's argument based on the quality of your reasoning and the evidence you provide.
+OPENING = f"""You are a meticulous AI researcher engaged in a debate regarding the correct explanation for the behavior of a certain neuron in a language model. Your goal is to offer the most accurate, convincing, and well-reasoned explanation for the neuron. A judge will evaluate you and your opponent's argument based on the quality of your reasoning and the evidence you provide.
 
 There are two tools available to you during the debate:
 
@@ -15,9 +13,6 @@ There are two tools available to you during the debate:
 
 **Quotation tool**: You will be given a set of text examples on which the neuron activates. *After* using the scratchpad to write your initial thoughts, you will propose an argument for the quote. Your argument must be supported by direct quotes from the text using the quotation tool, which verifies quotes. The judge is instructed to only evaluate verified quotes. The quotation tool may only be used on newlines. Format your quotes as follows:
 [QUOTE]: <quote 1>
-...some analysis
-[QUOTE]: <quote n>
-...some analysis
 
 # The structure of the debate is as follows.
 
@@ -38,59 +33,7 @@ Finally, propose a one or two sentence explanation that encapsulates the behavio
 
 Here are several example opening statements and arguments."""
 
-
-first_round_start_prompt = """Here is your opponent's argument:
-[OPPONENT]
-{other_responses}
-[/OPPONENT]
-
-Now it's your turn to respond. You must follow these steps:
-
-Step 1: Use the scratchpad tool to summarize important points made by your opponent. Think about each of these points and whether you can improve your reasoning and explanation.
-Step 2: After writing your thoughts in the scratchpad, write a rebuttal that addresses the points made by the other participant. Use the quotation tool to refer to specific examples from the original text, not your opponents argument. Explain why your excerpts from the text and throughout analysis are more convincing than your opponent's.
-Step 3: Propose your revised explanation in the following format:
-[EXPLANATION]: <your explanation>"""
-
-round_start_prompt = """Here is the opponent's argument:
-
-{other_responses}
-
-Here is the judge's evaluation of the responses. 
-
-{judge_evaluation}
-
-Now it's your turn to respond. Use the scratchpad tool to carefully think about your opponent's argument and how you can improve your reasoning and explanation in light of the judge's evaluation. Write a rebuttal that addresses the points made by the other participant and uses the quotation tool to refer to specific examples. Finally, propose your revised explanation in the following format:
-[EXPLANATION]: <your explanation>"""
-
-judge_prompt = """You are an meticulous AI researcher judging a debate regarding the correct explanation for the behavior of a certain neuron in a language model. You will be provided a list of reasoning and explanations from debaters. 
-
-Each debater will provide quotes to support their argument. Verified quotes will be enclosed in <verified> tags, while unverified quotes will be enclosed in <unverified> tags. Only evaluate the reasoning and explanation of the debaters based on verified quotes.
-
-For each argument, provide feedback as to the quality of the reasoning and explanation. Consider the following criteria:
-
-1. The explanation should be well-reasoned and supported by evidence.
-2. The explanation should be accurate and convincing
-
-Here are the debaters' arguments:
-
-{debater_arguments}"""
-
-examples = """Example 1: reconstruction��, but because I��<<m>> evidence-based and
-Example 2: and innovate on until we create something that we all appreciate. I��<<m>> excited to see
-what
-Example 3: of the May 1968 graffitists wrote: ��I��<<m>> not a servant of
-Example 4: the city,�� Rep. Jackson said. ��I��<<m>> sure the mayor is
-Example 5: bad year in Augusta, I said to myself, ��I��<<m>> sick of this.
-Example 6: Nothing against those that hold belts, and fight big shows. I��<<m>> sure those achievements
-are
-Example 7: , right? How are you approaching combat in this one? I��<<m>> guessing you��
-Example 8: ocks. It was a pretty high-achieving school. I��<<m>> not"""
-
-
-
-
-EXAMPLE_1 = f"""
-Example 1:  and he was {l}over the moon{r} to find
+EXAMPLE_1 = f"""Example 1:  and he was {l}over the moon{r} to find
 Example 2:  we'll be laughing {l}till the cows come home{r}! Pro
 Example 3:  thought Scotland was boring, but really there's more {l}than meets the eye{r}! I'd"""
 
@@ -123,11 +66,9 @@ Next, note the features following the activating portion.
 [QUOTE]: ! I'd
 Both examples end with an exclamation mark, which further emphasizes the positive sentiment.
 
-[EXPLANATION]: The neuron activates on text examples that contain common idioms conveying positive sentiment.
-"""
+[EXPLANATION]: The neuron activates on text examples that contain common idioms conveying positive sentiment."""
 
-EXAMPLE_2 = f"""
-Example 1:  a river is wide but the ocean is wider{l}. {r}The ocean
+EXAMPLE_2 = f"""Example 1:  a river is wide but the ocean is wider{l}. {r}The ocean
 Example 2:  every year you get tall{l}er{r}," she
 Example 3:  the hole was small{l}er{r} but deep{l}er{r} than the"""
 
@@ -163,11 +104,9 @@ Additionally, note the features following the activating portion.
 [QUOTE]: she
 These activations often lead into further descriptions or explanations, typically following a comparative statement.
 
-[EXPLANATION]: The neuron activates on the token "er" at the end of comparative adjectives describing size, especially in contexts involving comparison or contrast.
-"""
+[EXPLANATION]: The neuron activates on the token "er" at the end of comparative adjectives describing size, especially in contexts involving comparison or contrast."""
 
-EXAMPLE_3 = f"""
-Example 1:  something happening inside my {l}house{r}", he
+EXAMPLE_3 = f"""Example 1:  something happening inside my {l}house{r}", he
 Example 2:  presumably was always contained in {l}a box{r}", according
 Example 3:  people were coming into the {l}smoking area{r}".
 Example 4:  Patrick: "why are you getting in the {l} way?{r}" Later,"""
@@ -208,12 +147,54 @@ Further analysis reveals that the activations often occur within descriptive or 
 [QUOTE]: always contained in a box", according
 These examples demonstrate a narrative or explanatory context where the activation indicates containment.
 
-[EXPLANATION]: The neuron activates on nouns representing areas or places that contain something, especially within narrative or descriptive contexts involving speech or dialogue.
-"""
+[EXPLANATION]: The neuron activates on nouns representing areas or places that contain something, especially within narrative or descriptive contexts involving speech or dialogue."""
 
 AGENT_START = f"""Now, it's your turn to propose an argument. Here is a list of text examples:
 
 {{examples}}"""
 
-
 opening_prompt = f"{OPENING}\n{EXAMPLE_1}\n{RESPONSE_1}\n{EXAMPLE_2}\n{RESPONSE_2}\n{EXAMPLE_3}\n{RESPONSE_3}\n{AGENT_START}"
+
+round_start_prompt = """Here is your opponent's argument:
+[OPPONENT]
+{other_responses}
+[/OPPONENT]
+
+Here is the judge's evaluation of the responses.
+[EVALUATION]
+{judge_evaluation}
+[/EVALUATION]
+
+Now it's your turn to respond. Just like your opening argument, you must follow these steps:
+
+Step 1: Use the scratchpad tool to summarize important points made by the judge and your opponent. Think about each of these points and whether you can improve your reasoning and explanation.
+Step 2: After writing your thoughts in the scratchpad, write a rebuttal that addresses the points made by the judge and your opponent. Use the quotation tool to refer to specific examples from the original text, not your opponents argument. Explain why your excerpts from the text and throughout analysis are more convincing than your opponent's.
+Step 3: Propose your revised explanation in the following format:
+[EXPLANATION]: <your explanation>"""
+
+judge_prompt = """You are an meticulous AI researcher judging a debate regarding the correct explanation for the behavior of a certain neuron in a language model. You will be provided a list of reasoning and explanations from debaters. 
+
+Each debater will provide quotes to support their argument. Verified quotes will be enclosed in <verified> tags, while unverified quotes will be enclosed in <unverified> tags. Only evaluate the reasoning and explanation of the debaters based on verified quotes.
+
+For each argument, provide feedback as to the quality of the reasoning and explanation. Consider the following criteria:
+
+1. The explanation should be well-reasoned and supported by evidence.
+2. The explanation should be accurate and convincing
+
+Here are the debaters' arguments:
+
+{debater_arguments}"""
+
+examples = """Example 1: reconstruction��, but because I��<<m>> evidence-based and
+Example 2: and innovate on until we create something that we all appreciate. I��<<m>> excited to see
+what
+Example 3: of the May 1968 graffitists wrote: ��I��<<m>> not a servant of
+Example 4: the city,�� Rep. Jackson said. ��I��<<m>> sure the mayor is
+Example 5: bad year in Augusta, I said to myself, ��I��<<m>> sick of this.
+Example 6: Nothing against those that hold belts, and fight big shows. I��<<m>> sure those achievements
+are
+Example 7: , right? How are you approaching combat in this one? I��<<m>> guessing you��
+Example 8: ocks. It was a pretty high-achieving school. I��<<m>> not"""
+
+
+

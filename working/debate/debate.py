@@ -27,10 +27,11 @@ class Debate():
         self,
         max_rounds: int = 3,
     ):
-        for _ in range(1):
+        for _ in range(max_rounds):
             self.debate()
-            self.prompt_builder.build()
+            self.prompt_builder.build_judge_prompt()
             self.judge_round()
+            self.prompt_builder.build_debater_prompt()
 
         self.history.save()        
         

@@ -25,6 +25,9 @@ class History():
         last_round.pop(id)
         return last_round
     
+    def get_last_judgement(self):
+        return self.history["judge"][-1]["content"]
+    
     def save(self):
         import pickle
         import os 
