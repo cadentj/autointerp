@@ -84,14 +84,14 @@ class History():
 
             html += "</div>"
 
-            html += f"<div style='padding: 10px;'>"
-
             if include_judge:
+                html += f"<div style='padding: 10px;'>"
                 judge = judge_transcripts[round]
 
                 html += f"<h3>Judge</h3>"
                 content = judge['content'].replace('\n', '<br />')
 
-            html += f"<p>{content}</p>"
+                html += f"<p>{content}</p>"
+                html += "</div>"
 
         return html

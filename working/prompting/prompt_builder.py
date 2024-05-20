@@ -1,6 +1,6 @@
 from ..history import History
 from ..tools import Quote
-from .judged_prompts import judge_prompt, examples
+from .judged_prompts import judge_prompt
 
 
 def format_list(
@@ -18,29 +18,56 @@ class PromptBuilder():
     def __init__(
         self,
         debate,
-        top_examples: str = examples
+        top_examples
     ):
-
         self.history = debate.history
         self.debate = debate
-        self.quote = Quote(top_examples)
+
+        self.top_examples = [example.text for example in top_examples]
+        self.quote = Quote(self.top_examples)
 
     def build_history(
         self,
         opening_prompt: str,
+        split: bool = False,
+        seed: int = 22
     ):
+        if split:
 
-        prompt = opening_prompt.format(
-            examples=examples
-        )
+            import random 
+            random.seed(seed)
+            random.shuffle(self.top_examples)
 
-        turn = {
-            "role" : "user",
-            "content" : prompt
-        }
+            n_debaters = len(self.debate.debaters)
+            split_size = len(self.top_examples) // n_debaters
+            split_examples = [
+                self.top_examples[i:i+split_size] for i in range(0, len(self.top_examples), split_size)
+            ]
 
-        for debater in self.debate.debaters:
-            self.history.add(debater.id, turn)
+            for i, debater in enumerate(self.debate.debaters):
+                prompt = opening_prompt.format(
+                    examples = format_list(split_examples[i])
+                )
+
+                turn = {
+                    "role" : "user",
+                    "content" : prompt
+                }
+
+                self.history.add(debater.id, turn)
+
+        else: 
+            prompt = opening_prompt.format(
+                examples = format_list(self.top_examples)
+            )
+
+            turn = {
+                "role" : "user",
+                "content" : prompt
+            }
+
+            for debater in self.debate.debaters:
+                self.history.add(debater.id, turn)
         
 
     def parse_argument(self, debater):

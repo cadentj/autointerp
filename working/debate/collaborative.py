@@ -3,6 +3,7 @@ from typing import List
 from .debate import Debate
 from ..agents import Debater
 from ..prompting import PromptBuilder
+from ..sae import Example
 
 from ..prompting.collaborative_prompts import opening_prompt, round_start_prompt
 
@@ -11,6 +12,7 @@ class CollabDebate(Debate):
     def __init__(
         self,
         debaters: List[Debater],
+        examples: List[Example]
     ):
         
         self.history = None
@@ -18,8 +20,8 @@ class CollabDebate(Debate):
 
         super().__init__(debaters)
 
-        self.prompt_builder = PromptBuilder(self)
-        self.prompt_builder.build_history(opening_prompt)
+        self.prompt_builder = PromptBuilder(self, examples)
+        self.prompt_builder.build_history(opening_prompt, split=True)
     
     def run(
         self,
