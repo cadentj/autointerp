@@ -81,7 +81,7 @@ class History():
             html += f"<h2>Top Examples</h2>"
 
             for debater, examples in self.top_examples.items():
-                html += f"<h3>Debater {debater}</h3>"
+                html += f"<h3>{debater}</h3>"
                 top_examples = self.highlight_example(examples)
                 html += top_examples
 
