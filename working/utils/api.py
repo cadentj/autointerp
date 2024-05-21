@@ -21,7 +21,8 @@ class OpenAI(Client):
     def generate(self, prompt: str) -> str:
         return self.client.chat.completions.create(
             model=self.model,
-            messages=prompt
+            messages=prompt,
+            temperature=0.8
         ).choices[0].message.content
 
 

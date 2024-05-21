@@ -11,8 +11,8 @@ There are two tools available to you during the debate:
 <your thoughts here>
 [/THOUGHTS]
 
-**Quotation tool**: You will be given a set of text examples on which the neuron activates. *After* using the scratchpad to write your initial thoughts, you will propose an argument for the quote. Your argument must be supported by direct quotes from the text using the quotation tool, which verifies quotes. The judge is instructed to only evaluate verified quotes. The quotation tool may only be used on newlines. Format your quotes as follows:
-[QUOTE]: <quote 1>
+**Quotation tool**: You will be given a set of text examples on which the neuron activates. *After* using the scratchpad to write your initial thoughts, you will propose an argument for the behavior of the neuron. Your argument must be supported by direct quotes from the text using the quotation tool, which verifies quotes. The judge is instructed to only evaluate verified quotes. Format your quotes as follows:
+[QUOTE]<quote>[/QUOTE]
 
 # The structure of the debate is as follows.
 
@@ -33,11 +33,11 @@ Finally, propose a one or two sentence explanation that encapsulates the behavio
 
 Here are several example opening statements and arguments."""
 
-EXAMPLE_1 = f"""Example 1:  and he was {l}over the moon{r} to find
-Example 2:  we'll be laughing {l}till the cows come home{r}! Pro
-Example 3:  thought Scotland was boring, but really there's more {l}than meets the eye{r}! I'd"""
+EXAMPLE_1 = """Example 1:  and he was <<over the moon>> to find
+Example 2:  we'll be laughing <<till the cows come home>>! Pro
+Example 3:  thought Scotland was boring, but really there's more <<than meets the eye>>! I'd"""
 
-RESPONSE_1 = f"""[THOUGHTS]
+RESPONSE_1 = """[THOUGHTS]
 Step 1.
 ACTIVATING TOKENS: "over the moon", "till the cows come home", "than meets the eye".
 PREVIOUS TOKENS: "was", "laughing", "more".
@@ -56,23 +56,20 @@ Let me think carefully. Did I miss any patterns in the text examples? Are there 
 
 - The text examples all convey positive sentiment.
 [/THOUGHTS]
-First, note the activating portion of each example.
-[QUOTE]: over the moon
-[QUOTE]: till the cows come home
-These are both common idioms that convey a positive sentiment. 
+First, note the activating portion of each example. In Example 1, the activating portion is [QUOTE]over the moon[/QUOTE], which is a common idiom conveying excitement. Similarly, in Example 2, [QUOTE]till the cows come home[/QUOTE] is an idiom indicating a long duration, often used in a positive or humorous context. In Example 3, [QUOTE]than meets the eye[/QUOTE] is another idiom suggesting hidden qualities, generally used positively.
 
-Next, note the features following the activating portion.
-[QUOTE]: ! Pro
-[QUOTE]: ! I'd
-Both examples end with an exclamation mark, which further emphasizes the positive sentiment.
+Next, consider the context following the activating portion. In Example 2, the idiom is followed by an exclamation mark: [QUOTE]! Pro[/QUOTE]. This emphasizes the enthusiastic tone. In Example 3, the idiom is also followed by an exclamation mark: [QUOTE]! I'd[/QUOTE], further stressing a positive sentiment.
 
-[EXPLANATION]: The neuron activates on text examples that contain common idioms conveying positive sentiment."""
+By analyzing these patterns, it becomes evident that the neuron activates on idiomatic expressions that convey positive sentiments, often reinforced by exclamation marks.
 
-EXAMPLE_2 = f"""Example 1:  a river is wide but the ocean is wider{l}. {r}The ocean
-Example 2:  every year you get tall{l}er{r}," she
-Example 3:  the hole was small{l}er{r} but deep{l}er{r} than the"""
+[EXPLANATION]: The neuron activates on text examples that contain common idioms conveying positive sentiment, often followed by exclamation marks to emphasize enthusiasm or excitement.
+"""
 
-RESPONSE_2 = f"""[THOUGHTS]
+EXAMPLE_2 = """Example 1:  a river is wide but the ocean is wider<<. >>The ocean
+Example 2:  every year you get tall<<er>>," she
+Example 3:  the hole was small<<er>> but deep<<er>> than the"""
+
+RESPONSE_2 = """[THOUGHTS]
 Step 1.
 ACTIVATING TOKENS: ". ", "er", "er", "er".
 PREVIOUS TOKENS: "er", "tall", "small", "deep".
@@ -89,22 +86,16 @@ Step 3.
 - The comparative adjectives ("wider", "taller", "smaller", "deeper") all describe size.
 - The context often involves comparison or contrast.
 [/THOUGHTS]
-First, note the activating portion of each example.
-[QUOTE]: wider. 
-[QUOTE]: taller,
-These activations occur at the end of comparative adjectives and often involve descriptions of size. 
+First, note the activating portion of each example. In Example 1, the activating token is [QUOTE]wider. [/QUOTE], which is a comparative adjective indicating a greater width. In Example 2, the activating token is [QUOTE]taller,[/QUOTE] which denotes increased height. Similarly, in Example 3, [QUOTE]smaller[/QUOTE] and [QUOTE]deeper[/QUOTE] describe dimensions, emphasizing comparative sizes.
 
-Next, note the features preceding the activating portion.
-[QUOTE]: wide but the ocean is 
-[QUOTE]: every year you get 
-These examples show that the context involves making comparisons, typically related to size.
+Next, analyze the preceding context. Example 1 provides a comparison: [QUOTE]wide but the ocean is[/QUOTE], setting up the context for "wider". Example 2, with [QUOTE]every year you get[/QUOTE], indicates a progression, leading into "taller". These contexts highlight comparisons of size or degree.
 
-Additionally, note the features following the activating portion.
-[QUOTE]: The ocean
-[QUOTE]: she
-These activations often lead into further descriptions or explanations, typically following a comparative statement.
+Additionally, consider the following context. In Example 1, the activation is followed by [QUOTE]The ocean[/QUOTE], leading into further description. Example 2 continues with [QUOTE]she[/QUOTE], indicating dialogue.
 
-[EXPLANATION]: The neuron activates on the token "er" at the end of comparative adjectives describing size, especially in contexts involving comparison or contrast."""
+These patterns reveal that the neuron activates on the token "er" in comparative adjectives, particularly in contexts involving descriptions of size and comparisons.
+
+[EXPLANATION]: The neuron activates on the token "er" at the end of comparative adjectives describing size, especially in contexts involving comparison or contrast.
+"""
 
 EXAMPLE_3 = f"""Example 1:  something happening inside my {l}house{r}", he
 Example 2:  presumably was always contained in {l}a box{r}", according
@@ -160,17 +151,16 @@ round_start_prompt = """Here is your opponent's argument:
 {other_responses}
 [/OPPONENT]
 
-Here is the judge's evaluation of the responses.
-[EVALUATION]
-{judge_evaluation}
-[/EVALUATION]
-
 Now it's your turn to respond. Just like your opening argument, you must follow these steps:
 
-Step 1: Use the scratchpad tool to summarize important points made by the judge and your opponent. Think about each of these points and whether you can improve your reasoning and explanation.
-Step 2: After writing your thoughts in the scratchpad, write a rebuttal that addresses the points made by the judge and your opponent. Use the quotation tool to refer to specific examples from the original text, not your opponents argument. Explain why your excerpts from the text and throughout analysis are more convincing than your opponent's.
-Step 3: Propose your revised explanation in the following format:
+Step 1: Use the scratchpad tool to summarize important points made by your opponent. Think step by step through these points and consider how you can improve the argument for your explanation.
+Step 2: After writing your thoughts in the scratchpad, write an argument for why your explanation is more convincing. The argument should cover the weaknesses of your opponents argument and the strengths of your own explanation. Use the quotation tool to support your argument.
+Use the quotation tool to support your argument.
+Step 3: Revise your explanation to incorporate the 
 [EXPLANATION]: <your explanation>"""
+
+
+
 
 judge_prompt = """You are an meticulous AI researcher judging a debate regarding the correct explanation for the behavior of a certain neuron in a language model. You will be provided a list of reasoning and explanations from debaters. 
 

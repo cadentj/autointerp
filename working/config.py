@@ -16,4 +16,4 @@ class CacheConfig:
     r: str = ">>"
 
 
-    activation_threshold: float = 0.7
+    activation_threshold: float = 0.5

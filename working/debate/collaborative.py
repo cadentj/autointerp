@@ -12,7 +12,8 @@ class CollabDebate(Debate):
     def __init__(
         self,
         debaters: List[Debater],
-        examples: List[Example]
+        examples: List[Example],
+        top_logits: List[str]
     ):
         
         self.history = None
@@ -20,7 +21,7 @@ class CollabDebate(Debate):
 
         super().__init__(debaters)
 
-        self.prompt_builder = PromptBuilder(self, examples)
+        self.prompt_builder = PromptBuilder(self, examples, top_logits)
         self.prompt_builder.build_history(opening_prompt, split=True)
     
     def run(

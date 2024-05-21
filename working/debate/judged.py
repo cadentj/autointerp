@@ -12,7 +12,8 @@ class JudgedDebate(Debate):
     def __init__(
         self,
         debaters: List[Debater],
-        judge: Judge
+        judge: Judge,
+        top_examples
     ):
         
         self.history = None
@@ -22,7 +23,7 @@ class JudgedDebate(Debate):
 
         self.judge = judge
 
-        self.prompt_builder = PromptBuilder(self)
+        self.prompt_builder = PromptBuilder(self, top_examples)
 
         self.prompt_builder.build_history(opening_prompt)
     
@@ -32,11 +33,12 @@ class JudgedDebate(Debate):
     ):
         for _ in range(max_rounds):
             self.debate()
-            self.prompt_builder.build_judge_prompt()
-            self.judge_round()
             self.prompt_builder.build_debater_prompt(
                 round_start_prompt
             )  
+
+        self.prompt_builder.build_judge_prompt()
+        self.judge_round()
         
     def judge_round(self):
 

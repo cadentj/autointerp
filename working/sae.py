@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+import json
 
 import torch as t
 from tqdm import tqdm
@@ -8,6 +9,7 @@ from nnsight import LanguageModel
 from datasets import load_dataset, Dataset
 from transformer_lens import utils
 from torch import Tensor
+import requests
 
 from .config import CacheConfig
 
@@ -35,6 +37,12 @@ def topk(tensor, k):
     original_indices = [unravel_index(idx.item(), tensor.size()) for idx in flat_indices]
 
     return top_values.tolist(), original_indices
+
+
+def get_top_logits(url):
+    response = requests.get(url).json()
+    return response["pos_str"]
+
 
 class ActivationCache:
 
