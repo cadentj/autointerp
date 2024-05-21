@@ -110,6 +110,7 @@ class PromptBuilder():
         parsed_others = ""
         for agent, response in other_responses.items():
             parsed_others += f"[{agent} RESPONSE]:\n{response}\n"
+        return parsed_others
     
     def build_debater_prompt(
         self,
@@ -117,6 +118,7 @@ class PromptBuilder():
     ):
         for debater in self.debate.debaters:
             other_responses = self.history.get_other_responses(debater.id)
+            other_responses = self.parse_others(other_responses)
 
             if "judge" in self.history.history:
                 judge_evaluation = self.history.get_last_judgement()

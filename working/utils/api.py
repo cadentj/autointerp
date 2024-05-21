@@ -3,6 +3,7 @@ import openai
 from groq import Groq as GroqClient
 import os
 import replicate
+from transformers import AutoTokenizer
 
 class Client(ABC):
     def __init__(self, model: str):
@@ -39,21 +40,27 @@ class Groq(Client):
     
 
 class Replicate(Client):
-    def __init__(self, model: str, api_key: str):
+    def __init__(self, model: str, api_key: str, tokenizer):
         super().__init__(model)
         os.environ["REPLICATE_API_TOKEN"] = api_key
+        self.tokenizer = tokenizer
     
-    def generate(self, prompt: str) -> str:
+    def generate(self, prompt) -> str:
+        if prompt is not type(str):
+            prompt = self.tokenizer.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True)
 
         prompt = {
             "prompt":"",
             "prompt_template": prompt,
+            "temperature": 0.8,
         }
             
-        return replicate.run(
+        output = replicate.run(
             self.model,
             input=prompt
         )
+
+        return "".join(output)
     
 
 def get_client(provider: str, api_key: str):
@@ -61,12 +68,13 @@ def get_client(provider: str, api_key: str):
         return None 
 
     if provider == "openai":
-        model = "gpt-4o"
+        model = "gpt-4-turbo"
         return OpenAI(model, api_key)
     
     if provider == "replicate":
-        model = "meta/meta-llama-3-70b-instruct"
-        return Replicate(model, api_key)
+        tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-70B-Instruct")
+        model = "meta/meta-llama-3-8b-instruct"
+        return Replicate(model, api_key, tokenizer)
 
     if provider == "groq":
         model = "llama3-8b-8192"
