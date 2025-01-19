@@ -56,7 +56,7 @@ class NeuronpediaActivation(BaseModel):
         return self
 
 class NeuronpediaResponse(BaseModel):
-    layer_id: str = Field(alias="layer")
+    layer_id: str = Field(validation_alias=AliasChoices("layer", "layer_id"))
     index: int
     activations: List[NeuronpediaActivation]
 

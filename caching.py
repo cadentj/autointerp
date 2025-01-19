@@ -111,6 +111,9 @@ class Cache:
                 "tokens_path": tokens_path,
             }, save_path)
 
+            # This is a little weird but whatever
+            yield module_path, save_path
+
 
 @torch.no_grad()
 def cache_activations(
@@ -198,6 +201,8 @@ def _pool_max_activation_windows(
 
 def get_features(path: str, return_data: bool = False):
     """Loads cached feature data and returns unique feature indices"""
+
+    print(path)
     data = torch.load(path)
     features = torch.unique(data["locations"][:, 2])
     if return_data:
@@ -207,11 +212,15 @@ def get_features(path: str, return_data: bool = False):
 
 def load_activations(
     path: str,
+    index: int = None,
+    tokenizer: AutoTokenizer = None,
     tokens: TensorType["batch", "seq"] = None,
     ctx_len: int = 16,
     max_examples: int = 5,
 ):
     features, data = get_features(path, return_data=True)
+
+    print(tokens, data["tokens_path"])
 
     if data["tokens_path"] is not None:
         tokens = torch.load(data["tokens_path"])
@@ -221,10 +230,15 @@ def load_activations(
 
     loaded_features = {}
 
+    if index is not None:
+        features = [index]
+
     for feature in features:
         indices = data["locations"][:, 2] == feature
         locations = data["locations"][indices]
         activations = data["activations"][indices]
+
+        print(activations.shape, locations.shape, tokens.shape)
 
         token_windows, activation_windows = _pool_max_activation_windows(
             activations,
@@ -233,6 +247,9 @@ def load_activations(
             ctx_len,
             max_examples
         )
+
+        if tokenizer is not None:
+            token_windows = [tokenizer.batch_decode(window) for window in token_windows]
 
         loaded_features[feature] = (token_windows, activation_windows)
 
