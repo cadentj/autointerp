@@ -60,7 +60,7 @@ tokens = load_tokenized_data(
 )
 
 # We'll save the tokens to disk so we can load them quickly later
-token_save_dir = "/share/u/caden/neurondb/cache"
+token_save_dir = "/root/neurondb/cache"
 token_save_path = os.path.join(token_save_dir, "tokens.pt")
 t.save(tokens, token_save_path)
 
@@ -96,3 +96,14 @@ db.show("0-gemmascope-res-16k", 0, max_examples=5) # Neuronpedia
 
 # Torch will need a tokenizer
 db.show(".model.layers.0", 10, max_examples=5, tokenizer=model.tokenizer)
+
+# %%
+
+db.export_neuronpedia(
+    neuronpedia_request,
+    "vis.html"
+)
+
+# %%
+
+db

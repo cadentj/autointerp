@@ -1,7 +1,7 @@
 import os
 from torchtyping import TensorType
 from tqdm import tqdm
-from typing import Dict
+from typing import Dict, Union, Tuple, Any, List
 from collections import defaultdict
 
 import torch
@@ -164,7 +164,7 @@ def _pool_max_activation_windows(
     tokens: TensorType["batch", "seq"],
     ctx_len: int,
     max_examples: int,
-):
+) -> Tuple[TensorType["seq"], TensorType["seq"]]:
     # Convert 2D locations (batch, sequence) into flat indices
     flat_indices = locations[:, 0] * tokens.shape[1] + locations[:, 1]
     # Get which context each activation belongs to
@@ -199,7 +199,7 @@ def _pool_max_activation_windows(
     return token_windows, activation_windows
 
 
-def get_features(path: str, return_data: bool = False):
+def get_features(path: str, return_data: bool = False) -> Union[TensorType["indices"], Tuple[TensorType["indices"], Dict[str, Any]]]:
     """Loads cached feature data and returns unique feature indices"""
 
     print(path)
@@ -217,7 +217,7 @@ def load_activations(
     tokens: TensorType["batch", "seq"] = None,
     ctx_len: int = 16,
     max_examples: int = 5,
-):
+) -> Dict[int, Tuple[Union[TensorType["max_examples", "seq"], List[List[str]]], TensorType["max_examples", "seq"]]]:
     features, data = get_features(path, return_data=True)
 
     print(tokens, data["tokens_path"])

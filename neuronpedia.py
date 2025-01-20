@@ -2,7 +2,7 @@ import aiohttp
 import asyncio
 from typing import List, Union, Optional, Generator
 
-from pydantic import model_validator, BaseModel, Field, AliasChoices
+from pydantic import model_validator, BaseModel, Field, AliasChoices, field_validator
 from config import config
 
 TOKEN = config["token"]
@@ -36,6 +36,11 @@ class NeuronpediaActivation(BaseModel):
                 expanded_values.append(0)
         return expanded_values
     
+    @field_validator('tokens', mode='after')  
+    @classmethod
+    def set_whitespace(cls, tokens: List[str]) -> List[str]:
+        return [t.replace("▁", " ") for t in tokens]
+
     @model_validator(mode='after')  
     def compress(self) -> List[float]:
         if self.compressed:
@@ -59,6 +64,7 @@ class NeuronpediaResponse(BaseModel):
     layer_id: str = Field(validation_alias=AliasChoices("layer", "layer_id"))
     index: int
     activations: List[NeuronpediaActivation]
+    max_activation: float = Field(alias=AliasChoices("max_activation", "maxActApprox"))
 
     # Positive Logits
     pos_str: Optional[List[str]] = None
@@ -98,7 +104,9 @@ async def fetch_feature(
     headers = {'X-Api-Key': TOKEN}
     async with session.get(url, headers=headers) as response:
         if response.status == 200:
-            return NeuronpediaResponse(**await response.json())
+            response_json = await response.json()
+            print(response_json.keys())
+            return NeuronpediaResponse(**response_json)
         else:
             print(f"Error fetching feature at URL {url}: {response.status}")
             return None

@@ -5,14 +5,12 @@ import asyncio
 from torchtyping import TensorType
 from neuronpedia import fetch_all_features, NeuronpediaRequest, NeuronpediaResponse
 from collections import defaultdict
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 from caching import cache_activations
 from nnsight import Envoy
 from sae_lens import SAE
 import torch
 import pickle
-
-from circuitsvis.tokens import colored_tokens
 
 from config import config
 from caching import load_activations
@@ -33,42 +31,70 @@ class NeuronDB:
 
         self.available()
 
-    def available(self):
+    def available(self) -> None:
         print(json.dumps(self.header, indent=4))
 
-    def commit(self):
+    def commit(self) -> None:
         with open(os.path.join(self.db_home, "header.json"), "w") as f:
             json.dump(self.header, f)
 
-    def show(self, save_id, index, max_examples=5, **load_kwargs):
-        try:
-            from IPython.display import HTML, display
-        except ImportError:
-            print("IPython is required for HTML display. Please install it or run this in a Jupyter notebook.")
-            return
-
+    def show(self, save_id, index, max_examples=5, **load_kwargs) -> None:
         save_path = self.header[save_id]
         is_neuronpedia = os.path.dirname(save_path).split("/")[-1] == "neuronpedia"
-        # feature_data = self.loaded_features[save_id][index]
 
         if is_neuronpedia:
             tokens, activations = self.load_neuronpedia(save_path, index, max_examples)
         else:
             tokens, activations = self.load_torch(save_path, index, max_examples, **load_kwargs)
         
-        # html = ""
+        from vis import show_neuron
+        show_neuron(tokens, activations, max_examples)
+
+    def export_neuronpedia(self, request: NeuronpediaRequest, output_path: str = "vis.html", max_examples=5, **load_kwargs) -> None:
+        """Export neuron activations to an HTML file with highlighted tokens."""
+
+        request = NeuronpediaRequest(**request)
+        neurons_data = []
+        for layer_id, indices in [(req.layer_id, req.indices) for req in request.dictionaries]:
+            for index in indices:
+                # Skip max examples here to load all, then split.
+                tokens, activations, max_activation, pos_str = \
+                    self.load_neuronpedia(self.header[layer_id], index, **load_kwargs)
+                tokens, activations = self._split_activations(tokens, activations, max_examples)
+                neurons_data.append((layer_id, index, tokens, activations, max_activation, pos_str))
+
+        from vis import export_neurons
+        export_neurons(neurons_data, output_path)
+
+    def _split_activations(self, tokens, activations, max_examples):
+        """Split tokens and activations into top and middle sections.
+        Takes first max_examples from first half and first max_examples from second half."""
         
-        # display(HTML(html))
+        half_idx = len(activations) // 2
 
-        for token, activation in zip(tokens, activations):
-            display(colored_tokens(token, activation))
+        return (
+            (tokens[:max_examples], tokens[half_idx:half_idx + max_examples]),  # First n from each half
+            (activations[:max_examples], activations[half_idx:half_idx + max_examples])  # First n from each half
+        )
 
-    def load_torch(self, path: str, index: int, max_examples, **load_kwargs):
+    def load_torch(
+        self, 
+        path: str, 
+        index: int, 
+        max_examples: int = -1, 
+        **load_kwargs
+    ) -> Tuple[Tuple[List[str], List[str]], Tuple[TensorType["max_examples", "seq"], TensorType["max_examples", "seq"]], float, List[str]]:
         tokens, activations = load_activations(path, index=index, max_examples=max_examples, **load_kwargs)[index]
 
-        return tokens, activations
+        return tokens, activations, max(max(activations, dim=1)).item(), None
 
-    def load_neuronpedia(self, path: str, index: int, max_examples):
+    def load_neuronpedia(
+        self, 
+        path: str, 
+        index: int, 
+        max_examples: int = -1, 
+        **load_kwargs
+    ) -> Tuple[Tuple[List[str], List[str]], Tuple[TensorType["max_examples", "seq"], TensorType["max_examples", "seq"]], float, List[str]]:
         with open(path, "rb") as f:
             features = pickle.load(f)
 
@@ -76,7 +102,7 @@ class NeuronDB:
         activations = [act.values for act in feature.activations[:max_examples]]
         tokens = [act.tokens for act in feature.activations[:max_examples]]
 
-        return tokens, activations
+        return tokens, activations, feature.max_activation, feature.pos_str
 
     def cache_neuronpedia(
         self,
