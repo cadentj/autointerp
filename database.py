@@ -3,17 +3,17 @@ import json
 import asyncio
 
 from torchtyping import TensorType
-from neuronpedia import fetch_all_features, NeuronpediaRequest, NeuronpediaResponse
 from collections import defaultdict
 from typing import List, Dict, Union, Tuple
-from caching import cache_activations
+
 from nnsight import Envoy
 from sae_lens import SAE
 import torch
 import pickle
 
-from config import config
-from caching import load_activations
+from .config import config
+from .caching import load_activations, cache_activations
+from .neuronpedia import fetch_all_features, NeuronpediaRequest, NeuronpediaResponse
 
 class NeuronDB:
     def __init__(self):

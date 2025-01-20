@@ -1,9 +1,10 @@
 import aiohttp
 import asyncio
-from typing import List, Union, Optional, Generator
+from typing import List, Optional, Generator
 
 from pydantic import model_validator, BaseModel, Field, AliasChoices, field_validator
-from config import config
+
+from .config import config
 
 TOKEN = config["token"]
 
