@@ -12,7 +12,7 @@ import torch
 import pickle
 
 from .config import config
-from .caching import load_activations, cache_activations
+from .doll_caching import load_activations, cache_activations
 from .neuronpedia import fetch_all_features, NeuronpediaRequest, NeuronpediaResponse
 
 class NeuronDB:
@@ -50,6 +50,30 @@ class NeuronDB:
         from vis import show_neuron
         show_neuron(tokens, activations, max_examples)
 
+    def export_torch(self, request: Dict[str, List[int]], output_path: str = "vis.html", max_examples=5, **load_kwargs) -> None:
+        """Export neuron activations to an HTML file with highlighted tokens.
+        
+        Args:
+            request: Dictionary mapping layer paths to lists of feature indices
+            output_path: Path to save the HTML file
+            max_examples: Maximum number of examples to show per neuron
+            **load_kwargs: Additional arguments passed to load_activations
+        """
+        neurons_data = []
+        
+        for layer_id, indices in request.items():
+            if isinstance(indices, torch.Tensor):
+                indices = indices.tolist()
+            
+            for index in indices:
+                # Skip max examples here to load all, then split
+                tokens, activations, max_activation, _ = self.load_torch(self.header[layer_id], index, **load_kwargs)
+                tokens, activations = self._split_activations(tokens, activations, max_examples)
+                neurons_data.append((layer_id, index, tokens, activations, max_activation, None))
+
+        from .vis import export_neurons
+        export_neurons(neurons_data, output_path)
+
     def export_neuronpedia(self, request: NeuronpediaRequest, output_path: str = "vis.html", max_examples=5, **load_kwargs) -> None:
         """Export neuron activations to an HTML file with highlighted tokens."""
 
@@ -58,12 +82,11 @@ class NeuronDB:
         for layer_id, indices in [(req.layer_id, req.indices) for req in request.dictionaries]:
             for index in indices:
                 # Skip max examples here to load all, then split.
-                tokens, activations, max_activation, pos_str = \
-                    self.load_neuronpedia(self.header[layer_id], index, **load_kwargs)
+                tokens, activations, max_activation, pos_str = self.load_neuronpedia(self.header[layer_id], index, **load_kwargs)
                 tokens, activations = self._split_activations(tokens, activations, max_examples)
                 neurons_data.append((layer_id, index, tokens, activations, max_activation, pos_str))
 
-        from vis import export_neurons
+        from .vis import export_neurons
         export_neurons(neurons_data, output_path)
 
     def _split_activations(self, tokens, activations, max_examples):
@@ -86,7 +109,9 @@ class NeuronDB:
     ) -> Tuple[Tuple[List[str], List[str]], Tuple[TensorType["max_examples", "seq"], TensorType["max_examples", "seq"]], float, List[str]]:
         tokens, activations = load_activations(path, index=index, max_examples=max_examples, **load_kwargs)[index]
 
-        return tokens, activations, max(max(activations, dim=1)).item(), None
+        max_activation = torch.max(activations).item()
+        print(activations[0], max_activation)
+        return tokens, activations, max_activation, None
 
     def load_neuronpedia(
         self, 

@@ -5,8 +5,8 @@ import numpy as np
 
 def normalize_activations(activations: List[float], max_activation: float) -> List[float]:
     """Normalize activation values by dividing by max activation"""
-    if not activations or max_activation == 0:
-        return activations
+    # if not activations or max_activation == 0:
+    #     return activations
     return [float(abs(x)) / max_activation for x in activations]
 
 def show_neuron(tokens: List[str], activations: List[float], max_examples: int = 5) -> None:
@@ -89,6 +89,7 @@ def export_neurons(
 
         html_content += f"<div class='neuron-section'>"
         html_content += f"<h3>{layer_id} - {index}</h3>"
+        html_content += f"<div class='pos-str'><b>Max Activation: </b>{max_activation}</div>"
         if pos_str:
             html_content += f"<div class='pos-str'><b>Top Logits: </b>{pos_str}</div>"
         
