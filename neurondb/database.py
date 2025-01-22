@@ -47,10 +47,10 @@ class NeuronDB:
         else:
             tokens, activations = self.load_torch(save_path, index, max_examples, **load_kwargs)
         
-        from vis import show_neuron
+        from .vis import show_neuron
         show_neuron(tokens, activations, max_examples)
 
-    def export_torch(self, request: Dict[str, List[int]], output_path: str = "vis.html", max_examples=5, **load_kwargs) -> None:
+    def export_torch(self, request: Dict[str, List[int]], output_path: str = "vis.html", max_examples=5, show=False, **load_kwargs) -> None:
         """Export neuron activations to an HTML file with highlighted tokens.
         
         Args:
@@ -71,10 +71,12 @@ class NeuronDB:
                 tokens, activations = self._split_activations(tokens, activations, max_examples)
                 neurons_data.append((layer_id, index, tokens, activations, max_activation, None))
 
-        from .vis import export_neurons
-        export_neurons(neurons_data, output_path)
+        from .vis import export_neurons, display_neurons
+        html = export_neurons(neurons_data, output_path)
+        if show:
+            display_neurons(html)
 
-    def export_neuronpedia(self, request: NeuronpediaRequest, output_path: str = "vis.html", max_examples=5, **load_kwargs) -> None:
+    def export_neuronpedia(self, request: NeuronpediaRequest, output_path: str = "vis.html", max_examples=5, show=False, **load_kwargs) -> None:
         """Export neuron activations to an HTML file with highlighted tokens."""
 
         request = NeuronpediaRequest(**request)
@@ -86,8 +88,10 @@ class NeuronDB:
                 tokens, activations = self._split_activations(tokens, activations, max_examples)
                 neurons_data.append((layer_id, index, tokens, activations, max_activation, pos_str))
 
-        from .vis import export_neurons
-        export_neurons(neurons_data, output_path)
+        from .vis import export_neurons, display_neurons
+        html = export_neurons(neurons_data, output_path)
+        if show:
+            display_neurons(html)
 
     def _split_activations(self, tokens, activations, max_examples):
         """Split tokens and activations into top and middle sections.
@@ -110,7 +114,6 @@ class NeuronDB:
         tokens, activations = load_activations(path, index=index, max_examples=max_examples, **load_kwargs)[index]
 
         max_activation = torch.max(activations).item()
-        print(activations[0], max_activation)
         return tokens, activations, max_activation, None
 
     def load_neuronpedia(

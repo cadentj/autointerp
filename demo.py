@@ -11,7 +11,7 @@ nest_asyncio.apply()
 # %%
 ######## CREATING A DATABASE ########
 
-from database import NeuronDB 
+from neurondb.database import NeuronDB 
 
 # Create a neuron database. It will automatically use
 # a header from the path you've configured in config.yaml
@@ -37,10 +37,10 @@ db.cache_neuronpedia(neuronpedia_request)
 # %%
 ######## CACHING WITH TORCH ########
 
-from caching import load_tokenized_data
+from neurondb.caching import load_tokenized_data
 
 # Standin for internal model loading method
-from demo_utils import load_gemma
+from neurondb.demo_utils import load_gemma
 
 model, submodules = load_gemma(
     model_size="2b",
