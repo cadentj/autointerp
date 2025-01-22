@@ -17,9 +17,10 @@ model, submodules = load_gemma(
     layers=[7]
 )
 submodules[0].dictionary.training = False
-submodules[0].dictionary.active_groups = 1
+submodules[0].dictionary.active_groups = 5
 
-indices =t.randint(0, 2304, (100,))
+# indices =t.randint(18432, 36864, (50,))
+indices =t.randint(0, 2304, (50,))
 
 # %%
 
@@ -34,6 +35,12 @@ indices =t.randint(0, 2304, (100,))
 #     max_length=1024,
 # )
 # tokens = tokens["input_ids"]
+
+# og_shape = tokens.shape[0]
+# mask = ~(tokens == 0).any(dim=1)
+# tokens = tokens[mask]
+# print(f"Removed {og_shape - tokens.shape[0]} rows containing pad tokens")
+
 # token_save_dir = "/share/u/caden/neurondb/cache"
 # token_save_path = os.path.join(token_save_dir, "tokens.pt")
 # t.save(tokens, token_save_path)
@@ -46,33 +53,38 @@ tokens = t.load("/share/u/caden/neurondb/cache/tokens.pt")
 import nnsight as ns
 from tqdm import tqdm
 
-def compute_threshold(model, submodules, tokens):
-    token_batches = [tokens[i:i+16] for i in range(0, len(tokens), 16)][:8]
+def compute_threshold(model, submodules, tokens, topk=100, batch_size=16):
+    token_batches = [tokens[i:i+batch_size] for i in range(0, len(tokens), batch_size)][:8]
 
     threshold = 0
     for batch in tqdm(token_batches):
+
+        n_tokens = batch.numel()
+        target_sparsity = topk * n_tokens
+
         with model.trace(batch, use_cache=False):
             acts = submodules[0].module.output[0]
             latents = ns.apply(submodules[0].dictionary.encode, acts)
 
-            # Get min batch threshold
+            # Get nonzero latents
             nonzero = latents > 0
             nonzero_latents = latents[nonzero]
-            batch_threshold = t.min(nonzero_latents)
 
-            ns.log(nonzero_latents.shape)
+            # Get topk latents
+            topk_latents = t.topk(nonzero_latents, k=target_sparsity)
+            batch_threshold = topk_latents.values[-1]
+
             batch_threshold.save()
 
         threshold += batch_threshold
 
-    print(threshold)
-
     threshold = threshold / len(token_batches)
+
+    print(threshold)
                         
     return threshold
 threshold = compute_threshold(model, submodules, tokens)
 submodules[0].dictionary.threshold = threshold
-
 
 # %%
 
@@ -93,6 +105,7 @@ db.export_torch(
     max_examples=10, ctx_len=64, tokenizer=tok, show=False) # Neuronpedia
 
 # %%
+######## VERIFY ########
 
 from neurondb.caching import load_activations
 
@@ -102,9 +115,6 @@ features = load_activations(
     ctx_len=64,
     max_examples=10
 )
-
-# %%
-######## VERIFY ########
 
 feature = 0
 example_number = 0

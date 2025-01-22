@@ -34,6 +34,13 @@ def export_neurons(
         neurons_data: List of tuples containing (layer_id, neuron_index, (top_tokens, mid_tokens), (top_acts, mid_acts), max_activation, pos_str)
         output_path: Path to save the HTML file
     """
+    # Helper function to escape special characters
+    def escape_token(token: str) -> str:
+        # First escape HTML special characters
+        token = token.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        # Then escape whitespace characters to make them visible
+        return token.replace('\n', '\\n').replace('\t', '\\t').replace('\r', '\\r').replace(' ', '&nbsp;')
+
     print(f"Received {len(neurons_data)} neurons to visualize")
     
     for layer_id, index, tokens, activations, max_activation, pos_str in neurons_data:
@@ -86,9 +93,10 @@ def export_neurons(
             }
             .token { 
                 display: inline-block; 
-                padding: 0 2px; 
                 position: relative;
                 transition: all 0.2s ease;
+                margin: 0;
+                padding: 0;
             }
             .token:hover {
                 background-color: rgba(0, 0, 0, 0.1) !important;
@@ -106,7 +114,9 @@ def export_neurons(
                 border-radius: 4px;
                 font-size: 12px;
                 white-space: nowrap;
-                z-index: 1;
+                z-index: 100;
+                margin-bottom: 5px;  /* Add some space between token and tooltip */
+                pointer-events: none; /* Prevent tooltip from interfering with other hovers */
             }
             h3 { color: #333; margin: 0 0 5px 0; font-size: 1em; }
             .pos-str { color: #666; font-size: 0.9em; margin: 0 0 8px 0; }
@@ -172,7 +182,8 @@ def export_neurons(
                     normalized_acts = normalize_activations(act_list, max_activation)
                     for token, activation, norm_act in zip(token_list, act_list, normalized_acts):
                         color = "rgba(255, 150, 150, {})".format(norm_act) if float(activation) > 0 else "rgba(150, 150, 255, {})".format(norm_act)
-                        html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{token}</span>"
+                        escaped_token = escape_token(token)
+                        html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{escaped_token}</span>"
                     html_content += "</div>"
                 if len(top_tokens) > 5:
                     html_content += "</div>"
@@ -187,7 +198,8 @@ def export_neurons(
                     normalized_acts = normalize_activations(act_list, max_activation)
                     for token, activation, norm_act in zip(tokens_split, act_list, normalized_acts):
                         color = "rgba(255, 150, 150, {})".format(norm_act) if float(activation) > 0 else "rgba(150, 150, 255, {})".format(norm_act)
-                        html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{token}</span>"
+                        escaped_token = escape_token(token)
+                        html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{escaped_token}</span>"
                     html_content += "</div>"
                 if len(top_tokens) > 5:
                     html_content += "</div>"
@@ -203,7 +215,8 @@ def export_neurons(
                     normalized_acts = normalize_activations(act_list, max_activation)
                     for token, activation, norm_act in zip(token_list, act_list, normalized_acts):
                         color = "rgba(255, 150, 150, {})".format(norm_act) if float(activation) > 0 else "rgba(150, 150, 255, {})".format(norm_act)
-                        html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{token}</span>"
+                        escaped_token = escape_token(token)
+                        html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{escaped_token}</span>"
                     html_content += "</div>"
             else:
                 # Similar changes for non-list tokens
@@ -216,7 +229,8 @@ def export_neurons(
                     normalized_acts = normalize_activations(act_list, max_activation)
                     for token, activation, norm_act in zip(tokens_split, act_list, normalized_acts):
                         color = "rgba(255, 150, 150, {})".format(norm_act) if float(activation) > 0 else "rgba(150, 150, 255, {})".format(norm_act)
-                        html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{token}</span>"
+                        escaped_token = escape_token(token)
+                        html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{escaped_token}</span>"
                     html_content += "</div>"
                 if len(mid_tokens) > 5:
                     html_content += "</div>"

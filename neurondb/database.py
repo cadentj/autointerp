@@ -84,7 +84,6 @@ class NeuronDB:
         neurons_data = []
         for layer_id, indices in [(req.layer_id, req.indices) for req in request.dictionaries]:
             for index in indices:
-                # Skip max examples here to load all, then split.
                 tokens, activations, max_activation, pos_str = self.load_neuronpedia(self.header[layer_id], index, **load_kwargs)
                 tokens, activations = self._split_activations(tokens, activations, max_examples)
                 neurons_data.append((layer_id, index, tokens, activations, max_activation, pos_str))
