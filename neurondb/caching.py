@@ -7,6 +7,7 @@ from collections import defaultdict
 import torch
 from sae_lens import SAE
 from nnsight import Envoy
+import nnsight as ns
 from transformers import AutoTokenizer
 
 
@@ -143,7 +144,7 @@ def cache_activations(
             buffer = {}
             with model.trace(batch, use_cache=False):
                 for submodule, dictionary in submodule_dict.items():
-                    latents = dictionary.encode(submodule.output[0])
+                    latents = ns.apply(dictionary.encode, submodule.output[0])
                     buffer[submodule._path] = latents.save()
             for module_path, latents in buffer.items():
                 cache.add(latents, batch_number, module_path)
@@ -189,7 +190,10 @@ def _pool_max_activation_windows(
     buffer_tokens = buffer_tokens[unique_ctx_indices]
 
     # Get top k most activated contexts
-    k = min(max_examples, len(max_buffer))
+    if max_examples == -1:
+        k = len(max_buffer)
+    else:
+        k = min(max_examples, len(max_buffer))
     _, top_indices = torch.topk(max_buffer, k, sorted=True)
 
     # Return top k contexts and their activation patterns
@@ -202,9 +206,8 @@ def _pool_max_activation_windows(
 def get_features(path: str, return_data: bool = False) -> Union[TensorType["indices"], Tuple[TensorType["indices"], Dict[str, Any]]]:
     """Loads cached feature data and returns unique feature indices"""
 
-    print(path)
     data = torch.load(path)
-    features = torch.unique(data["locations"][:, 2])
+    features = torch.unique(data["locations"][:, 2]).tolist()
     if return_data:
         return features, data
     return features
@@ -212,15 +215,13 @@ def get_features(path: str, return_data: bool = False) -> Union[TensorType["indi
 
 def load_activations(
     path: str,
-    index: int = None,
+    indices: List[int] | int = None,
     tokenizer: AutoTokenizer = None,
     tokens: TensorType["batch", "seq"] = None,
     ctx_len: int = 16,
     max_examples: int = 5,
 ) -> Dict[int, Tuple[Union[TensorType["max_examples", "seq"], List[List[str]]], TensorType["max_examples", "seq"]]]:
     features, data = get_features(path, return_data=True)
-
-    print(tokens, data["tokens_path"])
 
     if data["tokens_path"] is not None:
         tokens = torch.load(data["tokens_path"])
@@ -230,15 +231,23 @@ def load_activations(
 
     loaded_features = {}
 
-    if index is not None:
-        features = [index]
+    if isinstance(indices, list) and indices is not None:
+        found_indices = []
+        for i in indices:
+            if i not in features:
+                print(f"Feature {i} not found in cached features")
+            else:
+                found_indices.append(i)
+        features = found_indices
+    elif isinstance(indices, int) and indices is not None:
+        if indices not in features:
+            raise ValueError(f"Feature {indices} not found in cached features")
+        features = [indices]
 
-    for feature in features:
+    for feature in tqdm(features, desc="Loading features"):
         indices = data["locations"][:, 2] == feature
         locations = data["locations"][indices]
         activations = data["activations"][indices]
-
-        print(activations.shape, locations.shape, tokens.shape)
 
         token_windows, activation_windows = _pool_max_activation_windows(
             activations,

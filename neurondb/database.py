@@ -12,7 +12,7 @@ import torch
 import pickle
 
 from .config import config
-from .doll_caching import load_activations, cache_activations
+from .caching import load_activations, cache_activations
 from .neuronpedia import fetch_all_features, NeuronpediaRequest, NeuronpediaResponse
 
 class NeuronDB:
@@ -64,12 +64,13 @@ class NeuronDB:
         for layer_id, indices in request.items():
             if isinstance(indices, torch.Tensor):
                 indices = indices.tolist()
-            
-            for index in indices:
-                # Skip max examples here to load all, then split
-                tokens, activations, max_activation, _ = self.load_torch(self.header[layer_id], index, **load_kwargs)
+
+            features = load_activations(self.header[layer_id], indices, max_examples=-1, **load_kwargs)
+        
+            for feature, (tokens, activations) in features.items():
+                max_activation = torch.max(activations).item()
                 tokens, activations = self._split_activations(tokens, activations, max_examples)
-                neurons_data.append((layer_id, index, tokens, activations, max_activation, None))
+                neurons_data.append((layer_id, feature, tokens, activations, max_activation, None))
 
         from .vis import export_neurons, display_neurons
         html = export_neurons(neurons_data, output_path)
@@ -103,18 +104,6 @@ class NeuronDB:
             (tokens[:max_examples], tokens[half_idx:half_idx + max_examples]),  # First n from each half
             (activations[:max_examples], activations[half_idx:half_idx + max_examples])  # First n from each half
         )
-
-    def load_torch(
-        self, 
-        path: str, 
-        index: int, 
-        max_examples: int = -1, 
-        **load_kwargs
-    ) -> Tuple[Tuple[List[str], List[str]], Tuple[TensorType["max_examples", "seq"], TensorType["max_examples", "seq"]], float, List[str]]:
-        tokens, activations = load_activations(path, index=index, max_examples=max_examples, **load_kwargs)[index]
-
-        max_activation = torch.max(activations).item()
-        return tokens, activations, max_activation, None
 
     def load_neuronpedia(
         self, 
@@ -166,6 +155,8 @@ class NeuronDB:
     ):
         if isinstance(tokens, str):
             loaded_tokens = torch.load(tokens)
+        else:
+            loaded_tokens = tokens
 
         cache = cache_activations(model, submodule_dict, loaded_tokens, **kwargs)
 

@@ -54,7 +54,6 @@ def export_neurons(
                 margin: 0;
                 padding: 10px;
                 line-height: 1.3;
-                background-color: white;
                 color: #333;
             }
             .container {
@@ -64,6 +63,7 @@ def export_neurons(
                 background-color: white;
                 padding: 20px;
                 border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
             .neuron-section { 
                 margin-bottom: 15px; 
@@ -110,7 +110,39 @@ def export_neurons(
             }
             h3 { color: #333; margin: 0 0 5px 0; font-size: 1em; }
             .pos-str { color: #666; font-size: 0.9em; margin: 0 0 8px 0; }
+            .hidden {
+                display: none;
+            }
+            .show-more {
+                background: #f0f0f0;
+                border: 1px solid #ddd;
+                padding: 5px 10px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9em;
+                margin: 5px 0;
+                color: #666;
+            }
+            .show-more:hover {
+                background: #e5e5e5;
+            }
         </style>
+        <script>
+            function toggleExamples(buttonId, topContainerId, midContainerId) {
+                const topContainer = document.getElementById(topContainerId);
+                const midContainer = document.getElementById(midContainerId);
+                const button = document.getElementById(buttonId);
+                if (topContainer.classList.contains('hidden')) {
+                    topContainer.classList.remove('hidden');
+                    midContainer.classList.remove('hidden');
+                    button.textContent = 'Show Less';
+                } else {
+                    topContainer.classList.add('hidden');
+                    midContainer.classList.add('hidden');
+                    button.textContent = 'Show More';
+                }
+            }
+        </script>
     </head>
     <body>
         <div class="container">
@@ -131,15 +163,25 @@ def export_neurons(
             html_content += "<div class='activation-section'>"
             html_content += "<div class='section-label'>Top Activations</div>"
             if isinstance(top_tokens[0], list):
-                for token_list, act_list in zip(top_tokens, top_acts):
+                # Show first 5 examples
+                for i, (token_list, act_list) in enumerate(zip(top_tokens, top_acts)):
+                    if i == 5:
+                        html_content += f"<button id='btn-{layer_id}-{index}' class='show-more' onclick='toggleExamples(\"btn-{layer_id}-{index}\", \"top-extra-{layer_id}-{index}\", \"mid-section-{layer_id}-{index}\")'>Show More</button>"
+                        html_content += f"<div id='top-extra-{layer_id}-{index}' class='hidden'>"
                     html_content += "<div class='example'>"
                     normalized_acts = normalize_activations(act_list, max_activation)
                     for token, activation, norm_act in zip(token_list, act_list, normalized_acts):
                         color = "rgba(255, 150, 150, {})".format(norm_act) if float(activation) > 0 else "rgba(150, 150, 255, {})".format(norm_act)
                         html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{token}</span>"
                     html_content += "</div>"
+                if len(top_tokens) > 5:
+                    html_content += "</div>"
             else:
-                for token_str, act_list in zip(top_tokens, top_acts):
+                # Similar changes for non-list tokens
+                for i, (token_str, act_list) in enumerate(zip(top_tokens, top_acts)):
+                    if i == 5:
+                        html_content += f"<button id='btn-{layer_id}-{index}' class='show-more' onclick='toggleExamples(\"btn-{layer_id}-{index}\", \"top-extra-{layer_id}-{index}\", \"mid-section-{layer_id}-{index}\")'>Show More</button>"
+                        html_content += f"<div id='top-extra-{layer_id}-{index}' class='hidden'>"
                     html_content += "<div class='example'>"
                     tokens_split = token_str.split()
                     normalized_acts = normalize_activations(act_list, max_activation)
@@ -147,11 +189,13 @@ def export_neurons(
                         color = "rgba(255, 150, 150, {})".format(norm_act) if float(activation) > 0 else "rgba(150, 150, 255, {})".format(norm_act)
                         html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{token}</span>"
                     html_content += "</div>"
+                if len(top_tokens) > 5:
+                    html_content += "</div>"
             html_content += "</div>"
 
         # Middle activations section
         if mid_tokens is not None:
-            html_content += "<div class='activation-section'>"
+            html_content += f"<div id='mid-section-{layer_id}-{index}' class='activation-section hidden'>"
             html_content += "<div class='section-label'>Middle Activations</div>"
             if isinstance(mid_tokens[0], list):
                 for token_list, act_list in zip(mid_tokens, mid_acts):
@@ -162,13 +206,19 @@ def export_neurons(
                         html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{token}</span>"
                     html_content += "</div>"
             else:
-                for token_str, act_list in zip(mid_tokens, mid_acts):
+                # Similar changes for non-list tokens
+                for i, (token_str, act_list) in enumerate(zip(mid_tokens, mid_acts)):
+                    if i == 5:
+                        html_content += f"<button id='btn-{layer_id}-{index}' class='show-more' onclick='toggleExamples(\"btn-{layer_id}-{index}\", \"top-extra-{layer_id}-{index}\", \"mid-section-{layer_id}-{index}\")'>Show More</button>"
+                        html_content += f"<div id='top-extra-{layer_id}-{index}' class='hidden'>"
                     html_content += "<div class='example'>"
                     tokens_split = token_str.split()
                     normalized_acts = normalize_activations(act_list, max_activation)
                     for token, activation, norm_act in zip(tokens_split, act_list, normalized_acts):
                         color = "rgba(255, 150, 150, {})".format(norm_act) if float(activation) > 0 else "rgba(150, 150, 255, {})".format(norm_act)
                         html_content += f"<span class='token' data-activation='{activation:.3f}' style='background-color: {color}'>{token}</span>"
+                    html_content += "</div>"
+                if len(mid_tokens) > 5:
                     html_content += "</div>"
             html_content += "</div>"
         

@@ -40,7 +40,7 @@ db.cache_neuronpedia(neuronpedia_request)
 from neurondb.caching import load_tokenized_data
 
 # Standin for internal model loading method
-from neurondb.demo_utils import load_gemma
+from neurondb.dolls import load_gemma
 
 model, submodules = load_gemma(
     model_size="2b",
