@@ -4,7 +4,7 @@ import torch as t
 from torchtyping import TensorType
 from tqdm import tqdm
 
-from .schema import Example
+from .schema import Example, Feature
 
 
 def _pool_max_activation_windows(
@@ -108,4 +108,4 @@ def load_torch(
 
         examples = sampler(token_windows, activation_windows)
 
-        yield examples, max_activation
+        yield Feature(feature, max_activation, examples)

@@ -1,7 +1,7 @@
 import re
 from typing import List
 
-from ..schema import Example
+from ..schema.base import Feature, Example
 from .prompts.explainer_prompt import build_prompt
 
 
@@ -21,23 +21,23 @@ class Explainer:
         self.threshold = threshold
         self.generation_kwargs = generation_kwargs
 
-    async def __call__(self, examples: List[Example], max_activation: float):
-        activation_threshold = max_activation * self.threshold
-        messages = self._build_prompt(examples, activation_threshold)
+    async def __call__(self, feature: Feature):
+        self.activation_threshold = feature.max_activation * self.threshold
+        messages = self._build_prompt(feature.examples)
 
         response = await self.client.generate(
             messages, **self.generation_kwargs
         )
 
         try:
-            return self.parse_explanation(response.text)
+            return self._parse_explanation(response)
 
         except Exception as e:
             print(f"Explanation parsing failed: {e}")
             return "Explanation could not be parsed."
 
     def _build_prompt(
-        self, examples: List[Example], activation_threshold: float
+        self, examples: List[Example]
     ):
         highlighted_examples = []
 
@@ -46,7 +46,8 @@ class Explainer:
             formatted = self._highlight(index, example)
 
             # NOTE: Maybe add normalized activations back?
-            activations = example.activations > activation_threshold
+            mask = example.activations > self.activation_threshold
+            activations = example.activations[mask].tolist()
 
             acts = ", ".join(f"({item})" for item in activations)
 
@@ -77,14 +78,12 @@ class Explainer:
     def _highlight(self, index, example):
         result = f"Example {index}: "
 
-        threshold = example.max_activation * self.threshold
         str_toks = self.tokenizer.batch_decode(example.tokens)
-        example.str_toks = str_toks
 
         activations = example.activations
 
         def check(i):
-            return activations[i] > threshold
+            return activations[i] > self.activation_threshold
 
         i = 0
         while i < len(str_toks):

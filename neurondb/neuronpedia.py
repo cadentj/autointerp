@@ -1,6 +1,5 @@
 import aiohttp
 import asyncio
-import os
 from typing import List
 
 from .schema import DictionaryRequest, NeuronpediaResponse

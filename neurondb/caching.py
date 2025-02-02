@@ -5,7 +5,6 @@ from typing import Dict, List, Tuple
 import nnsight as ns
 import torch as t
 from nnsight import Envoy
-from sae_lens import SAE
 from torchtyping import TensorType
 from tqdm import tqdm
 
@@ -98,9 +97,6 @@ class Cache:
                 save_path,
             )
 
-            # This is a little weird but whatever
-            yield module_path, save_path
-
 
 def _make_filters(
     request: DictionaryRequest,
@@ -131,7 +127,7 @@ def _batch_tokens(
 @t.no_grad()
 def cache_activations(
     model,
-    submodule_dict: Dict[Envoy, SAE],
+    submodule_dict: Dict[Envoy, t.nn.Module],
     tokens: TensorType["batch", "seq"],
     batch_size: int,
     max_tokens: int = 100_000,

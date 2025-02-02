@@ -1,6 +1,5 @@
-from typing import List, Optional, Dict, NamedTuple
+from typing import List, Optional
 
-from torchtyping import TensorType
 from pydantic import (
     model_validator,
     BaseModel,
@@ -9,12 +8,6 @@ from pydantic import (
     field_validator,
 )
 
-
-DictionaryRequest = Dict[str, List[int]]
-
-class Example(NamedTuple):
-    tokens: TensorType["seq"]
-    activations: TensorType["seq"]
 
 class NeuronpediaActivation(BaseModel):
     compressed: bool = False

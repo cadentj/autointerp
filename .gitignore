@@ -15,6 +15,5 @@ cache/*
 *.pkl
 *.pt
 
-# Demo
-demo_utils.py
-
+# UV
+uv.lock

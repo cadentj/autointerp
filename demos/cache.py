@@ -1,9 +1,10 @@
 # %%
-
 import os 
 import torch as t
-from steering_finetuning import load_gemma
 from datasets import load_dataset
+
+from steering_finetuning import load_gemma
+from neurondb import cache_activations
 
 model, submodules = load_gemma(
     model_size="2b",
@@ -13,6 +14,7 @@ model, submodules = load_gemma(
     layers = [0]
 )
 
+# Temporary dataset/tokens
 data = load_dataset("NeelNanda/pile-10k", split="train")
 
 tokens = model.tokenizer(
@@ -32,14 +34,11 @@ print(f"Removed {og_shape - tokens.shape[0]} rows containing pad tokens")
 
 # %%
 
-# We'll save the tokens to disk so we can load them quickly later
 token_save_dir = "cache"
 token_save_path = os.path.join(token_save_dir, "tokens.pt")
 t.save(tokens, token_save_path)
 
 # %%
-
-from neurondb import cache_activations
 
 cache = cache_activations(
     model,
@@ -49,30 +48,7 @@ cache = cache_activations(
     filters={sm.module._path : [0,1,2] for sm in submodules}
 )
 
-# %%
-
-tokens_path = "/share/u/caden/neurondb/cache/tokens.pt"
-for module_path, save_path in cache.save_to_disk(
+cache.save_to_disk(
     "cache",
-    tokens_path
-):
-    print(module_path, save_path)
-
-# %%
-
-from neurondb import load_torch
-from neurondb.autointerp import Explainer
-
-explainer = Explainer(
-    model,
-    submodules,
-    tokenizer=model.tokenizer,
-    max_examples=50
+    token_save_path
 )
-
-for examples, max_activation in load_torch(
-    "/share/u/caden/neurondb/cache/.model.layers.0.pt",
-    max_examples=50
-):
-    print(examples, max_activation)
-# %%
