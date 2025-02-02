@@ -17,6 +17,14 @@ from neurondb.database import NeuronDB
 # a header from the path you've configured in config.yaml
 db = NeuronDB()
 
+
+# %%
+
+import json
+with open("top_indices.json", "r") as f:
+    math_features = json.load(f)
+
+
 # %%
 ######## LOADING FROM NEURONPEDIA ########
 
@@ -25,12 +33,7 @@ db = NeuronDB()
 # hit the rate limit if the request is too big.
 neuronpedia_request = {
     "model_id": "gemma-2-2b",
-    "dictionaries": [
-        {
-            "layer_id": "0-gemmascope-res-16k",
-            "indices": [0, 1, 2]
-        }
-    ]
+    "dictionaries": math_features
 }
 db.cache_neuronpedia(neuronpedia_request)
 
@@ -104,6 +107,3 @@ db.export_neuronpedia(
     "vis.html"
 )
 
-# %%
-
-db

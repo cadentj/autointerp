@@ -7,6 +7,8 @@ def normalize_activations(activations: List[float], max_activation: float) -> Li
     """Normalize activation values by dividing by max activation"""
     # if not activations or max_activation == 0:
     #     return activations
+    if max_activation == 0:
+        return [0.0] * len(activations)
     return [float(abs(x)) / max_activation for x in activations]
 
 def show_neuron(tokens: List[str], activations: List[float], max_examples: int = 5) -> None:

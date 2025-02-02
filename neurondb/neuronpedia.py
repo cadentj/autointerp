@@ -106,7 +106,6 @@ async def fetch_feature(
     async with session.get(url, headers=headers) as response:
         if response.status == 200:
             response_json = await response.json()
-            print(response_json.keys())
             return NeuronpediaResponse(**response_json)
         else:
             print(f"Error fetching feature at URL {url}: {response.status}")
