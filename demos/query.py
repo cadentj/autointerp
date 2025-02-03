@@ -1,10 +1,10 @@
 import asyncio
 import torch as t
 from datasets import load_dataset
-
+import json
 from steering_finetuning import load_gemma
 from neurondb import cache_activations, loader
-from neurondb.autointerp import Query
+from neurondb.autointerp import Query, LocalClient
 
 def get_tokens(tokenizer):
     # Temporary dataset/tokens
@@ -34,7 +34,7 @@ async def main():
         load_dicts=True,
         dictionary_types="resid",
         torch_dtype=t.bfloat16,
-        layers = [0]
+        layers = [0,1]
     )
     tokenizer = model.tokenizer
     tokens = get_tokens(tokenizer)
@@ -47,20 +47,21 @@ async def main():
         filters={sm.module._path : [0,1,2] for sm in submodules}
     )
 
-    query = Query(model, submodules, tokens)
+    client = LocalClient(model="Qwen/Qwen2.5-1.5B-Instruct", max_retries=2)
+    query = Query(client, tokenizer=tokenizer)
 
     scores = {}
 
+    q = "Penis features"
+
     async def process_feature(feature):
-        score = await query(feature)
+        score = await query(q, feature)
         scores[feature.index] = score
         print(f"Processed feature {feature.index}")
     
     for submodule in submodules:
         path = submodule.module._path
         locations, activations = cache.get(path)
-        # print(locations.shape)
-        print(path)
         tasks = [
             process_feature(feature)
             for feature in loader(
@@ -73,11 +74,8 @@ async def main():
 
         await asyncio.gather(*tasks)
 
-        print(scores)
-
-        break
-
-    print(scores)
+    with open("scores.json", "w") as f:
+        json.dump(scores, f)
 
 if __name__ == "__main__":
     asyncio.run(main())

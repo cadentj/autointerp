@@ -152,6 +152,9 @@ def cache_activations(
                 for submodule, dictionary in submodule_dict.items():
                     latents = ns.apply(dictionary.encode, submodule.output[0])
                     buffer[submodule._path] = latents.save()
+                
+                submodule.output.stop()
+                
             for module_path, latents in buffer.items():
                 cache.add(latents, batch_number, module_path)
 

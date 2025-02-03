@@ -72,20 +72,43 @@ def _get_valid_features(locations, indices):
     return features
 
 
+def _normalize(
+    activations: TensorType["seq"],
+    max_activation: float,
+) -> TensorType["seq"]:
+    normalized = (activations / max_activation * 10)
+    return normalized.round().int()
+
+
 def max_activation_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
     k: int = 20,
+    threshold: float = 0.6,
 ):
+    max_activation = activation_windows.max()
+    max_activation_threshold = threshold * activation_windows.max()
+    mask = activation_windows > max_activation_threshold
+    above_threshold = t.sum(mask, dim=1)
+
+    print(above_threshold.shape)
+
     examples = [
-        Example(token_windows[i], activation_windows[i])
-        for i in range(k)
+        Example(
+            token_windows[i],
+            activation_windows[i],
+            _normalize(activation_windows[i], max_activation),
+        )
+        for i in range(k + 10)
+        if above_threshold[i] > 0
     ]
 
-    return examples
+    if len(examples) >= k:
+        return examples[:k]
+    else:
+        return None
 
 
-    
 def loader(
     activations: TensorType["features"],
     locations: TensorType["features", 3],
@@ -95,7 +118,6 @@ def loader(
     ctx_len: int = 16,
     max_examples: int = 100,
 ) -> Union[List[Feature], Generator[Feature, None, None]]:
-    print(locations.shape, activations.shape, tokens.shape)
     available_features = _get_valid_features(locations, indices)
 
     for feature in tqdm(available_features, desc="Loading features"):
@@ -110,10 +132,14 @@ def loader(
 
         examples = sampler(token_windows, activation_windows)
 
+        if examples is None:
+            print(f"Not enough examples found for feature {feature}")
+            continue
+
         feature = Feature(feature, max_activation, examples)
 
         yield feature
-    
+
 
 def load_torch(
     path: str,
@@ -126,8 +152,8 @@ def load_torch(
     tokens = t.load(data["tokens_path"])
 
     features = [
-        f for f in 
-        loader(
+        f
+        for f in loader(
             data["activations"],
             data["locations"],
             tokens,

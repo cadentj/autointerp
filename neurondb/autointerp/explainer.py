@@ -36,15 +36,13 @@ class Explainer:
             print(f"Explanation parsing failed: {e}")
             return "Explanation could not be parsed."
 
-    def _get_toks_and_acts(self, example: Example, max_activation: float):
+    def _get_toks_and_acts(self, example: Example):
         mask = example.activations > self.activation_threshold
-
-        activations = example.activations[mask]
-        normalized = (activations / max_activation) * 10
-        normalized = normalized.round().int().tolist()
 
         tokens = example.tokens[mask]
         str_toks = self.tokenizer.batch_decode(tokens)
+
+        normalized = example.normalized_activations[mask].tolist()
 
         return zip(str_toks, normalized)
 
@@ -57,9 +55,7 @@ class Explainer:
 
             acts = ", ".join(
                 f'("{item[0]}", {item[1]})'
-                for item in self._get_toks_and_acts(
-                    example, feature.max_activation
-                )
+                for item in self._get_toks_and_acts(example)
             )
             formatted += "\nActivations: " + acts
 

@@ -194,7 +194,7 @@ def build_prompt(
 
     messages.extend(few_shot_examples)
 
-    user_start = f"QUERY: {query}\n{examples}\n"
+    user_start = f"QUERY: {query}\n\n{examples}\n"
 
     messages.append(
         {
