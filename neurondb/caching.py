@@ -74,10 +74,7 @@ class Cache:
         mask = t.isin(nonzero_locations[:, 2], selected_features)
         return nonzero_locations[mask], nonzero_activations[mask]
 
-    def save_to_disk(self, save_dir: str, tokens_path: str = None):
-        if tokens_path is not None:
-            assert os.path.isabs(tokens_path), "Tokens path must be absolute"
-
+    def finish(self): 
         for module_path in self.locations.keys():
             self.locations[module_path] = t.cat(
                 self.locations[module_path], dim=0
@@ -86,6 +83,14 @@ class Cache:
                 self.activations[module_path], dim=0
             )
 
+    def get(self, module_path: str) -> Tuple[TensorType["features"], TensorType["features"]]:
+        return self.locations[module_path], self.activations[module_path]
+
+    def save_to_disk(self, save_dir: str, tokens_path: str):
+        if tokens_path is not None:
+            assert os.path.isabs(tokens_path), "Tokens path must be absolute"
+
+        for module_path in self.locations.keys():
             os.makedirs(save_dir, exist_ok=True)
             save_path = os.path.join(save_dir, f"{module_path}.pt")
             t.save(
@@ -153,4 +158,5 @@ def cache_activations(
             # Update tqdm
             pbar.update(tokens_per_batch)
 
+    cache.finish()
     return cache

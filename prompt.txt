@@ -1,0 +1,49 @@
+
+Example 1:  in camp last season with Sacramento and left a solid impression. After<< being>> waived by
+Activations: (" being", 10)
+Example 2: , 16, broke down in tears in the juvenile court after<< being>> found
+Activations: (" being", 10)
+Example 3:  so after<< being>> spawned, you have no control over your pasta (think DotA
+Activations: (" being", 10)
+Example 4:  to be reasonably rewarded. After<< all>>, his government had delivered a nearly 7
+Activations: (" all", 9)
+Example 5:  to A.
+
+After<< all>> if you prefer company A, you should be going
+Activations: (" all", 8)
+Example 6:  before<< being>> supplied to respective windings, the rotor 6 generates a torque in a
+Activations: (" being", 8)
+Example 7:  last) artist in residence at NASA overall; the project lasted two years before<< being>>
+Activations: (" being", 8)
+Example 8: ex tonight or..." "After<< that>>, the summer went by way too fast."
+Activations: (" that", 7)
+Example 9:  compelling weekly articles. After<< putting>> two articles up for a vote, the audience chose
+Activations: (" putting", 7)
+Example 10:  avoiding cross-examination on Burton's prior convictions. After<< receiving>> that advice,
+Activations: (" receiving", 7)
+Example 11: …" Nobleman Marton said.
+
+After<< some>> time had elapsed in silence with
+Activations: (" some", 6)
+Example 12: My Hero Academia Season 2- Episode 18
+
+After<< last>> weeks episode
+Activations: (" last", 6)
+Example 13:  filed a motion to affirm. After<< reviewing>> the record, this Court determined that Burton
+Activations: (" reviewing", 6)
+Example 14: , after a year of wrestling with their feelings for each other," "Barney and
+Activations: 
+Example 15: 2020. After initially announcing that November 2018 would
+Activations: 
+Example 16:  after a character’s death. This provides meaning for the death within the structure
+Activations: 
+Example 17:  Lok Sabha election after a potentially weak showing in three BJP-ruled states?
+
+
+Activations: 
+Example 18:  get it." "Okay, it's like this." "After we kissed
+Activations: 
+Example 19:  mention that he was unbelievably sexy. Before long, he was helping me out of
+Activations: 
+Example 20:  national and even international attention after a barrage of morning-after text messages, social
+Activations: 

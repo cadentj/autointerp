@@ -1,15 +1,15 @@
 ### SYSTEM PROMPT ###
 
-SYSTEM = """You are a meticulous AI researcher conducting an important investigation into patterns found in language. Your task is to analyze text and provide an explanation that thoroughly encapsulates possible patterns found in it.
+SYSTEM = """You are a meticulous AI researcher conducting an important investigation into patterns found in language. Your task is to analyze text and return a score as to how well that text agrees with a query.
+
 Guidelines:
 
 You will be given a list of text examples on which special words are selected and between delimiters like <<this>>. If a sequence of consecutive tokens all are important, the entire sequence of tokens will be contained between delimiters <<just like this>>. How important each token is for the behavior is listed after each example in parentheses.
 
-- Try to produce a concise final description. Simply describe the text features that are common in the examples, and what patterns you found.
-- If the examples are uninformative, you don't need to mention them. Don't focus on giving examples of important tokens, but try to summarize the patterns found in the examples.
-- Do not mention the marker tokens (<< >>) in your explanation.
-- Do not make lists of possible explanations. Keep your explanations short and concise.
-- The last line of your response must be the formatted explanation, using [EXPLANATION]:
+- Produce a single final score. This score should reflect how relevant the provided information is to the query.
+- If the examples are uninformative, you can ignore them.
+- Do not mention the marker tokens (<< >>) in your explanation. They are not part of the actual text, only used to highlight the important tokens.
+- The last line of your response must be the formatted score, an integer between 0 and 3 inclusive, using [SCORE]:.
 
 {prompt}
 """
@@ -22,7 +22,7 @@ To better find the explanation for the language patterns go through the followin
 
 2. Write down general shared features of the text examples. This could be related to the full sentence or to the words surrounding the marked words.
 
-3. Formulate an hypothesis and write down the final explanation using [EXPLANATION]:.
+3. Formulate an hypothesis and write down your final score using [SCORE]:.
 
 """
 
@@ -30,7 +30,8 @@ To better find the explanation for the language patterns go through the followin
 
 ### EXAMPLE 1 ###
 
-EXAMPLE_1 = """
+EXAMPLE_1 = """QUERY: Statements about barnyard animals.
+
 Example 1:  and he was <<over the moon>> to find
 Activations: ("over", 5), (" the", 6), (" moon", 9)
 Example 2:  we'll be laughing <<till the cows come home>>! Pro
@@ -55,15 +56,17 @@ Step 2.
 Step 3.
 - The activation values are the highest for the more common idioms in examples 1 and 3.
 - The text examples all convey positive sentiment.
+- The query is for statements about barnyard animals, but the examples are about positive, common idioms.
 """
 
 EXAMPLE_1_EXPLANATION = """
-[EXPLANATION]: Common idioms in text conveying positive sentiment.
+[SCORE]: 0
 """
 
 ### EXAMPLE 2 ###
 
-EXAMPLE_2 = """
+EXAMPLE_2 = """QUERY: Comparison features, descriptions that differentiate between multiple objects.
+
 Example 1:  a river is wide but the ocean is wid<<er>>. The ocean
 Activations: ("er", 8)
 Example 2:  every year you get tall<<er>>," she
@@ -87,16 +90,18 @@ Step 2.
 
 Step 3.
 - Example 2 has a lower activation value. It doesn't compare sizes as directly as the other examples.
+- The query is for comparison features, and the feature activates on words that are part of a comparative adjective.
 """
 
 
 EXAMPLE_2_EXPLANATION = """
-[EXPLANATION]: The token "er" at the end of a comparative adjective describing size.
+[SCORE]: 2
 """
 
 ### EXAMPLE 3 ###
 
-EXAMPLE_3 = """
+EXAMPLE_3 = """QUERY: Objects which represent a distinct space, for example, containers.
+
 Example 1:  something happening inside my <<house>>", he
 Activations: ("house", 7)
 Example 2:  presumably was always contained in <<a box>>", according
@@ -121,13 +126,14 @@ Step 2.
 - The examples involve being inside something, sometimes figuratively.
 - The activating token is a thing which something else is inside of.
 
-Step 3.
+STEP 3.
 - The activation values are highest for the examples where the token is a distinctive object or space.
 - The activating token is followed by a quotation mark, suggesting it occurs within speech.
+- The feature activates on containers like "house" and "box", and the query is directly related.
 """
 
 EXAMPLE_3_EXPLANATION = """
-[EXPLANATION]: Nouns representing distinct objects that contain something, sometimes preceding a quotation mark.
+[SCORE]: 3
 """
 
 EXAMPLES = [
@@ -174,7 +180,8 @@ def build_examples(
 
 
 def build_prompt(
-    examples,
+    examples: str,
+    query: str,
     use_cot: bool = False,
 ):
     messages = system(
@@ -187,7 +194,7 @@ def build_prompt(
 
     messages.extend(few_shot_examples)
 
-    user_start = f"\n{examples}\n"
+    user_start = f"QUERY: {query}\n{examples}\n"
 
     messages.append(
         {

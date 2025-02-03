@@ -14,6 +14,9 @@ model, submodules = load_gemma(
     layers = [0]
 )
 
+# %%
+
+
 # Temporary dataset/tokens
 data = load_dataset("NeelNanda/pile-10k", split="train")
 

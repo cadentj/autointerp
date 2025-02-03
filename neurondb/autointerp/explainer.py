@@ -23,7 +23,7 @@ class Explainer:
 
     async def __call__(self, feature: Feature):
         self.activation_threshold = feature.max_activation * self.threshold
-        messages = self._build_prompt(feature.examples)
+        messages = self._build_prompt(feature)
 
         response = await self.client.generate(
             messages, **self.generation_kwargs
@@ -36,24 +36,33 @@ class Explainer:
             print(f"Explanation parsing failed: {e}")
             return "Explanation could not be parsed."
 
-    def _build_prompt(
-        self, examples: List[Example]
-    ):
+    def _get_toks_and_acts(self, example: Example, max_activation: float):
+        mask = example.activations > self.activation_threshold
+
+        activations = example.activations[mask]
+        normalized = (activations / max_activation) * 10
+        normalized = normalized.round().int().tolist()
+
+        tokens = example.tokens[mask]
+        str_toks = self.tokenizer.batch_decode(tokens)
+
+        return zip(str_toks, normalized)
+
+    def _build_prompt(self, feature: Feature):
         highlighted_examples = []
 
-        for i, example in enumerate(examples):
+        for i, example in enumerate(feature.examples):
             index = i + 1  # Start at 1
             formatted = self._highlight(index, example)
 
-            # NOTE: Maybe add normalized activations back?
-            mask = example.activations > self.activation_threshold
-            activations = example.activations[mask].tolist()
+            acts = ", ".join(
+                f'("{item[0]}", {item[1]})'
+                for item in self._get_toks_and_acts(
+                    example, feature.max_activation
+                )
+            )
+            formatted += "\nActivations: " + acts
 
-            acts = ", ".join(f"({item})" for item in activations)
-
-            formatted += "\n" + acts
-
-            # NOTE: Using activations by default.
             highlighted_examples.append(formatted)
 
         highlighted_examples = "\n".join(highlighted_examples)
@@ -78,14 +87,14 @@ class Explainer:
     def _highlight(self, index, example):
         result = f"Example {index}: "
 
-        str_toks = self.tokenizer.batch_decode(example.tokens)
-
         activations = example.activations
+        str_toks = self.tokenizer.batch_decode(example.tokens)
 
         def check(i):
             return activations[i] > self.activation_threshold
 
         i = 0
+
         while i < len(str_toks):
             if check(i):
                 result += "<<"

@@ -1,9 +1,10 @@
-from typing import List, Tuple, Callable, Generator
+from typing import List, Tuple, Callable, Generator, Union
 
 import torch as t
 from torchtyping import TensorType
 from tqdm import tqdm
 
+from .caching import Cache
 from .schema import Example, Feature
 
 
@@ -51,8 +52,8 @@ def _pool_max_activation_windows(
     return token_windows, activation_windows
 
 
-def _get_valid_features(data, indices):
-    features = t.unique(data["locations"][:, 2]).tolist()
+def _get_valid_features(locations, indices):
+    features = t.unique(locations[:, 2]).tolist()
 
     if isinstance(indices, list) and indices is not None:
         found_indices = []
@@ -84,28 +85,57 @@ def max_activation_sampler(
     return examples
 
 
+    
+def loader(
+    activations: TensorType["features"],
+    locations: TensorType["features", 3],
+    tokens: TensorType["batch", "seq"],
+    sampler: Callable = max_activation_sampler,
+    indices: List[int] | int = None,
+    ctx_len: int = 16,
+    max_examples: int = 100,
+) -> Union[List[Feature], Generator[Feature, None, None]]:
+    print(locations.shape, activations.shape, tokens.shape)
+    available_features = _get_valid_features(locations, indices)
+
+    for feature in tqdm(available_features, desc="Loading features"):
+        indices = locations[:, 2] == feature
+        _locations = locations[indices]
+        _activations = activations[indices]
+        max_activation = _activations.max().item()
+
+        token_windows, activation_windows = _pool_max_activation_windows(
+            _activations, _locations, tokens, ctx_len, max_examples
+        )
+
+        examples = sampler(token_windows, activation_windows)
+
+        feature = Feature(feature, max_activation, examples)
+
+        yield feature
+    
+
 def load_torch(
     path: str,
     sampler: Callable = max_activation_sampler,
     indices: List[int] | int = None,
     ctx_len: int = 16,
-    max_examples: int = 5,
+    max_examples: int = 100,
 ) -> Generator[Tuple[List[Example], float], None, None]:
     data = t.load(path)
     tokens = t.load(data["tokens_path"])
 
-    features = _get_valid_features(data, indices)
-
-    for feature in tqdm(features, desc="Loading features"):
-        indices = data["locations"][:, 2] == feature
-        locations = data["locations"][indices]
-        activations = data["activations"][indices]
-        max_activation = activations.max().item()
-
-        token_windows, activation_windows = _pool_max_activation_windows(
-            activations, locations, tokens, ctx_len, max_examples
+    features = [
+        f for f in 
+        loader(
+            data["activations"],
+            data["locations"],
+            tokens,
+            sampler,
+            indices,
+            ctx_len,
+            max_examples,
         )
+    ]
 
-        examples = sampler(token_windows, activation_windows)
-
-        yield Feature(feature, max_activation, examples)
+    return features

@@ -7,7 +7,7 @@ import os
 
 
 async def main():
-    tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-1.5B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-2b")
 
     client = LocalClient(model="Qwen/Qwen2.5-1.5B-Instruct", max_retries=2)
 
@@ -26,7 +26,7 @@ async def main():
         process_feature(feature)
         for feature in load_torch(
             "/share/u/caden/neurondb/cache/.model.layers.0.pt", 
-            max_examples=50
+            max_examples=50,
         )
     ]
     await asyncio.gather(*tasks)
