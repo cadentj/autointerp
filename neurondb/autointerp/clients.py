@@ -7,7 +7,7 @@ import torch as t
 from typing import List
 from nnsight import LanguageModel
 from ..schema import Conversation
-from ..schema.client import PromptProbs
+from ..schema.client import PromptLogProbs
 from ..utils import load_tokenizer
 
 
@@ -85,13 +85,13 @@ class NsClient:
 
         return inputs
 
-    def _prepare_response(self, inputs, assistant_logits) -> List[PromptProbs]:
+    def _prepare_response(self, inputs, assistant_logits) -> List[PromptLogProbs]:
         log_probs = []
         for batch_idx, topk_probs in enumerate(assistant_logits):
             assistant_tokens_mask = inputs["assistant_masks"][batch_idx]
             tokens = inputs["input_ids"][batch_idx][assistant_tokens_mask]
             log_probs.append(
-                PromptProbs(
+                PromptLogProbs(
                     indices = topk_probs.indices.tolist(),
                     values = topk_probs.values.tolist(),
                     tokens = tokens.tolist(),
@@ -100,7 +100,7 @@ class NsClient:
 
         return log_probs
 
-    def generate(self, conversations: List[Conversation]) -> List[PromptProbs]:
+    def generate(self, conversations: List[Conversation]) -> List[PromptLogProbs]:
         inputs = self._prepare_input(conversations)
 
         assistant_logits = []
@@ -111,7 +111,7 @@ class NsClient:
                 inputs["assistant_masks"]
             ):
                 logits_slice = logits[batch_idx][conversation_mask]
-                probs = logits_slice.softmax(dim=-1)
+                probs = logits_slice.log_softmax(dim=-1)
                 top_probs = probs.topk(self.k, dim=-1)
                 probs = top_probs.save()
                 assistant_logits.append(probs)

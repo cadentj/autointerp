@@ -1,4 +1,3 @@
-# %%
 import torch as t
 from datasets import load_dataset
 from steering_finetuning import load_gemma
@@ -71,3 +70,7 @@ def main():
     )
 
     return result
+
+if __name__ == "__main__":
+    result = main()
+    print(result)

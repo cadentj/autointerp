@@ -11,7 +11,7 @@ class Conversation(BaseModel):
     messages: List[Message]
 
 
-class PromptProbs(NamedTuple):
+class PromptLogProbs(NamedTuple):
     indices: TensorType["seq", "top_k"]
     values: TensorType["seq", "top_k"]
     tokens: TensorType["seq"]
