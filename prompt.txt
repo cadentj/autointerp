@@ -1,51 +1,283 @@
-QUERY: Penis features
-
-Example 1: , or stored in or introduced into<< any>> information storage and retrieval system, in<< any>>
-Activations: (" any", 10), (" any", 10)
-Example 2: 1E6. You can unsubscribe at<< any>> time. Please contact us or see
-Activations: (" any", 10)
-Example 3:  form or by<< any>> means, whether electronic or mechanical, now known or hereinafter invented
-Activations: (" any", 10)
-Example 4:  remission in a considerable proportion of IBD patients refractory to<< any>> other treatments \[[@ref
-Activations: (" any", 10)
-Example 5:  manage<< any>> resources. You configure your data producers to send data to Firehose and
-Activations: (" any", 10)
-Example 6:  could preempt<< any>> bid for Israeli-Palestinian peace. That earned him boos at
-Activations: (" any", 10)
-Example 7:  speech in the Rajya Sabha.
-
-Young Indians of<< any>> class, on whose
-Activations: (" any", 10)
-Example 8:  room in<< any>> given city with reviews, prices, detail breakdowns and photos. Free
-Activations: (" any", 10)
-Example 9:  top-down view. I was confident I could fit<< any>> theme around it.
-Activations: (" any", 9)
-Example 10:  Valid for one use only, this code cannot be used in conjunction with<< any>> other
-Activations: (" any", 9)
-Example 11: << any>> and all justification for these peoples existence,
-and it whither them.
+system
 
 
-Activations: (" any", 9)
-Example 12:  With Kinesis Data Firehose, you do not need to write<< any>> applications or
-Activations: (" any", 9)
-Example 13: << any>> shared folder, including those shared by users
-    /// outside the team.
-Activations: (" any", 9)
-Example 14: 's appeal was "wholly without merit and devoid of<< any>> arguably appealable
-Activations: (" any", 9)
-Example 15:  determine if<< any>> charges should be brought against<< any>> other individuals involved either on the night
-Activations: (" any", 9), (" any", 9)
-Example 16:  Thomas is not expected to miss<< any>> time with the injury.
+We're studying neurons in a neural network.
+Each neuron looks for some particular thing in a short document.
+Look at summary of what the neuron does, and try to predict how it will fire on each token.
 
-Since taking over
-Activations: (" any", 9)
-Example 17:  Team members can join<< any>> shared
-/// folder, including those shared by users outside
-Activations: (" any", 9)
-Example 18:  perfect eatery for<< any>> meals of the day whatever the situation. Armed with menus for
-Activations: (" any", 9)
-Example 19:  term Mai-Mai does not refer to<< any>> particular movement, affiliation or political objective
-Activations: (" any", 9)
-Example 20:  to<< any>> kind of community-based militia group active in the Democratic Republic of the
-Activations: (" any", 9)
+The activation format is token<tab>activation, activations go from 0 to 10, "unknown" indicates an unknown activation. Most activations will be 0.
+
+
+
+user
+
+
+Neuron 1
+Explanation of neuron 1 behavior: language related to something being groundbreaking
+
+
+assistant
+
+
+Activations:
+<start>
+The	unknown
+ editors	unknown
+ of	unknown
+ Bi	unknown
+opol	unknown
+ym	unknown
+ers	unknown
+ are	0
+ delighted	0
+ to	0
+ present	0
+ the	0
+ 	0
+201	0
+8	0
+ Murray	0
+ Goodman	0
+ Memorial	0
+ Prize	0
+ to	0
+ Professor	0
+ David	0
+ N	0
+.	0
+ Ber	0
+atan	0
+ in	0
+ recognition	0
+ of	0
+ his	0
+ seminal	10
+ contributions	0
+ to	0
+ bi	0
+oph	0
+ysics	0
+ and	0
+ their	0
+ impact	0
+ on	0
+ our	0
+ understanding	0
+ of	0
+ charge	0
+ transport	0
+ in	0
+ biom	0
+olecules	0
+.
+
+	0
+In	0
+aug	0
+ur	0
+ated	0
+ in	0
+ 	0
+200	0
+7	0
+ in	0
+ honor	0
+ of	0
+ the	0
+ Bi	0
+opol	0
+ym	0
+ers	0
+ Found	0
+ing	1
+ Editor	0
+,	0
+ the	0
+ prize	0
+ is	0
+ awarded	0
+ for	0
+ outstanding	0
+ accomplishments	0
+<end>
+
+
+user
+
+
+Neuron 2
+Explanation of neuron 2 behavior: the word “variant” and other words with the same ”vari” root
+
+
+assistant
+
+
+Activations:
+<start>
+{"	unknown
+widget	unknown
+Class	0
+":"	0
+Variant	6
+Matrix	0
+Widget	0
+","	0
+back	0
+order	0
+Message	0
+":"	0
+Back	0
+ordered	0
+","	0
+back	0
+order	0
+Message	0
+Single	0
+Variant	5
+":"	0
+This	0
+ item	0
+ is	0
+ back	0
+ordered	0
+.","	0
+ordered	0
+Selection	0
+":	0
+true	0
+,"	0
+product	0
+Variant	5
+Id	0
+":	0
+0	0
+,"	0
+variant	6
+Id	0
+Field	0
+":"	0
+product	0
+196	0
+39	0
+_V	5
+ariant	5
+Id	0
+","	0
+back	0
+order	0
+To	0
+Message	0
+Single	0
+Variant	4
+":"	0
+This	0
+ item	0
+ is	0
+ back	0
+ordered	0
+ and	0
+ is	0
+ expected	0
+ by	0
+ {	0
+0	0
+}.	0
+","	0
+low	0
+Price	0
+":	0
+999	0
+9	0
+.	0
+0	0
+,"	0
+attribute	0
+Indexes	0
+":[	0
+],"	0
+productId	0
+":	0
+196	0
+39	0
+,"	0
+price	0
+V	3
+ariance	3
+":	0
+true	0
+,"	0
+<end>
+<start>
+A	unknown
+ regular	unknown
+ look	unknown
+ at	unknown
+ the	unknown
+ ups	unknown
+ and	unknown
+ downs	unknown
+ of	0
+ variant	10
+ covers	0
+ in	0
+ the	0
+ comics	0
+ industry	0
+…
+
+	0
+Here	0
+ are	0
+ the	0
+ Lego	0
+ variant	2
+ sketch	0
+ covers	0
+ by	0
+ Leon	0
+el	0
+ Cast	0
+ell	0
+ani	0
+ for	0
+ a	0
+ variety	4
+ of	0
+ Marvel	0
+ titles	0
+,	0
+<end>
+
+
+user
+
+
+Neuron 3
+Explanation of neuron 3 behavior: penis talk and shit
+
+
+assistant
+
+
+Activations:
+<start>
+ot	unknown
+f	unknown
+load	unknown
+/	unknown
+font	unknown
+loader	unknown
+-	unknown
+data	unknown
+-	unknown
+con	unknown
+.	unknown
+lua	unknown
+
+	unknown
+share	unknown
+/	unknown
+tex	unknown
+<end>
+
+
