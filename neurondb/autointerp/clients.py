@@ -92,9 +92,9 @@ class NsClient:
             tokens = inputs["input_ids"][batch_idx][assistant_tokens_mask]
             log_probs.append(
                 PromptProbs(
-                    indices = topk_probs.indices,
-                    values = topk_probs.values,
-                    tokens=tokens,
+                    indices = topk_probs.indices.tolist(),
+                    values = topk_probs.values.tolist(),
+                    tokens = tokens.tolist(),
                 )
             )
 

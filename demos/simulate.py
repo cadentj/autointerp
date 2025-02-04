@@ -2,14 +2,15 @@
 import torch as t
 from datasets import load_dataset
 from steering_finetuning import load_gemma
+
 from neurondb import cache_activations, loader
-from neurondb.autointerp.prompts.simulation_prompt import format_prompt
+from neurondb.autointerp import NsClient, simulate
 
 t.set_grad_enabled(False)
 
 def get_tokens(tokenizer):
     # Temporary dataset/tokens
-    data = load_dataset("NeelNanda/pile-10k", split="train")
+    data = load_dataset("kh4dien/fineweb-100m-sample", split="train[:10%]")
 
     tokens = tokenizer(
         data["text"],
@@ -37,52 +38,36 @@ def main():
         torch_dtype=t.bfloat16,
         layers = [0]
     )
-    tokenizer = model.tokenizer
-    tokens = get_tokens(tokenizer)
+    subject_tokenizer = model.tokenizer
+    tokens = get_tokens(subject_tokenizer)
 
     cache = cache_activations(
         model,
         {sm.module : sm.dictionary for sm in submodules},
         tokens,
         batch_size=8,
-        filters={sm.module._path : [0,1,2] for sm in submodules}
+        max_tokens=1_000_000,
+        filters={sm.module._path : list(range(10)) for sm in submodules}
     )
 
     locations, activations = cache.get(submodules[0].module._path)
-    for feature in loader(
+    features = [feature for feature in loader(
         activations,
         locations,
         tokens,
         max_examples=100,
-    ):
-        break
+    )]
 
+    client = NsClient(
+        "Qwen/Qwen2.5-7B-Instruct",
+        torch_dtype=t.bfloat16,
+    )
 
-    return feature
+    result = simulate(
+        "Activates on the word 'bleed'",
+        features[0].examples[:5],
+        client,
+        subject_tokenizer,
+    )
 
-
-feature = main()
-
-# %%
-import torch as t
-from neurondb.autointerp import NsClient
-
-client = NsClient(
-    "Qwen/Qwen2.5-7B-Instruct",
-    k = 15,
-    torch_dtype=t.bfloat16,
-)
-
-# %%
-
-from neurondb.autointerp.simulator import simulate
-from transformers import AutoTokenizer
-
-subject_tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-2b")
-
-prompts = simulate(
-    "The model is a 2B parameter model that is trained to be a helpful assistant.",
-    feature.examples[:5],
-    client,
-    subject_tokenizer,
-)
+    return result

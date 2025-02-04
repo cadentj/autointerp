@@ -18,16 +18,16 @@ SYSTEM_PROMPT = """We're studying neurons in a neural network.
 Each neuron looks for some particular thing in a short document.
 Look at summary of what the neuron does, and try to predict how it will fire on each token.
 
-The activation format is token<tab>activation, activations go from 0 to 10, "unknown" indicates an unknown activation. Most activations will be 0.
+The activation format is token<tab>activation, activations go from 0 to 9, "unknown" indicates an unknown activation. Most activations will be 0.
 """
 
 
 def _normalize_activations(
     activations: List[float], max_activation: float
 ) -> List[int]:
-    """Normalize activations to be between 0 and 10."""
+    """Normalize activations to be between 0 and 9."""
     return [
-        int(activation / max_activation * 10) for activation in activations
+        int(activation / max_activation * 9) for activation in activations
     ]
 
 
@@ -132,7 +132,6 @@ def format_prompt(explanation: str, example: Example, tokenizer: AutoTokenizer) 
         index=i + 2,
     )
 
-    print(example)
     assistant_response = ASSISTANT_TEMPLATE.format(
         example=_format_example_for_simulation(example, tokenizer)
     )
