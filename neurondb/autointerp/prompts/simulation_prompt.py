@@ -131,6 +131,8 @@ def format_prompt(explanation: str, example: Example, tokenizer: AutoTokenizer) 
         explanation=explanation,
         index=i + 2,
     )
+
+    print(example)
     assistant_response = ASSISTANT_TEMPLATE.format(
         example=_format_example_for_simulation(example, tokenizer)
     )

@@ -91,8 +91,6 @@ def max_activation_sampler(
     mask = activation_windows > max_activation_threshold
     above_threshold = t.sum(mask, dim=1)
 
-    print(above_threshold.shape)
-
     examples = [
         Example(
             token_windows[i],

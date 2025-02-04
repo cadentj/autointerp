@@ -1,9 +1,11 @@
-import asyncio
+# %%
 import torch as t
 from datasets import load_dataset
 from steering_finetuning import load_gemma
 from neurondb import cache_activations, loader
 from neurondb.autointerp.prompts.simulation_prompt import format_prompt
+
+t.set_grad_enabled(False)
 
 def get_tokens(tokenizer):
     # Temporary dataset/tokens
@@ -27,7 +29,7 @@ def get_tokens(tokenizer):
     return tokens
 
 
-async def main():
+def main():
     model, submodules = load_gemma(
         model_size="2b",
         load_dicts=True,
@@ -53,14 +55,34 @@ async def main():
         tokens,
         max_examples=100,
     ):
-        example = feature.examples[0]
-        prompt = format_prompt("penis talk and shit", example, tokenizer)
+        break
 
-    with open("prompt.txt", "w") as f:
-        for message in prompt:
-            role = message["role"]
-            content = message["content"]
-            f.write(f"{role}\n\n\n{content}\n\n\n")
 
-if __name__ == "__main__":
-    asyncio.run(main())
+    return feature
+
+
+feature = main()
+
+# %%
+import torch as t
+from neurondb.autointerp import NsClient
+
+client = NsClient(
+    "Qwen/Qwen2.5-7B-Instruct",
+    k = 15,
+    torch_dtype=t.bfloat16,
+)
+
+# %%
+
+from neurondb.autointerp.simulator import simulate
+from transformers import AutoTokenizer
+
+subject_tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-2b")
+
+prompts = simulate(
+    "The model is a 2B parameter model that is trained to be a helpful assistant.",
+    feature.examples[:5],
+    client,
+    subject_tokenizer,
+)

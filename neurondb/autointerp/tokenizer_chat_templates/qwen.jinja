@@ -20,7 +20,7 @@
 {%- endif %}
 {%- for message in messages %}
     {%- if (message.role == "user") or (message.role == "system" and not loop.first) or (message.role == "assistant" and not message.tool_calls) %}
-        {%- if (message.role != "assistant") %}
+        {%- if (not loop.last) %}
             {{- '<|im_start|>' + message.role + '\n' + message.content + '<|im_end|>' + '\n' }} 
         {%- else %}
             {{- '<|im_start|>' + message.role + '\n' }} 
