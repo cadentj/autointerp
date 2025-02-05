@@ -1,5 +1,5 @@
 import os
-from typing import List, Literal, assert_type
+from typing import List
 
 import torch as t
 from torchtyping import TensorType

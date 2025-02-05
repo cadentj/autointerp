@@ -5,10 +5,21 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "datasets>=2.14.4",
+    "nnsight>=0.4.1",
     "torchtyping>=0.1.5",
     "triton>=3.1.0",
-    "vllm==0.6.4",
+    # "vllm==0.6.4", # NOTE: Needs to be this version for simulation...
+    "vllm>=0.7.0",
 ]
 
 [tool.setuptools]
 packages = ["neurondb"]
+
+[tool.uv.sources]
+neurondb = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "neurondb",
+]

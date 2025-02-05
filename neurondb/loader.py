@@ -80,6 +80,60 @@ def _normalize(
     return normalized.round().int()
 
 
+def decile_sampler(
+    token_windows: TensorType["batch", "seq"],
+    activation_windows: TensorType["batch", "seq"],
+    k: int = 30,
+    train: bool = True,
+):
+    max_activation = activation_windows.max()
+    
+    # Calculate max activation per window
+    window_max_activations = activation_windows.max(dim=1).values
+    
+    # Calculate decile boundaries
+    deciles = t.linspace(0, max_activation, 11)  # 11 points to create 10 bins
+    
+    # Initialize list to store examples from each decile
+    decile_examples = []
+    
+    # Sample from each decile
+    for i in range(10):
+        lower, upper = deciles[i], deciles[i + 1]
+        # Find windows with max activation in this decile
+        mask = (window_max_activations >= lower) & (window_max_activations <= upper)
+        decile_indices = t.where(mask)[0]
+        
+        if len(decile_indices) > 0:
+            # Randomly sample up to k//10 examples from this decile
+            num_samples = min(len(decile_indices), k // 10)
+            sampled_indices = decile_indices[t.randperm(len(decile_indices))[:num_samples]]
+            
+            if train:
+                sampled_indices = sampled_indices[0,1]
+            else:
+                sampled_indices = [sampled_indices[2]]
+
+            for idx in sampled_indices:
+                decile_examples.append(
+                    Example(
+                        token_windows[idx],
+                        activation_windows[idx],
+                        _normalize(activation_windows[idx], max_activation),
+                    )
+                )
+    
+    # If we didn't get enough examples, return None
+    if len(decile_examples) < k // 2:
+        return None
+        
+    # If we got more than k examples, randomly subsample to k
+    if len(decile_examples) > k:
+        decile_examples = [decile_examples[i] for i in t.randperm(len(decile_examples))[:k]]
+    
+    return decile_examples
+
+
 def max_activation_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
@@ -111,10 +165,10 @@ def loader(
     activations: TensorType["features"],
     locations: TensorType["features", 3],
     tokens: TensorType["batch", "seq"],
-    sampler: Callable = max_activation_sampler,
+    sampler: Callable = decile_sampler,
     indices: List[int] | int = None,
     ctx_len: int = 16,
-    max_examples: int = 100,
+    max_examples: int = 2_000,
 ) -> Union[List[Feature], Generator[Feature, None, None]]:
     available_features = _get_valid_features(locations, indices)
 

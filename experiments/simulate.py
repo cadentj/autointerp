@@ -9,7 +9,7 @@ t.set_grad_enabled(False)
 
 def get_tokens(tokenizer):
     # Temporary dataset/tokens
-    data = load_dataset("kh4dien/fineweb-100m-sample", split="train[:10%]")
+    data = load_dataset("kh4dien/fineweb-100m-sample", split="train[:20%]")
 
     tokens = tokenizer(
         data["text"],
@@ -45,7 +45,7 @@ def main():
         {sm.module : sm.dictionary for sm in submodules},
         tokens,
         batch_size=8,
-        max_tokens=1_000_000,
+        max_tokens=5_000_000,
         filters={sm.module._path : list(range(10)) for sm in submodules}
     )
 
