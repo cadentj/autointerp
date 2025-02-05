@@ -17,15 +17,14 @@ print("SETTING SEED")
 set_seed(42)
 
 def get_tokens(tokenizer):
-    data = load_dataset("kh4dien/fineweb-100m-sample", split="train[:20%]")
+    data = load_dataset("kh4dien/fineweb-100m-sample", split="train[:25%]")
 
     tokens = tokenizer(
         data["text"],
-        add_special_tokens=False,
         padding=True,
         return_tensors="pt",
         truncation=True,
-        max_length=1024,
+        max_length=1025, # 1024 + 1 for BOS
     )
     tokens = tokens["input_ids"]
 

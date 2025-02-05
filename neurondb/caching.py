@@ -14,11 +14,12 @@ MAX_INT = t.iinfo(t.int32).max
 
 
 class Cache:
-    def __init__(self, batch_size: int, filters: DictionaryRequest):
+    def __init__(self, batch_size: int, filters: DictionaryRequest, remove_bos: bool):
         self.locations = defaultdict(list)
         self.activations = defaultdict(list)
         self.filters = filters
         self.batch_size = batch_size
+        self.remove_bos = remove_bos
 
     def add(
         self,
@@ -26,6 +27,9 @@ class Cache:
         batch_number: int,
         module_path: str,
     ):
+        if self.remove_bos:
+            latents = latents[:, 1:]
+
         locations, activations = self._get_nonzeros(latents, module_path)
         locations = locations.cpu()
         activations = activations.cpu()
@@ -74,7 +78,7 @@ class Cache:
         mask = t.isin(nonzero_locations[:, 2], selected_features)
         return nonzero_locations[mask], nonzero_activations[mask]
 
-    def finish(self): 
+    def finish(self):
         for module_path in self.locations.keys():
             self.locations[module_path] = t.cat(
                 self.locations[module_path], dim=0
@@ -83,7 +87,9 @@ class Cache:
                 self.activations[module_path], dim=0
             )
 
-    def get(self, module_path: str) -> Tuple[TensorType["features"], TensorType["features"]]:
+    def get(
+        self, module_path: str
+    ) -> Tuple[TensorType["features"], TensorType["features"]]:
         return self.locations[module_path], self.activations[module_path]
 
     def save_to_disk(self, save_dir: str, tokens_path: str):
@@ -113,10 +119,17 @@ def _make_filters(
 
 
 def _batch_tokens(
-    tokens: TensorType["batch", "seq"], batch_size: int, max_tokens: int
+    tokens: TensorType["batch", "seq"],
+    batch_size: int,
+    max_tokens: int,
+    remove_bos: bool,
 ) -> Tuple[List[TensorType["batch", "seq"]], int]:
+    # Subtract 1 if we're removing the BOS token
+    # Not including it as an activation, so don't include in count
+    seq_len = tokens.shape[1] + (-1 if remove_bos else 0)
+
     # Cut max tokens by sequence length
-    max_batch = max_tokens // tokens.shape[1]
+    max_batch = max_tokens // seq_len
     tokens = tokens[:max_batch]
     n_batches = len(tokens) // batch_size
     token_batches = [
@@ -137,12 +150,16 @@ def cache_activations(
     batch_size: int,
     max_tokens: int = 100_000,
     filters: DictionaryRequest = {},
+    remove_bos: bool = True,
 ) -> Cache:
+    if remove_bos:
+        print("NOT CACHING BOS!")
+
     filters = _make_filters(filters)
-    cache = Cache(batch_size, filters)
+    cache = Cache(batch_size, filters, remove_bos)
 
     token_batches, tokens_per_batch = _batch_tokens(
-        tokens, batch_size, max_tokens
+        tokens, batch_size, max_tokens, remove_bos
     )
 
     with tqdm(total=max_tokens, desc="Caching features") as pbar:
@@ -152,9 +169,9 @@ def cache_activations(
                 for submodule, dictionary in submodule_dict.items():
                     latents = ns.apply(dictionary.encode, submodule.output[0])
                     buffer[submodule._path] = latents.save()
-                
+
                 submodule.output.stop()
-                
+
             for module_path, latents in buffer.items():
                 cache.add(latents, batch_number, module_path)
 

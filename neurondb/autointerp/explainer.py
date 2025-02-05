@@ -1,4 +1,5 @@
 import re
+from transformers import AutoTokenizer
 
 from ..schema.base import Feature, Example
 from .prompts.explainer_prompt import build_prompt
@@ -9,14 +10,14 @@ class Explainer:
     def __init__(
         self,
         client: HTTPClient,
-        tokenizer,
+        subject_tokenizer: AutoTokenizer,
         use_cot: bool = False,
         threshold: float = 0.6,
         insert_as_prompt: bool = False,
         **generation_kwargs,
     ):
         self.client = client
-        self.tokenizer = tokenizer
+        self.subject_tokenizer = subject_tokenizer
 
         self.use_cot = use_cot
         self.threshold = threshold
@@ -31,11 +32,11 @@ class Explainer:
             messages, **self.generation_kwargs
         )
 
-        with open(f"response-{feature.index}.txt", "w") as f:
-            for message in messages:
-                f.write(f"{message['role'].upper()}:\n\n")
-                f.write(message["content"] + "\n\n")
-            f.write(response)
+        # with open(f"response-{feature.index}.txt", "w") as f:
+        #     for message in messages:
+        #         f.write(f"{message['role'].upper()}:\n\n")
+        #         f.write(message["content"] + "\n\n")
+        #     f.write(response)
 
         try:
             return self._parse_explanation(response)
@@ -48,7 +49,7 @@ class Explainer:
         mask = example.activations > self.activation_threshold
 
         tokens = example.tokens[mask]
-        str_toks = self.tokenizer.batch_decode(tokens)
+        str_toks = self.subject_tokenizer.batch_decode(tokens)
 
         normalized = example.normalized_activations[mask].tolist()
 
@@ -93,10 +94,10 @@ class Explainer:
         result = f"Example {index}: "
 
         activations = example.activations
-        str_toks = self.tokenizer.batch_decode(example.tokens)
+        str_toks = self.subject_tokenizer.batch_decode(example.tokens)
 
         def check(i):
-            return activations[i] > self.activation_threshold
+            return activations[i] > 0.0
 
         i = 0
 

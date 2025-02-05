@@ -7,4 +7,6 @@ meta-llama/Llama-3.3-70B-Instruct
 deepseek-ai/DeepSeek-R1-Distill-Llama-8B
 anthropic/claude-3.5-sonnet
 
-`vllm serve deepseek-ai/DeepSeek-R1-Distill-Llama-8B --enable-prefix-caching --dtype bfloat16 --disable-log-stats --gpu-memory-utilization 0.5`
+`vllm serve deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B --enable-prefix-caching --dtype bfloat16 --disable-log-stats --gpu-memory-utilization 0.95`
+
+`vllm serve Qwen/Qwen2.5-1.5B --dtype bfloat16 --disable-log-stats --gpu-memory-utilization 0.95`

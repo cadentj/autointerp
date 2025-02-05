@@ -11,10 +11,6 @@ from ..schema import Conversation
 from ..schema.client import PromptLogProbs
 from ..utils import load_tokenizer
 
-SAMPLING_KWARGS = {
-    "temperature": 0.5,
-}
-
 class HTTPClient:
     def __init__(
         self, model: str, base_url: str, max_retries: int, api_key: str
@@ -26,8 +22,6 @@ class HTTPClient:
         self.model = model
 
     async def generate(self, messages: Conversation, **kwargs):
-        kwargs = {**SAMPLING_KWARGS, **kwargs}
-
         for attempt in range(self.max_retries):
             try:
                 response = await self.client.chat.completions.create(

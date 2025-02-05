@@ -34,7 +34,6 @@ def _pool_max_activation_windows(
     )
     new_tensor[inverses, index_within_ctx] = activations
 
-    # Reshape tokens into contexts
     buffer_tokens = tokens.reshape(-1, ctx_len)
     buffer_tokens = buffer_tokens[unique_ctx_indices]
 
@@ -136,7 +135,7 @@ def max_activation_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
     k: int = 20,
-    threshold: float = 0.6,
+    threshold: float = 0.3,
 ):
     max_activation = activation_windows.max()
     max_activation_threshold = threshold * activation_windows.max()
@@ -167,13 +166,14 @@ def loader(
     indices: List[int] | int = None,
     ctx_len: int = 16,
     max_examples: int = 2_000,
-) -> Union[List[Feature], Generator[Feature, None, None]]:
+) -> Generator[Feature, None, None]:
     available_features = _get_valid_features(locations, indices)
 
     for feature in tqdm(available_features, desc="Loading features"):
         indices = locations[:, 2] == feature
         _locations = locations[indices]
         _activations = activations[indices]
+
         max_activation = _activations.max().item()
 
         token_windows, activation_windows = _pool_max_activation_windows(
@@ -193,7 +193,7 @@ def loader(
 
 def load_torch(
     path: str,
-    sampler: Callable = max_activation_sampler,
+    sampler: Callable = quantile_sampler,
     indices: List[int] | int = None,
     ctx_len: int = 16,
     max_examples: int = 100,
@@ -201,17 +201,17 @@ def load_torch(
     data = t.load(path)
     tokens = t.load(data["tokens_path"])
 
-    features = [
-        f
-        for f in loader(
-            data["activations"],
-            data["locations"],
-            tokens,
-            sampler,
-            indices,
-            ctx_len,
-            max_examples,
-        )
-    ]
+    seq_len = tokens.shape[1]
+    if seq_len % ctx_len != 0 and (seq_len - 1) % ctx_len == 0:
+        tokens = tokens[:, 1:]
 
-    return features
+    for f in loader(
+        data["activations"],
+        data["locations"],
+        tokens,
+        sampler,
+        indices,
+        ctx_len,
+        max_examples,
+    ):
+        yield f

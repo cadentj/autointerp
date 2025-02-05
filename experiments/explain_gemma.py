@@ -1,87 +1,83 @@
 import asyncio
 import os
 import json
-import torch as t
 import argparse
 
 from collections import defaultdict
-from models.gemma import load_gemma
-from seed import get_tokens
-from neurondb import cache_activations, loader
-from neurondb.autointerp import Explainer, LocalClient, OpenRouterClient
+from seed import set_seed
+from transformers import AutoTokenizer
+from neurondb import load_torch
+from neurondb.autointerp import Explainer, LocalClient
+from tqdm.asyncio import tqdm
 
-FEATURE_IDXS = list(range(100))
+set_seed(42)
+
+GENERATION_KWARGS = {
+    "temperature": 0.5,
+    "max_tokens": 2000,
+}
 
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-size", type=str)
-    parser.add_argument("--width", type=int)
+    parser.add_argument("--width", type=str)
     parser.add_argument("--l0", type=int)
     parser.add_argument("--layer", type=int)
-    parser.add_argument("--client-type", type=str)
     parser.add_argument("--explainer-model", type=str)
-    parser.add_argument("--output-dir", type=str)
     return parser.parse_args()
 
-async def main(args):
-    model, submodules = load_gemma(
-        model_size=args.model_size,
-        width=args.width,
-        l0=args.l0,
-        layers=[args.layer],
-        torch_dtype=t.bfloat16,
-    )
-    tokenizer = model.tokenizer
-    tokens = get_tokens(tokenizer)
 
-    cache = cache_activations(
-        model,
-        {sm.module: sm.dictionary for sm in submodules},
-        tokens,
-        batch_size=8,
-        max_tokens=1_000_000,
-        filters={sm.module._path: FEATURE_IDXS for sm in submodules},
-    )
+async def main(args, feature_save_dir: str):
+    subject_tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-2b")
 
-    if args.client_type == "local":
-        client = LocalClient(model=args.explainer_model, max_retries=2)
-    elif args.client_type == "openrouter":
-        client = OpenRouterClient(model=args.explainer_model, max_retries=2)
+    client = LocalClient(model=args.explainer_model, max_retries=2)
+    semaphore = asyncio.Semaphore(50)
 
     explainer = Explainer(
         client=client,
-        tokenizer=tokenizer,
+        subject_tokenizer=subject_tokenizer,
         use_cot=False,
-        threshold=0.5,
+        threshold=0.6,
+        insert_as_prompt=True,
+        **GENERATION_KWARGS,
     )
 
     explanations = defaultdict(dict)
 
+    save_path = f".model.layers.{args.layer}.pt"
+    feature_save_path = os.path.join(feature_save_dir, save_path)
+
+    features = [f for f in load_torch(feature_save_path, max_examples=2_000)]
+    pbar = tqdm(desc="Processing features", total=len(features))
+
     async def process_feature(layer, feature):
-        explanation = await explainer(feature)
-        explanations[layer][feature.index] = explanation
-        print(f"Processed feature {feature.index}")
+        async with semaphore:
+            explanation = await explainer(feature)
+            print(explanation)
+            explanations[layer][feature.index] = explanation
+            pbar.update(1)
+            return feature.index
 
-    for submodule in submodules:
-        path = submodule.module._path
-        locations, activations = cache.get(path)
-        tasks = [
-            process_feature(path, feature)
-            for feature in loader(
-                activations,
-                locations,
-                tokens,
-                max_examples=2000,
-            )
-        ]
+    # Process features directly from generator
+    await asyncio.gather(
+        *(
+            process_feature(args.layer, feature)
+            for feature in features
+        )
+    )
 
-        await asyncio.gather(*tasks)
+    pbar.close()
 
-    save_name = f"gemma-{args.model_size}-w{args.width}-l0{args.l0}-l{args.layer}.json"
-    save_path = os.path.join(args.output_dir, save_name)
+    model_name = args.explainer_model.split("/")[-1]
+    save_path = f"{model_name}-explanations.json"
+    save_path = os.path.join(feature_save_dir, save_path)
     with open(save_path, "w") as f:
         json.dump(explanations, f)
 
+
 if __name__ == "__main__":
     args = get_args()
-    asyncio.run(main(args))
+
+    feature_save_dir = f"/workspace/cache/gemma-2-{args.model_size}-w{args.width}-l0{args.l0}-layer{args.layer}"
+
+    asyncio.run(main(args, feature_save_dir))
