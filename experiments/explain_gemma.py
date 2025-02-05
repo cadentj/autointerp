@@ -2,20 +2,33 @@ import asyncio
 import os
 import json
 import torch as t
+import argparse
 
+from collections import defaultdict
 from models.gemma import load_gemma
 from seed import get_tokens
 from neurondb import cache_activations, loader
-from neurondb.autointerp import explain, LocalClient
+from neurondb.autointerp import Explainer, LocalClient, OpenRouterClient
 
 FEATURE_IDXS = list(range(100))
 
-async def main(model_size, width, l0, layer, explainer_model, output_dir):
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model-size", type=str)
+    parser.add_argument("--width", type=int)
+    parser.add_argument("--l0", type=int)
+    parser.add_argument("--layer", type=int)
+    parser.add_argument("--client-type", type=str)
+    parser.add_argument("--explainer-model", type=str)
+    parser.add_argument("--output-dir", type=str)
+    return parser.parse_args()
+
+async def main(args):
     model, submodules = load_gemma(
-        model_size=model_size,
-        width=width,
-        l0=l0,
-        layers=[layer],
+        model_size=args.model_size,
+        width=args.width,
+        l0=args.l0,
+        layers=[args.layer],
         torch_dtype=t.bfloat16,
     )
     tokenizer = model.tokenizer
@@ -23,57 +36,52 @@ async def main(model_size, width, l0, layer, explainer_model, output_dir):
 
     cache = cache_activations(
         model,
-        {sm.module : sm.dictionary for sm in submodules},
+        {sm.module: sm.dictionary for sm in submodules},
         tokens,
         batch_size=8,
-        max_tokens=5_000_000,
-        filters={sm.module._path : [1,2,3] for sm in submodules}
+        max_tokens=1_000_000,
+        filters={sm.module._path: FEATURE_IDXS for sm in submodules},
     )
 
-    client = LocalClient(model=explainer_model, max_retries=2)
+    if args.client_type == "local":
+        client = LocalClient(model=args.explainer_model, max_retries=2)
+    elif args.client_type == "openrouter":
+        client = OpenRouterClient(model=args.explainer_model, max_retries=2)
 
-    explanations = {}
+    explainer = Explainer(
+        client=client,
+        tokenizer=tokenizer,
+        use_cot=False,
+        threshold=0.5,
+    )
 
-    async def process_feature(feature):
-        explanation = await explain(
-            feature,
-            threshold=0.5,
-            client=client,
-            tokenizer=tokenizer,
-            use_cot=True,
-        )
-        explanations[feature.index] = explanation
+    explanations = defaultdict(dict)
+
+    async def process_feature(layer, feature):
+        explanation = await explainer(feature)
+        explanations[layer][feature.index] = explanation
         print(f"Processed feature {feature.index}")
-    
+
     for submodule in submodules:
         path = submodule.module._path
         locations, activations = cache.get(path)
         tasks = [
-            process_feature(feature)
+            process_feature(path, feature)
             for feature in loader(
                 activations,
                 locations,
                 tokens,
-                max_examples=100,
+                max_examples=2000,
             )
         ]
 
         await asyncio.gather(*tasks)
 
-    save_name = f"gemma-{model_size}-w{width}-l0{l0}-l{layer}.json"
-    save_path = os.path.join(output_dir, save_name)
+    save_name = f"gemma-{args.model_size}-w{args.width}-l0{args.l0}-l{args.layer}.json"
+    save_path = os.path.join(args.output_dir, save_name)
     with open(save_path, "w") as f:
         json.dump(explanations, f)
 
-
-EXPLANATIONS_DIR = "/root/neurondb/outputs/explanations"
-
-ARGS = [
-    ("2b", "65k", 116, 18, "deepseek/deepseek-r1-distill-qwen-1.5b", EXPLANATIONS_DIR),
-    ("9b", "131k", 98, 28, "deepseek/deepseek-r1-distill-qwen-1.5b", EXPLANATIONS_DIR), 
-    ("27b", "131k", 72, 34, "deepseek/deepseek-r1-distill-qwen-1.5b", EXPLANATIONS_DIR), 
-]
-
 if __name__ == "__main__":
-    for args in ARGS:
-        asyncio.run(main(*args))
+    args = get_args()
+    asyncio.run(main(args))

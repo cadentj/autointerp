@@ -1,5 +1,6 @@
 import json
 import asyncio
+import os
 
 from openai import AsyncOpenAI
 
@@ -10,6 +11,9 @@ from ..schema import Conversation
 from ..schema.client import PromptLogProbs
 from ..utils import load_tokenizer
 
+SAMPLING_KWARGS = {
+    "temperature": 0.5,
+}
 
 class HTTPClient:
     def __init__(
@@ -22,6 +26,8 @@ class HTTPClient:
         self.model = model
 
     async def generate(self, messages: Conversation, **kwargs):
+        kwargs = {**SAMPLING_KWARGS, **kwargs}
+
         for attempt in range(self.max_retries):
             try:
                 response = await self.client.chat.completions.create(
@@ -54,7 +60,10 @@ class LocalClient(HTTPClient):
 
 
 class OpenRouterClient(HTTPClient):
-    def __init__(self, model: str, api_key: str, max_retries=2):
+    def __init__(self, model: str, max_retries=2):
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        if api_key is None:
+            raise ValueError("OPENROUTER_API_KEY is not set")
         super().__init__(model, "https://openrouter.ai/api/v1", max_retries, api_key)
 
 

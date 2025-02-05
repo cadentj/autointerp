@@ -10,7 +10,6 @@ class Example(NamedTuple):
     activations: TensorType["seq"]
     normalized_activations: TensorType["seq"]
 
-    str_tokens: List[str] = None
     
 class Feature(NamedTuple):
     index: int

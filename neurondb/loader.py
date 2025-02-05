@@ -80,10 +80,11 @@ def _normalize(
     return normalized.round().int()
 
 
-def decile_sampler(
+def quantile_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
-    k: int = 30,
+    n_quantiles: int = 5,
+    n: int = 5,
     train: bool = True,
 ):
     max_activation = activation_windows.max()
@@ -91,31 +92,31 @@ def decile_sampler(
     # Calculate max activation per window
     window_max_activations = activation_windows.max(dim=1).values
     
-    # Calculate decile boundaries
-    deciles = t.linspace(0, max_activation, 11)  # 11 points to create 10 bins
+    # Calculate quantile boundaries
+    boundaries = t.linspace(0, max_activation, n_quantiles + 1)  # n_quantiles + 1 points to create n_quantiles bins
     
-    # Initialize list to store examples from each decile
-    decile_examples = []
+    # Initialize list to store examples from each quantile
+    quantile_examples = []
     
-    # Sample from each decile
-    for i in range(10):
-        lower, upper = deciles[i], deciles[i + 1]
-        # Find windows with max activation in this decile
+    # Sample from each quantile
+    for i in range(n_quantiles):
+        lower, upper = boundaries[i], boundaries[i + 1]
+        # Find windows with max activation in this quantile
         mask = (window_max_activations >= lower) & (window_max_activations <= upper)
-        decile_indices = t.where(mask)[0]
+        quantile_indices = t.where(mask)[0]
         
-        if len(decile_indices) > 0:
-            # Randomly sample up to k//10 examples from this decile
-            num_samples = min(len(decile_indices), k // 10)
-            sampled_indices = decile_indices[t.randperm(len(decile_indices))[:num_samples]]
+        if len(quantile_indices) > 0:
+            # Take first n examples from this quantile
+            num_samples = min(len(quantile_indices), n)
+            selected_indices = quantile_indices[:num_samples]
             
             if train:
-                sampled_indices = sampled_indices[:-1]
+                selected_indices = selected_indices[:-1]  # Take all but last
             else:
-                sampled_indices = [sampled_indices[2]]
+                selected_indices = selected_indices[-1:]  # Take only the last one for test
 
-            for idx in sampled_indices:
-                decile_examples.append(
+            for idx in selected_indices:
+                quantile_examples.append(
                     Example(
                         token_windows[idx],
                         activation_windows[idx],
@@ -124,14 +125,11 @@ def decile_sampler(
                 )
     
     # If we didn't get enough examples, return None
-    if len(decile_examples) < k // 2:
+    min_required = (n_quantiles * n) // 2
+    if len(quantile_examples) < min_required:
         return None
-        
-    # If we got more than k examples, randomly subsample to k
-    if len(decile_examples) > k:
-        decile_examples = [decile_examples[i] for i in t.randperm(len(decile_examples))[:k]]
     
-    return decile_examples
+    return quantile_examples[::-1]
 
 
 def max_activation_sampler(
@@ -165,7 +163,7 @@ def loader(
     activations: TensorType["features"],
     locations: TensorType["features", 3],
     tokens: TensorType["batch", "seq"],
-    sampler: Callable = decile_sampler,
+    sampler: Callable = quantile_sampler,
     indices: List[int] | int = None,
     ctx_len: int = 16,
     max_examples: int = 2_000,
