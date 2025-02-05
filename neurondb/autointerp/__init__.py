@@ -1,6 +1,6 @@
-from .explainer import Explainer
-from .clients import LocalClient, NsClient
+from .explainer import explain
+from .clients import LocalClient, NsClient, OpenRouterClient
 from .query import Query
 from .simulator import simulate
 
-__all__ = ["Explainer", "LocalClient", "Query", "NsClient", "simulate"]
+__all__ = ["explain", "LocalClient", "OpenRouterClient", "Query", "NsClient", "simulate"]

@@ -11,12 +11,12 @@ from ..schema.client import PromptLogProbs
 from ..utils import load_tokenizer
 
 
-class LocalClient:
+class HTTPClient:
     def __init__(
-        self, model: str, base_url="http://localhost:8000/v1", max_retries=2
+        self, model: str, base_url: str, max_retries: int, api_key: str
     ):
         self.client = AsyncOpenAI(
-            base_url=base_url, api_key="EMPTY", timeout=None
+            base_url=base_url, api_key=api_key, timeout=None
         )
         self.max_retries = max_retries
         self.model = model
@@ -46,6 +46,16 @@ class LocalClient:
 
     def postprocess(self, response) -> str:
         return response.choices[0].message.content
+
+
+class LocalClient(HTTPClient):
+    def __init__(self, model: str, max_retries=2):
+        super().__init__(model, "http://localhost:8000/v1", max_retries, "EMPTY")
+
+
+class OpenRouterClient(HTTPClient):
+    def __init__(self, model: str, api_key: str, max_retries=2):
+        super().__init__(model, "https://openrouter.ai/api/v1", max_retries, api_key)
 
 
 class NsClient:

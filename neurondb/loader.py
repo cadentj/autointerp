@@ -110,7 +110,7 @@ def decile_sampler(
             sampled_indices = decile_indices[t.randperm(len(decile_indices))[:num_samples]]
             
             if train:
-                sampled_indices = sampled_indices[0,1]
+                sampled_indices = sampled_indices[:-1]
             else:
                 sampled_indices = [sampled_indices[2]]
 

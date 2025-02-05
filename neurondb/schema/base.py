@@ -9,6 +9,8 @@ class Example(NamedTuple):
     tokens: TensorType["seq"]
     activations: TensorType["seq"]
     normalized_activations: TensorType["seq"]
+
+    str_tokens: List[str] = None
     
 class Feature(NamedTuple):
     index: int

@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "datasets>=2.14.4",
+    "ipykernel>=6.29.5",
     "nnsight>=0.4.1",
     "torchtyping>=0.1.5",
     "triton>=3.1.0",
