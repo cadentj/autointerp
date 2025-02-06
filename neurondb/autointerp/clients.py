@@ -7,17 +7,29 @@ from openai import AsyncOpenAI
 import torch as t
 from typing import List
 from nnsight import LanguageModel
+from anthropic import Anthropic
+from anthropic.types.message_create_params import MessageCreateParamsNonStreaming
+from anthropic.types.messages.batch_create_params import Request
 from ..schema import Conversation
 from ..schema.client import PromptLogProbs
 from ..utils import load_tokenizer
 
+
 class HTTPClient:
     def __init__(
-        self, model: str, base_url: str, max_retries: int, api_key: str
+        self,
+        model: str,
+        base_url: str,
+        max_retries: int,
+        api_key: str,
+        client=None,
     ):
-        self.client = AsyncOpenAI(
-            base_url=base_url, api_key=api_key, timeout=None
-        )
+        if client is None:
+            self.client = AsyncOpenAI(
+                base_url=base_url, api_key=api_key, timeout=None
+            )
+        else:
+            self.client = client
         self.max_retries = max_retries
         self.model = model
 
@@ -25,7 +37,10 @@ class HTTPClient:
         for attempt in range(self.max_retries):
             try:
                 response = await self.client.chat.completions.create(
-                    model=self.model, messages=messages, **kwargs
+                    model=self.model,
+                    messages=messages,
+                    # extra_body={"include_reasoning": True}, # INCLUDE WITH R1 MODELS
+                    **kwargs,
                 )
 
                 if response is None:
@@ -50,15 +65,63 @@ class HTTPClient:
 
 class LocalClient(HTTPClient):
     def __init__(self, model: str, max_retries=2):
-        super().__init__(model, "http://localhost:8000/v1", max_retries, "EMPTY")
+        super().__init__(
+            model, "http://localhost:8000/v1", max_retries, "EMPTY"
+        )
 
 
 class OpenRouterClient(HTTPClient):
     def __init__(self, model: str, max_retries=2):
-        api_key = os.environ.get("OPENROUTER_API_KEY")
+        api_key = os.environ.get("OPENROUTER_KEY")
         if api_key is None:
-            raise ValueError("OPENROUTER_API_KEY is not set")
-        super().__init__(model, "https://openrouter.ai/api/v1", max_retries, api_key)
+            raise ValueError("OPENROUTER_KEY is not set")
+        super().__init__(
+            model, "https://openrouter.ai/api/v1", max_retries, api_key
+        )
+
+
+class AnthropicClient:
+    def __init__(self, model: str, max_retries: int = 2):
+        self.client = Anthropic()
+        self.max_retries = max_retries
+        self.model = model
+
+        self.requests = []
+
+    def _add_cache_control(self, messages: Conversation):
+        # Set second to last message to cache control
+        content = messages[-2]['content']
+        messages[-2]['content'] = [{
+            "type" : "text",
+            "text" : content,
+            "cache_control": {"type": "ephemeral"}
+        }]
+        
+        return messages
+
+    def upload(self):
+        batch = self.client.messages.batches.create(
+            requests=self.requests
+        )
+
+        return batch
+
+    async def generate(self, messages: Conversation, **kwargs): 
+        feature_id = kwargs.pop("feature_id")
+        messages = self._add_cache_control(messages)
+
+        request = Request(
+            custom_id=feature_id,
+            params=MessageCreateParamsNonStreaming(
+                model=self.model,
+                messages=messages,
+                **kwargs
+            )
+        )
+
+        self.requests.append(request)
+
+        return "\\boxed{Added request for " + feature_id + "}"
 
 
 class NsClient:
@@ -90,7 +153,7 @@ class NsClient:
             return_dict=True,
             return_tensors="pt",
             padding=True,
-            truncation=False
+            truncation=False,
         )
 
         assistant_tokens_mask = t.tensor(inputs["assistant_masks"]) == 1
@@ -98,22 +161,26 @@ class NsClient:
 
         return inputs
 
-    def _prepare_response(self, inputs, assistant_logits) -> List[PromptLogProbs]:
+    def _prepare_response(
+        self, inputs, assistant_logits
+    ) -> List[PromptLogProbs]:
         log_probs = []
         for batch_idx, topk_probs in enumerate(assistant_logits):
             assistant_tokens_mask = inputs["assistant_masks"][batch_idx]
             tokens = inputs["input_ids"][batch_idx][assistant_tokens_mask]
             log_probs.append(
                 PromptLogProbs(
-                    indices = topk_probs.indices.tolist(),
-                    values = topk_probs.values.tolist(),
-                    tokens = tokens.tolist(),
+                    indices=topk_probs.indices.tolist(),
+                    values=topk_probs.values.tolist(),
+                    tokens=tokens.tolist(),
                 )
             )
 
         return log_probs
 
-    def generate(self, conversations: List[Conversation]) -> List[PromptLogProbs]:
+    def generate(
+        self, conversations: List[Conversation]
+    ) -> List[PromptLogProbs]:
         inputs = self._prepare_input(conversations)
 
         assistant_logits = []

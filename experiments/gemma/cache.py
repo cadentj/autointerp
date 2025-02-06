@@ -27,7 +27,7 @@ def main(args):
         torch_dtype=t.bfloat16,
     )
 
-    token_save_dir = "/workspace"
+    token_save_dir = "/share/u/caden/neurondb/cache"
     token_save_path = os.path.join(token_save_dir, "tokens.pt")
     tokens = t.load(token_save_path)
 
@@ -40,7 +40,7 @@ def main(args):
         filters={sm.module._path : FEATURE_IDXS for sm in submodules}
     )
 
-    save_dir = f"/workspace/cache/gemma-2-{args.model_size}-w{args.width}-l0{args.l0}-layer{args.layer}"
+    save_dir = f"/share/u/caden/neurondb/cache/gemma-2-{args.model_size}-w{args.width}-l0{args.l0}-layer{args.layer}"
     os.makedirs(save_dir, exist_ok=True)
 
     cache.save_to_disk(

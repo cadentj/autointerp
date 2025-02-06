@@ -11,25 +11,20 @@ class Explainer:
         self,
         client: HTTPClient,
         subject_tokenizer: AutoTokenizer,
-        use_cot: bool = False,
         threshold: float = 0.6,
         insert_as_prompt: bool = False,
-        **generation_kwargs,
     ):
         self.client = client
         self.subject_tokenizer = subject_tokenizer
 
-        self.use_cot = use_cot
         self.threshold = threshold
-        self.generation_kwargs = generation_kwargs
         self.insert_as_prompt = insert_as_prompt
 
-    async def __call__(self, feature: Feature):
-        self.activation_threshold = feature.max_activation * self.threshold
+    async def __call__(self, feature: Feature, **generation_kwargs):
         messages = self._build_prompt(feature)
 
         response = await self.client.generate(
-            messages, **self.generation_kwargs
+            messages, **generation_kwargs
         )
 
         # with open(f"response-{feature.index}.txt", "w") as f:
@@ -46,7 +41,10 @@ class Explainer:
             return "Explanation could not be parsed."
 
     def _get_toks_and_acts(self, example: Example):
-        mask = example.activations > self.activation_threshold
+        example_max_activation = example.activations.max().item()
+        example_threshold = example_max_activation * self.threshold
+
+        mask = example.activations > example_threshold
 
         tokens = example.tokens[mask]
         str_toks = self.subject_tokenizer.batch_decode(tokens)
@@ -74,13 +72,12 @@ class Explainer:
 
         return build_prompt(
             examples=highlighted_examples,
-            use_cot=self.use_cot,
             insert_as_prompt=self.insert_as_prompt,
         )
 
     def _parse_explanation(self, text: str) -> str:
         try:
-            match = re.search(r"\[EXPLANATION\]:\s*(.*)", text, re.DOTALL)
+            match = re.search(r"\\boxed\{(.*?)\}", text)
             return (
                 match.group(1).strip()
                 if match

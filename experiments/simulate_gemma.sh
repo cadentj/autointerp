@@ -1,5 +1,8 @@
 #!/bin/bash
 
+EXPLAINER_MODEL="qwen/qwen-2.5-7b-instruct"
+SIMULATOR_MODEL="Qwen/Qwen2.5-7B-Instruct"
+
 # Define the arguments as an array of parameter sets
 declare -a args=(
     # Format: "model_size width l0 layer"
@@ -15,9 +18,11 @@ for params in "${args[@]}"; do
     
     echo "Running with model_size=$model_size width=$width l0=$l0 layer=$layer"
     
-    python experiments/gemma/cache.py \
+    python experiments/gemma/simulate.py \
         --model-size "$model_size" \
         --width "$width" \
         --l0 "$l0" \
-        --layer "$layer"
+        --layer "$layer" \
+        --explainer-model "$EXPLAINER_MODEL" \
+        --simulator-model "$SIMULATOR_MODEL"
 done

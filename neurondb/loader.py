@@ -82,87 +82,82 @@ def _normalize(
 def quantile_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
-    n_quantiles: int = 5,
     n: int = 5,
-    train: bool = True,
+    n_quantiles: int = 5,
 ):
-    max_activation = activation_windows.max()
-    
-    # Calculate max activation per window
-    window_max_activations = activation_windows.max(dim=1).values
-    
-    # Calculate quantile boundaries
-    boundaries = t.linspace(0, max_activation, n_quantiles + 1)  # n_quantiles + 1 points to create n_quantiles bins
-    
-    # Initialize list to store examples from each quantile
-    quantile_examples = []
-    
-    # Sample from each quantile
-    for i in range(n_quantiles):
-        lower, upper = boundaries[i], boundaries[i + 1]
-        # Find windows with max activation in this quantile
-        mask = (window_max_activations >= lower) & (window_max_activations <= upper)
-        quantile_indices = t.where(mask)[0]
-        
-        if len(quantile_indices) > 0:
-            # Take first n examples from this quantile
-            num_samples = min(len(quantile_indices), n)
-            selected_indices = quantile_indices[:num_samples]
-            
-            if train:
-                selected_indices = selected_indices[:-1]  # Take all but last
-            else:
-                selected_indices = selected_indices[-1:]  # Take only the last one for test
-
-            for idx in selected_indices:
-                quantile_examples.append(
-                    Example(
-                        token_windows[idx],
-                        activation_windows[idx],
-                        _normalize(activation_windows[idx], max_activation),
-                    )
-                )
-    
-    # If we didn't get enough examples, return None
-    min_required = (n_quantiles * n) // 2
-    if len(quantile_examples) < min_required:
+    if len(token_windows) == 0:
         return None
+        
+    max_activation = activation_windows.max()
+    n_examples = len(token_windows)
+    examples_per_quantile = n // n_quantiles
     
-    return quantile_examples[::-1]
+    examples = []
+    for i in range(n_quantiles):
+        start_idx = i * examples_per_quantile
+        end_idx = start_idx + examples_per_quantile if i < n_quantiles - 1 else n_examples
+        
+        for j in range(start_idx, end_idx):
+            examples.append(
+                Example(
+                    token_windows[j],
+                    activation_windows[j],
+                    _normalize(activation_windows[j], max_activation),
+                )
+            )
+    
+    return examples
 
 
 def max_activation_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
     k: int = 20,
-    threshold: float = 0.3,
 ):
-    max_activation = activation_windows.max()
-    max_activation_threshold = threshold * activation_windows.max()
-    mask = activation_windows > max_activation_threshold
-    above_threshold = t.sum(mask, dim=1)
+    if len(token_windows) < k:
+        return None
 
+    max_activation = activation_windows.max()
     examples = [
         Example(
             token_windows[i],
             activation_windows[i],
             _normalize(activation_windows[i], max_activation),
         )
-        for i in range(k + 10)
-        if above_threshold[i] > 0
+        for i in range(k)
     ]
 
-    if len(examples) >= k:
-        return examples[:k]
-    else:
+    return examples
+
+
+def default_sampler(
+    token_windows: TensorType["batch", "seq"],
+    activation_windows: TensorType["batch", "seq"], 
+    n_train: int = 20,
+    n_test: int = 5,
+    train: bool = False,
+):
+    if len(token_windows) < n_train + n_test:
         return None
+
+    if train:
+        return max_activation_sampler(
+            token_windows[:n_train],
+            activation_windows[:n_train],
+        )
+    else:
+        return quantile_sampler(
+            token_windows[n_train:],
+            activation_windows[n_train:],
+            n=n_test,
+        )
 
 
 def loader(
     activations: TensorType["features"],
     locations: TensorType["features", 3],
     tokens: TensorType["batch", "seq"],
-    sampler: Callable = quantile_sampler,
+    sampler: Callable = default_sampler,
     indices: List[int] | int = None,
     ctx_len: int = 16,
     max_examples: int = 2_000,
@@ -193,7 +188,7 @@ def loader(
 
 def load_torch(
     path: str,
-    sampler: Callable = quantile_sampler,
+    sampler: Callable = default_sampler,
     indices: List[int] | int = None,
     ctx_len: int = 16,
     max_examples: int = 100,

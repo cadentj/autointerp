@@ -5,22 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "anthropic>=0.45.2",
     "datasets>=2.14.4",
     "ipykernel>=6.29.5",
-    "nnsight>=0.4.1",
+    "nnsight>=0.4.0",
+    "openai>=1.61.1",
+    "sae-lens>=5.0.0",
     "torchtyping>=0.1.5",
     "triton>=3.1.0",
-    # "vllm==0.6.4", # NOTE: Needs to be this version for simulation...
-    "vllm>=0.7.0",
 ]
 
+# uv pip install -e .
 [tool.setuptools]
 packages = ["neurondb"]
-
-[tool.uv.sources]
-neurondb = { workspace = true }
-
-[dependency-groups]
-dev = [
-    "neurondb",
-]

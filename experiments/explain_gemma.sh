@@ -1,17 +1,6 @@
 #!/bin/bash
 
-EXPLANATIONS_DIR="/root/neurondb/outputs/explanations"
-MODELS=(
-    "Qwen/Qwen2.5-1.5B"
-    "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
-    "meta-llama/Llama-3.1-8B"
-    "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"
-    "meta-llama/Llama-3.3-70B-Instruct"
-    "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
-)
-
-MACHINE=1
-CURRENT_MODEL=${MODELS[$MACHINE]}
+EXPLAINER_MODEL="qwen/qwen-2.5-7b-instruct"
 
 # Define the arguments as an array of parameter sets
 declare -a args=(
@@ -28,10 +17,10 @@ for params in "${args[@]}"; do
     
     echo "Running with model_size=$model_size width=$width l0=$l0 layer=$layer"
     
-    python experiments/explain_gemma.py \
+    python experiments/gemma/explain.py \
         --model-size "$model_size" \
         --width "$width" \
         --l0 "$l0" \
         --layer "$layer" \
-        --explainer-model "$CURRENT_MODEL"
+        --explainer-model "$EXPLAINER_MODEL"
 done

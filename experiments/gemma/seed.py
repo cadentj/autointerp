@@ -32,5 +32,6 @@ def get_tokens(tokenizer):
     mask = ~(tokens == 0).any(dim=1)
     tokens = tokens[mask]
     print(f"Removed {og_shape - tokens.shape[0]} rows containing pad tokens")
+    print("SHAPE", tokens.shape)
 
     return tokens
