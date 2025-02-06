@@ -30,7 +30,10 @@ def get_top_logits(
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 TEMPLATES = {
-    "Qwen/Qwen2.5-7B-Instruct" : os.path.join(CURRENT_DIR, "autointerp/tokenizer_chat_templates/qwen.jinja")
+    "Qwen/Qwen2.5-7B-Instruct" : os.path.join(CURRENT_DIR, "autointerp/tokenizer_chat_templates/qwen.jinja"),
+    "Qwen/Qwen2.5-14B-Instruct" : os.path.join(CURRENT_DIR, "autointerp/tokenizer_chat_templates/qwen.jinja"),
+    "Qwen/Qwen2.5-1.5B-Instruct" : os.path.join(CURRENT_DIR, "autointerp/tokenizer_chat_templates/qwen.jinja"),
+    "Qwen/Qwen2.5-32B-Instruct" : os.path.join(CURRENT_DIR, "autointerp/tokenizer_chat_templates/qwen.jinja")
 }
 
 def load_tokenizer(model_id: str) -> AutoTokenizer:

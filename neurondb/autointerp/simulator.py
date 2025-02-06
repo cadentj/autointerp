@@ -134,6 +134,7 @@ def _parse_and_score(
     - Overall correlation score across all examples
     """
     all_expected_values = []
+    # per_example_expected_values = [] # NOTE: TEMPORARY
     per_example_correlation_scores = []
 
     # For each scored sequence example, compute the expected value and correlation score
@@ -145,6 +146,7 @@ def _parse_and_score(
         )
         per_example_correlation_scores.append(ev_correlation_score)
         all_expected_values.extend(expected_values)
+        # per_example_expected_values.append(expected_values) # NOTE: TEMPORARY
 
     # Compute the correlation score across all examples
     all_ev_correlation_score = _correlation_score(

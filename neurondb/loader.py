@@ -89,13 +89,12 @@ def quantile_sampler(
         return None
         
     max_activation = activation_windows.max()
-    n_examples = len(token_windows)
     examples_per_quantile = n // n_quantiles
     
     examples = []
     for i in range(n_quantiles):
         start_idx = i * examples_per_quantile
-        end_idx = start_idx + examples_per_quantile if i < n_quantiles - 1 else n_examples
+        end_idx = start_idx + examples_per_quantile
         
         for j in range(start_idx, end_idx):
             examples.append(
@@ -194,7 +193,9 @@ def load_torch(
     max_examples: int = 100,
 ) -> Generator[Tuple[List[Example], float], None, None]:
     data = t.load(path)
-    tokens = t.load(data["tokens_path"])
+    tokens_path_patch = "/root/neurondb/cache/tokens.pt"
+    # tokens = t.load(data["tokens_path"])
+    tokens = t.load(tokens_path_patch)
 
     seq_len = tokens.shape[1]
     if seq_len % ctx_len != 0 and (seq_len - 1) % ctx_len == 0:

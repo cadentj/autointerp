@@ -1,7 +1,8 @@
 #!/bin/bash
 
-EXPLAINER_MODEL="qwen/qwen-2.5-7b-instruct"
-SIMULATOR_MODEL="Qwen/Qwen2.5-7B-Instruct"
+EXPLAINER_MODEL="meta-llama/llama-3.3-70b-instruct"
+# EXPLAINER_MODEL="qwen/qwen-2.5-7b-instruct"
+SIMULATOR_MODEL="Qwen/Qwen2.5-32B-Instruct"
 
 # Define the arguments as an array of parameter sets
 declare -a args=(
