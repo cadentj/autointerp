@@ -1,0 +1,29 @@
+“hc-mats/sports-gemma-2-2b-top-1000”
+
+Sports features, descriptions of things related to sports, specifically baseball, basketball, and football. Famous sports players.
+
+“kh4dien/mc-pronoun"
+
+Pronoun related words such as he/she, they/them, etc.
+
+“hc-mats/subject-verb-agreement”
+
+Features related to grammatical concepts such as nouns or verbs. Features relating to singular or plural nouns, features relating to verbs like have, be, go, do.
+
+“kh4dien/mc-sentiment”
+
+Features relating to positive or negative sentiment.
+
+# CLAUDE REFINED
+
+"hc-mats/sports-gemma-2-2b-top-1000"
+Sports-related terms, activities, and concepts including team sports, athletic competitions, and professional leagues. This encompasses baseball concepts like pitching, batting, fielding, base running, innings, and statistics, along with famous baseball players throughout history. Basketball terminology including shooting, dribbling, defense, offensive plays, court positions, and legendary basketball players and teams. Football concepts covering offensive and defensive strategies, player positions, scoring methods, game rules, historic NFL moments, and notable football athletes. Sports equipment, venues, championship events, training methods, coaching philosophies, and memorable sports moments.
+
+"kh4dien/mc-pronoun"
+Words and phrases related to personal pronouns and their various forms in language usage. This includes subject pronouns like he, she, they, it, we, and you; object pronouns such as him, her, them, us, and me; possessive pronouns including his, hers, theirs, ours, and yours; reflexive pronouns like himself, herself, themselves, itself, and ourselves. Also covers demonstrative pronouns like this, that, these, and those; relative pronouns such as who, whom, whose, which, and that; and indefinite pronouns including anyone, everyone, someone, no one, and anybody. Includes gender-specific, gender-neutral, and collective pronoun usage in various contexts.
+
+"hc-mats/subject-verb-agreement"
+Grammatical elements focusing on the relationship between nouns and verbs in sentence construction. This encompasses singular and plural noun forms, regular and irregular verb conjugations, and proper verb usage patterns. Includes various forms of common verbs like have/has, am/is/are, go/goes, do/does, and their past tense variations. Covers special cases like collective nouns, compound subjects, and intervening phrases between subjects and verbs. Also includes grammatical number agreement, tense consistency, and proper usage of helping verbs. Features sentence structures demonstrating both standard and exceptional cases of matching singular and plural subjects with their corresponding verb forms, including complex noun phrases and coordinated subjects.
+
+"kh4dien/mc-sentiment"
+Words, phrases, and expressions that convey emotional tone, attitude, and feeling in language. This includes strongly positive terms expressing joy, excitement, approval, and satisfaction; negative terms conveying disappointment, anger, sadness, and disapproval; and neutral language for objective or balanced expression. Encompasses emotional intensifiers, modifiers, and qualifiers that strengthen or soften sentiment. Includes context-dependent emotional markers, idiomatic expressions with positive or negative connotations, and words that describe various degrees of emotional response. Covers both explicit sentiment indicators and subtle emotional undertones in language usage.

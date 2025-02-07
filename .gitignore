@@ -12,7 +12,7 @@ wheels/
 
 # Cache
 *.pkl
-# *.pt
+*.pt
 
 # UV
 uv.lock

@@ -193,9 +193,9 @@ def load_torch(
     max_examples: int = 100,
 ) -> Generator[Tuple[List[Example], float], None, None]:
     data = t.load(path)
-    tokens_path_patch = "/root/neurondb/cache/tokens.pt"
-    # tokens = t.load(data["tokens_path"])
-    tokens = t.load(tokens_path_patch)
+    # tokens_path_patch = "/root/neurondb/cache/tokens.pt"
+    tokens = t.load(data["tokens_path"])
+    # tokens = t.load(tokens_path_patch)
 
     seq_len = tokens.shape[1]
     if seq_len % ctx_len != 0 and (seq_len - 1) % ctx_len == 0:

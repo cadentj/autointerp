@@ -6,9 +6,11 @@ from openai import AsyncOpenAI
 
 import torch as t
 from typing import List
-from nnsight import LanguageModel
+from transformers import AutoModelForCausalLM
 from anthropic import Anthropic
-from anthropic.types.message_create_params import MessageCreateParamsNonStreaming
+from anthropic.types.message_create_params import (
+    MessageCreateParamsNonStreaming,
+)
 from anthropic.types.messages.batch_create_params import Request
 from ..schema import Conversation
 from ..schema.client import PromptLogProbs
@@ -90,33 +92,31 @@ class AnthropicClient:
 
     def _add_cache_control(self, messages: Conversation):
         # Set second to last message to cache control
-        content = messages[-2]['content']
-        messages[-2]['content'] = [{
-            "type" : "text",
-            "text" : content,
-            "cache_control": {"type": "ephemeral"}
-        }]
-        
+        content = messages[-2]["content"]
+        messages[-2]["content"] = [
+            {
+                "type": "text",
+                "text": content,
+                "cache_control": {"type": "ephemeral"},
+            }
+        ]
+
         return messages
 
     def upload(self):
-        batch = self.client.messages.batches.create(
-            requests=self.requests
-        )
+        batch = self.client.messages.batches.create(requests=self.requests)
 
         return batch
 
-    async def generate(self, messages: Conversation, **kwargs): 
+    async def generate(self, messages: Conversation, **kwargs):
         feature_id = kwargs.pop("feature_id")
         messages = self._add_cache_control(messages)
 
         request = Request(
             custom_id=feature_id,
             params=MessageCreateParamsNonStreaming(
-                model=self.model,
-                messages=messages,
-                **kwargs
-            )
+                model=self.model, messages=messages, **kwargs
+            ),
         )
 
         self.requests.append(request)
@@ -126,11 +126,13 @@ class AnthropicClient:
 
 class NsClient:
     def __init__(self, model_id: str, k=15, **model_kwargs):
-        model = LanguageModel(
-            model_id, device_map="auto", dispatch=True, **model_kwargs
+        model = AutoModelForCausalLM.from_pretrained(
+            model_id,
+            device_map="auto",
+            attn_implementation="flash_attention_2",
+            **model_kwargs,
         )
         tokenizer = load_tokenizer(model_id)
-        model.tokenizer = tokenizer
 
         self.k = k
         self.model = model
@@ -156,18 +158,20 @@ class NsClient:
             truncation=False,
         )
 
-        assistant_tokens_mask = t.tensor(inputs["assistant_masks"]) == 1
-        inputs["assistant_masks"] = assistant_tokens_mask
+        assistant_mask = inputs.pop("assistant_masks")
+        assistant_tokens_mask = t.tensor(assistant_mask) == 1
 
-        return inputs
+        inputs = inputs.to(self.model.device)
+
+        return inputs, assistant_tokens_mask
 
     def _prepare_response(
-        self, inputs, assistant_logits
+        self, inputs, assistant_logits, assistant_tokens_mask
     ) -> List[PromptLogProbs]:
         log_probs = []
         for batch_idx, topk_probs in enumerate(assistant_logits):
-            assistant_tokens_mask = inputs["assistant_masks"][batch_idx]
-            tokens = inputs["input_ids"][batch_idx][assistant_tokens_mask]
+            assistant_mask = assistant_tokens_mask[batch_idx]
+            tokens = inputs["input_ids"][batch_idx][assistant_mask]
             log_probs.append(
                 PromptLogProbs(
                     indices=topk_probs.indices.tolist(),
@@ -181,20 +185,20 @@ class NsClient:
     def generate(
         self, conversations: List[Conversation]
     ) -> List[PromptLogProbs]:
-        inputs = self._prepare_input(conversations)
+        inputs, assistant_tokens_mask = self._prepare_input(conversations)
 
         assistant_logits = []
-        with self.model.trace(inputs):
-            logits = self.model.lm_head.output
+        logits = self.model(**inputs).logits
 
-            for batch_idx, conversation_mask in enumerate(
-                inputs["assistant_masks"]
-            ):
-                logits_slice = logits[batch_idx][conversation_mask]
-                probs = logits_slice.log_softmax(dim=-1)
-                top_probs = probs.topk(self.k, dim=-1)
-                probs = top_probs.save()
-                assistant_logits.append(probs)
+        for batch_idx, conversation_mask in enumerate(
+            assistant_tokens_mask
+        ):
+            logits_slice = logits[batch_idx][conversation_mask]
+            probs = logits_slice.log_softmax(dim=-1)
+            top_probs = probs.topk(self.k, dim=-1)
+            assistant_logits.append(top_probs)
 
-        response = self._prepare_response(inputs, assistant_logits)
+        response = self._prepare_response(
+            inputs, assistant_logits, assistant_tokens_mask
+        )
         return response
