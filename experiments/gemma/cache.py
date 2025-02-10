@@ -1,6 +1,9 @@
 import os 
-import argparse
 import torch as t
+
+import sys
+
+sys.path.append("/share/u/caden/neurondb/experiments")
 
 from models.gemma import load_gemma
 from neurondb import cache_activations
@@ -8,24 +11,10 @@ from neurondb import cache_activations
 from seed import set_seed
 
 set_seed(42)
-FEATURE_IDXS = list(range(250))
+FEATURE_IDXS = list(range(100))
 
-def get_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model-size", type=str)
-    parser.add_argument("--width", type=str)
-    parser.add_argument("--l0", type=int)
-    parser.add_argument("--layer", type=int)
-    return parser.parse_args()
-
-def main(args):
-    model, submodules = load_gemma(
-        model_size=args.model_size,
-        width=args.width,
-        l0=args.l0,
-        layers = [args.layer],
-        torch_dtype=t.bfloat16,
-    )
+def main():
+    model, submodules = load_gemma()
 
     token_save_dir = "/share/u/caden/neurondb/cache"
     token_save_path = os.path.join(token_save_dir, "tokens.pt")
@@ -40,7 +29,7 @@ def main(args):
         filters={sm.module._path : FEATURE_IDXS for sm in submodules}
     )
 
-    save_dir = f"/share/u/caden/neurondb/cache/gemma-2-{args.model_size}-w{args.width}-l0{args.l0}-layer{args.layer}"
+    save_dir = "/share/u/caden/neurondb/cache/gemma-2-2b"
     os.makedirs(save_dir, exist_ok=True)
 
     cache.save_to_disk(
@@ -49,5 +38,4 @@ def main(args):
     )
 
 if __name__ == "__main__":
-    args = get_args()
-    main(args)
+    main()

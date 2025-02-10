@@ -3,7 +3,7 @@ from ...schema.client import Conversation
 from typing import List, Dict
 from transformers import AutoTokenizer
 
-
+MAX_ACTIVATION = 9
 UNKNOWN_ACTIVATION_STRING = "unknown"
 
 PROMPT_TEMPLATE = """Neuron {index}
@@ -14,20 +14,20 @@ ASSISTANT_TEMPLATE = """Activations:
 {example}
 <end>"""
 
-SYSTEM_PROMPT = """We're studying neurons in a neural network.
+SYSTEM_PROMPT = f"""We're studying neurons in a neural network.
 Each neuron looks for some particular thing in a short document.
 Look at summary of what the neuron does, and try to predict how it will fire on each token.
 
-The activation format is token<tab>activation, activations go from 0 to 9, "unknown" indicates an unknown activation. Most activations will be 0.
+The activation format is token<tab>activation, activations go from 0 to {MAX_ACTIVATION}, "unknown" indicates an unknown activation. Most activations will be 0.
 """
 
 
 def _normalize_activations(
     activations: List[float], max_activation: float
 ) -> List[int]:
-    """Normalize activations to be between 0 and 9."""
+    """Normalize activations to be between 0 and MAX_ACTIVATION."""
     return [
-        int(activation / max_activation * 9) for activation in activations
+        int(activation / max_activation * MAX_ACTIVATION) for activation in activations
     ]
 
 

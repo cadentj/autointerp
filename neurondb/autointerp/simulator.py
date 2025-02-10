@@ -113,11 +113,16 @@ def _score(
     return ev_correlation_score, expected_values
 
 
+def _round_predictions(predictions: List[float]) -> List[float]:
+    return [round(p) for p in predictions]
+
+
 def _parse_and_score(
     true_activations: List[List[float]],
     simulation_results: List[PromptLogProbs],
     tab_id: int,
-) -> Tuple[List[float], float]:
+    return_predictions: bool = False,
+) -> Tuple[List[float], float, List[List[float]]]:
     """Computes correlation scores between true activations and predicted values.
 
     Takes two inputs:
@@ -132,9 +137,10 @@ def _parse_and_score(
     Returns:
     - Per-example correlation scores between true and predicted activations
     - Overall correlation score across all examples
+    - (optional) Per-example expected values
     """
     all_expected_values = []
-    # per_example_expected_values = [] # NOTE: TEMPORARY
+    per_example_expected_values = []
     per_example_correlation_scores = []
 
     # For each scored sequence example, compute the expected value and correlation score
@@ -146,13 +152,20 @@ def _parse_and_score(
         )
         per_example_correlation_scores.append(ev_correlation_score)
         all_expected_values.extend(expected_values)
-        # per_example_expected_values.append(expected_values) # NOTE: TEMPORARY
+        per_example_expected_values.append(_round_predictions(expected_values))
 
     # Compute the correlation score across all examples
     all_ev_correlation_score = _correlation_score(
         np.array(true_activations).flatten(),
         np.array(all_expected_values),
     )
+
+    if return_predictions:
+        return (
+            per_example_correlation_scores,
+            all_ev_correlation_score,
+            per_example_expected_values,
+        )
 
     return per_example_correlation_scores, all_ev_correlation_score
 
@@ -170,6 +183,7 @@ def simulate(
     examples: List[Example],
     client: NsClient,
     subject_tokenizer: AutoTokenizer,
+    return_predictions: bool = False,
 ) -> float:
     simulator_tokenizer = client.tokenizer
 
@@ -186,6 +200,8 @@ def simulate(
     ]
 
     true_activations = [example.activations.tolist() for example in examples]
-    result = _parse_and_score(true_activations, responses, tab_id)
+    result = _parse_and_score(
+        true_activations, responses, tab_id, return_predictions
+    )
 
     return result

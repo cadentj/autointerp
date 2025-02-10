@@ -35,13 +35,13 @@ class HTTPClient:
         self.max_retries = max_retries
         self.model = model
 
-    async def generate(self, messages: Conversation, **kwargs):
+    async def generate(self, messages: Conversation, extra_body: dict = {}, **kwargs):
         for attempt in range(self.max_retries):
             try:
                 response = await self.client.chat.completions.create(
                     model=self.model,
                     messages=messages,
-                    # extra_body={"include_reasoning": True}, # INCLUDE WITH R1 MODELS
+                    extra_body=extra_body,
                     **kwargs,
                 )
 
@@ -126,12 +126,20 @@ class AnthropicClient:
 
 class NsClient:
     def __init__(self, model_id: str, k=15, **model_kwargs):
-        model = AutoModelForCausalLM.from_pretrained(
-            model_id,
-            device_map="auto",
-            attn_implementation="flash_attention_2",
-            **model_kwargs,
+        # model = AutoModelForCausalLM.from_pretrained(
+        #     model_id,
+        #     device_map="auto",
+        #     attn_implementation="flash_attention_2",
+        #     **model_kwargs,
+        # )
+        from unsloth import FastLanguageModel
+
+        model, tokenizer = FastLanguageModel.from_pretrained(
+            model_name = model_id,
+            dtype = "bfloat16",
+            load_in_4bit = False,
         )
+        FastLanguageModel.for_inference(model)
         tokenizer = load_tokenizer(model_id)
 
         self.k = k

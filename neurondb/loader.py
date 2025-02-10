@@ -4,7 +4,6 @@ import torch as t
 from torchtyping import TensorType
 from tqdm import tqdm
 
-from .caching import Cache
 from .schema import Example, Feature
 
 

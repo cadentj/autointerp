@@ -2,7 +2,8 @@ import re
 from transformers import AutoTokenizer
 
 from ..schema.base import Feature, Example
-from .prompts.explainer_prompt import build_prompt
+from .prompts.explainer_prompt_w_acts import build_prompt as build_prompt_w_acts
+from .prompts.explainer_prompt import build_prompt as build_prompt_no_acts
 from .clients import HTTPClient
 
 
@@ -13,12 +14,16 @@ class Explainer:
         subject_tokenizer: AutoTokenizer,
         threshold: float = 0.6,
         insert_as_prompt: bool = False,
+        verbose: bool = False,
+        activations: bool = False
     ):
         self.client = client
         self.subject_tokenizer = subject_tokenizer
-
+        self.verbose = verbose
         self.threshold = threshold
         self.insert_as_prompt = insert_as_prompt
+        self.prompt_builder = build_prompt_w_acts if activations else build_prompt_no_acts
+        self.activations = activations
 
     async def __call__(self, feature: Feature, **generation_kwargs):
         messages = self._build_prompt(feature)
@@ -27,11 +32,12 @@ class Explainer:
             messages, **generation_kwargs
         )
 
-        # with open(f"response-{feature.index}.txt", "w") as f:
-        #     for message in messages:
-        #         f.write(f"{message['role'].upper()}:\n\n")
-        #         f.write(message["content"] + "\n\n")
-        #     f.write(response)
+        if self.verbose:
+            with open(f"response-{feature.index}.txt", "w") as f:
+                for message in messages:
+                    f.write(f"{message['role'].upper()}:\n\n")
+                    f.write(message["content"] + "\n\n")
+                f.write(response)
 
         try:
             return self._parse_explanation(response)
@@ -60,17 +66,18 @@ class Explainer:
             index = i + 1  # Start at 1
             formatted = self._highlight(index, example)
 
-            acts = ", ".join(
-                f'("{item[0]}", {item[1]})'
-                for item in self._get_toks_and_acts(example)
-            )
-            formatted += "\nActivations: " + acts
+            if self.activations:
+                acts = ", ".join(
+                    f'("{item[0]}", {item[1]})'
+                    for item in self._get_toks_and_acts(example)
+                )
+                formatted += "\nActivations: " + acts
 
             highlighted_examples.append(formatted)
 
         highlighted_examples = "\n".join(highlighted_examples)
 
-        return build_prompt(
+        return self.prompt_builder(
             examples=highlighted_examples,
             insert_as_prompt=self.insert_as_prompt,
         )
