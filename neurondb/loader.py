@@ -134,7 +134,8 @@ def default_sampler(
     activation_windows: TensorType["batch", "seq"], 
     n_train: int = 20,
     n_test: int = 5,
-    train: bool = False,
+    train: bool = True,
+    **sampler_kwargs,
 ):
     if len(token_windows) < n_train + n_test:
         return None
@@ -160,6 +161,7 @@ def loader(
     indices: List[int] | int = None,
     ctx_len: int = 16,
     max_examples: int = 2_000,
+    **sampler_kwargs,
 ) -> Generator[Feature, None, None]:
     available_features = _get_valid_features(locations, indices)
 
@@ -174,7 +176,7 @@ def loader(
             _activations, _locations, tokens, ctx_len, max_examples
         )
 
-        examples = sampler(token_windows, activation_windows)
+        examples = sampler(token_windows, activation_windows, **sampler_kwargs)
 
         if examples is None:
             print(f"Not enough examples found for feature {feature}")
@@ -191,6 +193,7 @@ def load_torch(
     indices: List[int] | int = None,
     ctx_len: int = 16,
     max_examples: int = 100,
+    **sampler_kwargs,
 ) -> Generator[Tuple[List[Example], float], None, None]:
     data = t.load(path)
     # tokens_path_patch = "/root/neurondb/cache/tokens.pt"
@@ -209,5 +212,6 @@ def load_torch(
         indices,
         ctx_len,
         max_examples,
+        **sampler_kwargs,
     ):
         yield f

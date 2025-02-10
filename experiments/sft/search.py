@@ -121,6 +121,17 @@ ablations = {
     (verbs, pronouns) : pronouns_query,
 }
 
+# ablations_flipped = {
+#     (sentiment, verbs) : verbs_query,
+#     (pronouns, sports) : pronouns_query,
+#     (sports, pronouns) : sports_query,
+#     (verbs, sentiment) : sentiment_query,
+#     (sports, sentiment) : sports_query,
+#     (sports, verbs) : sports_query,
+#     (pronouns, sentiment) : pronouns_query,
+#     (pronouns, verbs) : pronouns_query,
+# }
+
 results = {}
 
 for (a, b), query in ablations.items():
@@ -129,6 +140,10 @@ for (a, b), query in ablations.items():
     filtered_similarities = {k:v for k,v in sorted_similarities if v["similarity"] > 0.5}
     results[(a, b)] = filtered_similarities
 
+
+# %%
+
+results
 
 # %%
 

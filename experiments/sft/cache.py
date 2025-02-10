@@ -9,15 +9,21 @@ from neurondb import cache_activations
 from seed import set_seed
 
 set_seed(42)
-with open("/share/u/caden/neurondb/experiments/sft/all_indices.json", "r") as f:
+with open("/share/u/caden/neurondb/experiments/sft/gender_indices.json", "r") as f:
     all_indices = json.load(f)
 
 def main():
+
+    layers = [int(l.split(".")[-1]) for l in all_indices.keys()]
     model, submodules = load_gemma(
         model_size="2b",
-        width="16k",
+        # width="16k",
+        load_dicts=True,
+        layers=layers,
         torch_dtype=t.bfloat16,
     )
+
+    print(layers)
 
     token_save_dir = "/share/u/caden/neurondb/cache"
     token_save_path = os.path.join(token_save_dir, "tokens.pt")
@@ -32,7 +38,7 @@ def main():
         filters=all_indices
     )
 
-    save_dir = "/share/u/caden/neurondb/cache/steering_finetuning"
+    save_dir = "/share/u/caden/neurondb/cache/gender"
     os.makedirs(save_dir, exist_ok=True)
 
     cache.save_to_disk(

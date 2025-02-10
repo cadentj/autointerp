@@ -71,11 +71,11 @@ class Cache:
             nonzero_locations = t.nonzero(latents.abs() > 1e-5)
             nonzero_activations = latents[latents.abs() > 1e-5]
 
-        if self.filters == {}:
+        filter = self.filters.get(module_path, None)
+        if filter is None:
             return nonzero_locations, nonzero_activations
 
-        selected_features = self.filters[module_path]
-        mask = t.isin(nonzero_locations[:, 2], selected_features)
+        mask = t.isin(nonzero_locations[:, 2], filter)
         return nonzero_locations[mask], nonzero_activations[mask]
 
     def finish(self):

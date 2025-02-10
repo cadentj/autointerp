@@ -1,7 +1,6 @@
 import asyncio
 import os
 import json
-import argparse
 
 from collections import defaultdict
 from seed import set_seed
@@ -66,6 +65,9 @@ async def main(feature_save_dir: str):
             pbar.update(1)
 
     for file in os.listdir(feature_save_dir):
+        if not file.endswith(".pt"):
+            continue
+        
         # Process features directly from generator
         features = [f for f in load_torch(os.path.join(feature_save_dir, file), max_examples=2_000)]
 
@@ -80,6 +82,6 @@ async def main(feature_save_dir: str):
     pbar.close()
 
 if __name__ == "__main__":
-    feature_save_dir = "/share/u/caden/neurondb/cache/steering_finetuning"
+    feature_save_dir = "/share/u/caden/neurondb/cache/gender"
 
     asyncio.run(main(feature_save_dir))

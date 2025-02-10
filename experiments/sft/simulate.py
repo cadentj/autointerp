@@ -29,7 +29,7 @@ def main(save_dir):
 
     for layer, layer_explanations in explanations.items():
         feature_save_path = f"{save_dir}/{layer}.pt"
-        for feature in load_torch(feature_save_path, max_examples=2_000):
+        for feature in load_torch(feature_save_path, max_examples=2_000, train=False):
             examples = feature.examples
 
             feature_index = feature.index
@@ -47,8 +47,8 @@ def main(save_dir):
             )
 
     simulator_model_name = SIMULATOR_MODEL.split("/")[-1]
-    with open(f"{save_dir}/{explainer_model_name}-simulated-by-{simulator_model_name}.json", "w") as f:
-        json.dump(results, f)
+    # with open(f"{save_dir}/{explainer_model_name}-simulated-by-{simulator_model_name}.json", "w") as f:
+    #     json.dump(results, f)
 
 if __name__ == "__main__":
     save_dir = "/share/u/caden/neurondb/cache/steering_finetuning"

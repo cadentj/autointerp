@@ -1,0 +1,30 @@
+{
+    "feats_to_ablate": {
+        "model.layers.0": [725, 13685, 14111], 
+        "model.layers.1": [2871, 13415], 
+        "model.layers.2": [5851, 7226, 12818], 
+        "model.layers.3": [9949], 
+        "model.layers.4": [4675, 7401, 12889], 
+        "model.layers.5": [11682, 13524], 
+        "model.layers.6": [7008], 
+        "model.layers.7": [3709],
+        "model.layers.8": [14086], 
+        "model.layers.9": [], 
+        "model.layers.10": [], 
+        "model.layers.11": [], 
+        "model.layers.12": [], 
+        "model.layers.13": [], 
+        "model.layers.14": [], 
+        "model.layers.15": [], 
+        "model.layers.16": [], 
+        "model.layers.17": [], 
+        "model.layers.18": [], 
+        "model.layers.19": [], 
+        "model.layers.20": [], 
+        "model.layers.21": [], 
+        "model.layers.22": [], 
+        "model.layers.23": [], 
+        "model.layers.24": [],
+        "model.layers.25": []
+    }
+}
