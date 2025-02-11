@@ -1,1 +1,1 @@
-from .simulator_dataset import SimulatorDataset, prepare_tokenizer
+from .simulator_dataset import SimulatorDataset, prepare_tokenizer, SIMULATOR_PROMPT

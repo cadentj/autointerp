@@ -16,3 +16,6 @@ wheels/
 
 # UV
 uv.lock
+
+# Wandb
+wandb/

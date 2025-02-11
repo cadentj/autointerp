@@ -8,9 +8,10 @@ SEP = AddedToken("<|sep|>")
 UNK = AddedToken("<|unk|>")
 
 # No space before input bc <|sep|> is added there.
-PROMPT = """## Description: {explanation}
+SIMULATOR_PROMPT = """## Description: {explanation}
 
 ## Input:{example}"""
+
 
 def prepare_tokenizer(tokenizer: AutoTokenizer):
     additional_special_tokens = tokenizer.additional_special_tokens
@@ -53,7 +54,7 @@ class SimulatorDataset(Dataset):
 
         self._build_dataset()
 
-    def _get_response(
+    def _get_example(
         self, example_tokens: List[int], predicted_activations: List[int]
     ) -> Tuple[str, str]:
         # Turn ids into str tokens
@@ -74,9 +75,6 @@ class SimulatorDataset(Dataset):
             simulator_str_tokens = self.simulator_tokenizer.batch_decode(
                 simulator_tokens
             )
-
-            if len(simulator_str_tokens) > 1:
-                print(simulator_str_tokens)
 
             # Add all tokens but the last, setting a trash prediction
             for non_last_token in simulator_str_tokens[:-1]:
@@ -132,28 +130,27 @@ class SimulatorDataset(Dataset):
                     true_activations = example.activations.tolist()
 
                     # Get the formatted response and labels
-                    response, labels, response_len = self._get_response(
+                    formatted_example, labels, example_len = self._get_example(
                         example.tokens, predicted_activations
                     )
-
-                    prompt = PROMPT.format(
-                        explanation=explanation,
-                        example=response,
+                    
+                    prompt = SIMULATOR_PROMPT.format(
+                        explanation=explanation, example=formatted_example
                     )
 
                     self.data.append(
                         {
                             "feature_index": feature_index,
                             "layer": layer,
-                            "prompt": prompt,
+                            "explanation": explanation,
+                            "example" : formatted_example,
+                            "prompt" : prompt,
                             "true_activations": true_activations,
                             "predicted_activations": predicted_activations,
                             "labels": labels,
-                            "labels_start": -response_len,
+                            "completion_start": -example_len,
                         }
                     )
-
-            break
 
     def __len__(self):
         return len(self.data)
