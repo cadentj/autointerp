@@ -26,21 +26,16 @@ class Feature(NamedTuple):
 
         def _to_string(tokens: TensorType["seq"], activations: TensorType["seq"]) -> str:
             result = []
-            i = 0
-
             max_act = activations.max()
             _threshold = max_act * threshold
 
-            while i < len(tokens):
+            for i in range(len(tokens)):
                 if activations[i] > _threshold:
-                    result.append("<mark>")
-                    while i < len(tokens) and activations[i] > _threshold:
-                        result.append(tokens[i])
-                        i += 1
-                    result.append("</mark>")
+                    # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
+                    opacity = 0.2 + 0.8 * (activations[i] / max_act)
+                    result.append(f'<mark style="opacity: {opacity:.2f}">{tokens[i]}</mark>')
                 else:
                     result.append(tokens[i])
-                    i += 1
             
             return "".join(result)
         

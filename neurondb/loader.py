@@ -204,8 +204,8 @@ def load_torch(
         tokens = tokens[:, 1:]
 
     for f in loader(
-        data["activations"],
-        data["locations"],
+        data["activations"].cpu(),
+        data["locations"].cpu(),
         tokens,
         sampler,
         indices,
