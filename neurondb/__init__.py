@@ -1,6 +1,7 @@
 from .neuronpedia import load_neuronpedia
 from .loader import load_torch, loader, default_sampler
 from .caching import cache_activations
+from .schema import Feature, Example
 
 __all__ = [
     "load_neuronpedia",
@@ -10,4 +11,6 @@ __all__ = [
     "default_sampler",
     "quantile_sampler",
     "max_activation_sampler",
+    "Feature",
+    "Example",
 ]

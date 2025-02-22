@@ -17,11 +17,9 @@ FEATURE_SAVE_DIR = "/share/u/caden/neurondb/experiments/crosscoders/outputs"
 GENERATION_KWARGS = {
     "temperature": 0.5,
     "max_tokens": 2000,
-}
-PROVIDER_KWARGS = {
     "provider": {
         "order": [
-            "Novita"  # bf16, not fp8 or fp16
+            "Lambda"
         ]
     }
 }
@@ -57,7 +55,7 @@ async def main():
         async with semaphore:  # Implement semaphore here
             index = str(feature.index)
             explanation = await explainer(
-                feature, extra_body=PROVIDER_KWARGS, **GENERATION_KWARGS
+                feature, **GENERATION_KWARGS
             )
             explanations[index] = explanation
             pbar.update(1)
@@ -94,8 +92,6 @@ async def main():
             # Save after each batch of 100
             with open(output_file, "w") as f:
                 json.dump(explanations, f)
-
-            break
 
         pbar.close()
 

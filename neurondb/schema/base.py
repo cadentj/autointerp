@@ -1,4 +1,4 @@
-from typing import List, Dict, NamedTuple
+from typing import List, Dict, NamedTuple, Optional
 
 from torchtyping import TensorType
 from transformers import AutoTokenizer
@@ -9,12 +9,13 @@ class Example(NamedTuple):
     tokens: TensorType["seq"]
     activations: TensorType["seq"]
     normalized_activations: TensorType["seq"]
-
+    quantile: Optional[int] = None
     
 class Feature(NamedTuple):
     index: int
     max_activation: float
     examples: List[Example]
+    random_examples: List[Example]
 
     def display(
         self,

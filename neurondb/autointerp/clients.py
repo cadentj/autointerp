@@ -12,8 +12,9 @@ from anthropic.types.message_create_params import (
     MessageCreateParamsNonStreaming,
 )
 from anthropic.types.messages.batch_create_params import Request
-from ..schema import Conversation
-from ..schema.client import PromptLogProbs
+import httpx
+
+from ..schema.client import PromptLogProbs, Response, Conversation
 from ..utils import load_tokenizer
 
 
@@ -27,28 +28,38 @@ class HTTPClient:
         client=None,
     ):
         if client is None:
-            self.client = AsyncOpenAI(
-                base_url=base_url, api_key=api_key, timeout=None
-            )
+            self.client = httpx.AsyncClient()
         else:
             self.client = client
+        self.headers = {"Authorization": f"Bearer {api_key}"}
+        self.url = base_url
         self.max_retries = max_retries
         self.model = model
 
-    async def generate(self, messages: Conversation, extra_body: dict = {}, **kwargs):
+    async def generate(
+        self, messages: Conversation, raw: bool = False, **kwargs
+    ):
         for attempt in range(self.max_retries):
             try:
-                response = await self.client.chat.completions.create(
-                    model=self.model,
-                    messages=messages,
-                    extra_body=extra_body,
-                    **kwargs,
+                response = await self.client.post(
+                    url=self.url,
+                    headers=self.headers,
+                    json={
+                        "model": self.model,
+                        "messages": messages,
+                        **kwargs,
+                    },
                 )
 
                 if response is None:
                     raise ValueError("Response is None")
 
-                return self.postprocess(response)
+                response = Response(**response.json())
+
+                if raw:
+                    return response
+                else:
+                    return self.postprocess(response)
 
             except json.JSONDecodeError as e:
                 print(
@@ -64,7 +75,7 @@ class HTTPClient:
     def postprocess(self, response) -> str:
         return response.choices[0].message.content
 
-
+# NOTE: Not tested with httpx
 class LocalClient(HTTPClient):
     def __init__(self, model: str, max_retries=2):
         super().__init__(
@@ -72,13 +83,16 @@ class LocalClient(HTTPClient):
         )
 
 
+
 class OpenRouterClient(HTTPClient):
     def __init__(self, model: str, max_retries=2):
-        api_key = os.environ.get("OPENROUTER_KEY")
-        if api_key is None:
-            raise ValueError("OPENROUTER_KEY is not set")
+        # api_key = os.environ.get("OPENROUTER_KEY")
+        # if api_key is None:
+        #     raise ValueError("OPENROUTER_KEY is not set")
+
+
         super().__init__(
-            model, "https://openrouter.ai/api/v1", max_retries, api_key
+            model, "https://openrouter.ai/api/v1/chat/completions", max_retries, api_key
         )
 
 
@@ -135,9 +149,9 @@ class NsClient:
         from unsloth import FastLanguageModel
 
         model, tokenizer = FastLanguageModel.from_pretrained(
-            model_name = model_id,
-            dtype = "bfloat16",
-            load_in_4bit = False,
+            model_name=model_id,
+            dtype="bfloat16",
+            load_in_4bit=False,
         )
         FastLanguageModel.for_inference(model)
         tokenizer = load_tokenizer(model_id)
@@ -198,9 +212,7 @@ class NsClient:
         assistant_logits = []
         logits = self.model(**inputs).logits
 
-        for batch_idx, conversation_mask in enumerate(
-            assistant_tokens_mask
-        ):
+        for batch_idx, conversation_mask in enumerate(assistant_tokens_mask):
             logits_slice = logits[batch_idx][conversation_mask]
             probs = logits_slice.log_softmax(dim=-1)
             top_probs = probs.topk(self.k, dim=-1)

@@ -1,10 +1,16 @@
-from typing import List, Tuple, Callable, Generator, Union
+from typing import List, Tuple, Callable, Generator, Union, Literal
 
 import torch as t
 from torchtyping import TensorType
 from tqdm import tqdm
 
 from .schema import Example, Feature
+
+# Add type aliases at the top after imports
+batch = int
+seq = int
+feature = int
+features = int
 
 
 def _pool_max_activation_windows(
@@ -74,7 +80,7 @@ def _normalize(
     activations: TensorType["seq"],
     max_activation: float,
 ) -> TensorType["seq"]:
-    normalized = (activations / max_activation * 10)
+    normalized = activations / max_activation * 10
     return normalized.round().int()
 
 
@@ -86,15 +92,15 @@ def quantile_sampler(
 ):
     if len(token_windows) == 0:
         return None
-        
+
     max_activation = activation_windows.max()
     examples_per_quantile = n // n_quantiles
-    
+
     examples = []
     for i in range(n_quantiles):
         start_idx = i * examples_per_quantile
         end_idx = start_idx + examples_per_quantile
-        
+
         for j in range(start_idx, end_idx):
             examples.append(
                 Example(
@@ -103,7 +109,30 @@ def quantile_sampler(
                     _normalize(activation_windows[j], max_activation),
                 )
             )
-    
+
+    return examples
+
+
+def random_sampler(
+    tokens: TensorType["batch", "seq"],
+    locations: TensorType["features", 3],
+    ctx_len: int,
+    n_samples: int = 5,
+):
+    batch_idxs = t.unique(locations[:, 0])
+    all_idxs = t.arange(tokens.shape[0], device=batch_idxs.device)
+    mask = t.ones_like(all_idxs, dtype=t.bool)
+    mask[batch_idxs] = False
+    non_activating_idxs = all_idxs[mask][:n_samples]
+
+    positions = t.randint(0, tokens.shape[1] - ctx_len, (n_samples,))
+
+    examples = []
+    for batch_idx, position in zip(non_activating_idxs, positions):
+        window = tokens[batch_idx, position : position + ctx_len]
+        activation = t.zeros(ctx_len)
+        examples.append(Example(window, activation, activation.int()))
+
     return examples
 
 
@@ -130,12 +159,15 @@ def max_activation_sampler(
 
 def default_sampler(
     token_windows: TensorType["batch", "seq"],
-    activation_windows: TensorType["batch", "seq"], 
+    activation_windows: TensorType["batch", "seq"],
     n_train: int = 20,
     n_test: int = 5,
-    train: bool = True,
     **sampler_kwargs,
 ):
+    train = sampler_kwargs.get("train", None)
+    if train is None:
+        raise ValueError("Train (bool) must be provided")
+
     if len(token_windows) < n_train + n_test:
         return None
 
@@ -176,12 +208,15 @@ def loader(
         )
 
         examples = sampler(token_windows, activation_windows, **sampler_kwargs)
+        random_examples = random_sampler(
+            tokens, _locations, ctx_len, n_samples=5
+        )
 
         if examples is None:
             print(f"Not enough examples found for feature {feature}")
             continue
 
-        feature = Feature(feature, max_activation, examples)
+        feature = Feature(feature, max_activation, examples, random_examples)
 
         yield feature
 

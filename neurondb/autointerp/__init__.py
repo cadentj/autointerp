@@ -1,4 +1,5 @@
 from .explainer import Explainer
+from .classifier import Classifier
 from .clients import LocalClient, NsClient, OpenRouterClient, AnthropicClient
 from .simulator import simulate
 
@@ -9,4 +10,5 @@ __all__ = [
     "NsClient",
     "simulate",
     "AnthropicClient",
+    "Classifier",
 ]
