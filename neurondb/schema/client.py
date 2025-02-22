@@ -24,7 +24,7 @@ class LogProbs(BaseModel):
 
 class Choice(BaseModel):
     message: Message
-    logprobs: LogProbs | None = None
+    # logprobs: LogProbs | None = None
 
 class Response(BaseModel):
     choices: List[Choice]

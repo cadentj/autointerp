@@ -16,6 +16,7 @@ from typing import (
 )
 
 import torch
+from collections import defaultdict
 from ..schema.base import Feature, Example
 from ..schema.client import Response
 from .clients import HTTPClient
@@ -51,7 +52,17 @@ def examples_to_samples(
         text = _prepare_text(
             example, str_toks, n_incorrect, threshold, highlighted
         )
-        activating = example.quantile != -1
+
+        # IMPORTANT NOTE:
+        # Activating means whether the example's ground truth is to be "correct" or "incorrect"
+        # The first condition is for fuzzing. If the example has incorrectly marked tokens, it is not activating.
+        # Also note that fuzzed examples should never have a quantile of -1 because the prompt entailment is that
+        # the example is activating.
+        # The second condition is for detection. A quantile of -1 means that the example is not activating.
+        activating = (
+            (highlighted and n_incorrect == 0) 
+            or (not highlighted and example.quantile != -1)
+        )
 
         samples.append(
             Sample(
@@ -88,9 +99,9 @@ def _prepare_text(
 
     below_threshold = torch.nonzero(example.activations <= threshold).squeeze()
 
-    # 3) Rare case where there are no tokens below threshold
-    if below_threshold.dim() == 0:
-        print("Failed to prepare example.")
+    # Add check for empty tensor
+    if below_threshold.numel() == 0:
+        print("Failed to prepare example - no tokens below threshold.")
         return DEFAULT_MESSAGE
 
     # 4) Highlight n_incorrect tokens with activations below threshold
@@ -127,7 +138,6 @@ class Classifier:
         n_examples_shown: int = 10,
         method: Literal["detection", "fuzzing"] = "detection",
         threshold: float = 0.3,
-        temperature: float = 0.0,
         verbose: bool = False,
     ):
         """Initialize a Classifier.
@@ -144,7 +154,6 @@ class Classifier:
         self.n_examples_shown = n_examples_shown
         self.method = method
         self.threshold = threshold
-        self.temperature = temperature
         self.tokenizer = tokenizer
         self.verbose = verbose
 
@@ -168,16 +177,34 @@ class Classifier:
             for batch in batches
         ]
         results = await asyncio.gather(*tasks)
-        return np.mean(results)
+        return self._grade(results, batches)
+    
+    def _grade(self, results: List[List[bool]], batches: List[List[Sample]]) -> dict:
+        per_quantile_results = defaultdict(lambda: {"TP": 0, "FN": 0, "FP": 0, "TN": 0})
+        for batch, results in zip(batches, results):
+            for sample, prediction in zip(batch, results):
+                match (sample.activating, prediction == 1):
+                    case (True, True):
+                        per_quantile_results[sample.quantile]["TP"] += 1
+                    case (True, False):
+                        per_quantile_results[sample.quantile]["FN"] += 1
+                    case (False, True):
+                        per_quantile_results[sample.quantile]["FP"] += 1
+                    case (False, False):
+                        per_quantile_results[sample.quantile]["TN"] += 1
+
+        return dict(per_quantile_results)
 
     def _prepare_detection(self, feature: Feature) -> List[Sample]:
         """Prepare samples for detection method"""
         random_samples = examples_to_samples(
             feature.random_examples,
+            self.tokenizer,
         )
 
         activating_samples = examples_to_samples(
             feature.examples,
+            self.tokenizer,
         )
 
         return random_samples + activating_samples
@@ -185,21 +212,39 @@ class Classifier:
     def _prepare_fuzzing(self, feature: Feature) -> List[Sample]:
         """Prepare samples for fuzzing method"""
         examples = feature.examples
+        random.shuffle(examples)
 
         # Calculate the mean number of activations in the examples
         n_incorrect = sum(
             len(torch.nonzero(example.activations)) for example in examples
         ) / len(examples)
 
+        quantiles = set(example.quantile for example in examples)
+        binned = {quantile: [] for quantile in quantiles}
+        for example in examples:
+            binned[example.quantile].append(example)
+
+        n_activating = len(binned[0]) // 2
+        activating_examples = [
+            example for quantile in binned.values() 
+            for example in quantile[:n_activating]
+        ]
+        non_activating_examples = [
+            example for quantile in binned.values()
+            for example in quantile[n_activating:]
+        ]
+
         random_samples = examples_to_samples(
-            feature.random_examples,
+            non_activating_examples,
+            self.tokenizer,
             n_incorrect=n_incorrect,
             highlighted=True,
             threshold=self.threshold,
         )
 
         activating_samples = examples_to_samples(
-            feature.examples,
+            activating_examples,
+            self.tokenizer,
             n_incorrect=0,
             highlighted=True,
             threshold=self.threshold,
@@ -224,32 +269,31 @@ class Classifier:
 
         prompt = prompt_template(examples, explanation)
 
-        response = await self.client.generate(
-            prompt, raw=True, **generation_kwargs
-        )
+        response = await self.client.generate(prompt, **generation_kwargs)
 
         if self.verbose:
-            with open("response.txt", "w") as f:
+            with open("response.txt", "a") as f:
                 f.write(f"PROMPT\n{prompt}\n\n")
-                f.write(f"RESPONSE\n{response.text}\n\n")
+                f.write(f"RESPONSE\n{response}\n\n")
+                f.write(f"TRUE\n{[i.activating for i in batch]}\n\n")
 
-        predictions = self._parse(response)
-
-        n_correct = sum(
-            1
-            for sample, prediction in zip(batch, predictions)
-            if sample.activating == (prediction == 1)
-        )
-
-        return n_correct / len(batch)
+        return self._parse(response)
 
     def _parse(
         self, response: Response
-    ) -> Tuple[List[bool], List[Optional[float]]]:
+    ) -> List[bool]:
         pattern = r"\[.*?\]"
-        match = re.search(pattern, response.text)
+        match = re.search(pattern, response)
 
         if match is None:
-            return None
+            return [0] * self.n_examples_shown
 
-        return json.loads(match.group(0))
+        try:
+            result = json.loads(match.group(0))
+
+            if len(result) != self.n_examples_shown:
+                return [0] * self.n_examples_shown
+            return result
+        
+        except json.JSONDecodeError:
+            return [0] * self.n_examples_shown

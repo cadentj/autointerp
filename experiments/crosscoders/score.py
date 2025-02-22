@@ -1,20 +1,19 @@
 import os
 import json
 from collections import defaultdict
-import numpy as np
 from tqdm import tqdm
 import asyncio
 
-from neurondb import load_torch, Feature
+from neurondb import load_torch
 from neurondb.autointerp import Classifier, OpenRouterClient
 from transformers import AutoTokenizer
-from typing import Dict, List
 
 # Constants
 CLASSIFIER_MODEL = "meta-llama/llama-3.3-70b-instruct"
-DATA_DIR = "/share/u/caden/neurondb/experiments/crosscoders"
-FEATURE_SAVE_DIR = "/share/u/caden/neurondb/experiments/crosscoders/outputs"
+FEATURES_DIR = "/share/u/caden/neurondb/experiments/crosscoders"
+EXPLANATIONS_DIR = "/share/u/caden/neurondb/experiments/crosscoders/outputs"
 SCORES_DIR = "/share/u/caden/neurondb/experiments/crosscoders/scores"
+SCORING_TYPE = "detection"
 
 FILE_NAMES = [
     "data_0_1025.pt",
@@ -32,19 +31,24 @@ GENERATION_KWARGS = {
     "max_tokens": 100,
 }
 
+DETECTION_KWARGS = {
+    "n_random": 20,
+    "n_quantiles": 5,
+    "n_test": 20,
+    "train": False,
+}
 
-async def score_feature(
-    classifier: Classifier,
-    feature: Feature,
-    explanation: str
-) -> Dict:
-    """Score a single feature's explanation"""
-    outputs = await classifier(feature, explanation)
-    return calculate_metrics(outputs)
+FUZZING_KWARGS = {
+    "n_random": 0, 
+    "n_quantiles": 5,
+    "n_test": 40,
+    "train": False,
+}
 
 async def score_file(
     file_name: str,
     classifier: Classifier,
+    scoring_type: str,
     scores_dir: str,
     feature_dir: str,
     explanations_dir: str,
@@ -55,50 +59,41 @@ async def score_file(
     explanation_path = os.path.join(explanations_dir, f"explanations_{base_name}.json")
     scores_path = os.path.join(scores_dir, f"scores_{base_name}.json")
     
+    # Load existing scores if they exist
+    scores = {}
     if os.path.exists(scores_path):
-        print(f"Skipping {base_name} - already processed")
-        return
+        with open(scores_path, 'r') as f:
+            scores = json.load(f)
+        print(f"Loaded {len(scores)} existing scores from {base_name}")
         
     with open(explanation_path, 'r') as f:
         explanations = json.load(f)
-        
+
+    kwargs = DETECTION_KWARGS if scoring_type == "detection" else FUZZING_KWARGS
     features = list(load_torch(
         feature_path,
         max_examples=2_000,
         ctx_len=128,
-        train=False,
-        indices=[0]
+        **kwargs
     ))
     
-    scores = {}
-    for feature in tqdm(features, desc=f"Scoring {base_name}"):
+    for i, feature in enumerate(tqdm(features, desc=f"Scoring {base_name}")):
         feature_id = str(feature.index)
-        if feature_id not in explanations:
+        if feature_id not in explanations or feature_id in scores:
             continue
             
         explanation = explanations[feature_id]
-        scores[feature_id] = await score_feature(classifier, feature, explanation)
+        scores[feature_id] = await classifier(feature, explanation)
         
-        # Break after first feature
-        print(f"\nScored feature {feature_id}:")
-        print(scores[feature_id])
-        break
-        
-    with open(scores_path, 'w') as f:
-        json.dump(scores, f, indent=2)
-        
-    # Calculate and print average scores
-    avg_scores = defaultdict(float)
-    for feature_scores in scores.values():
-        for metric, value in feature_scores.items():
-            avg_scores[metric] += value
+        # Save every 100 features
+        if (i + 1) % 100 == 0:
+            with open(scores_path, 'w') as f:
+                json.dump(scores, f)
+            print(f"Saved {len(scores)} scores at feature {i+1}")
     
-    for metric in avg_scores:
-        avg_scores[metric] /= len(scores)
-        
-    print(f"\nAverage scores for {base_name}:")
-    for metric, value in avg_scores.items():
-        print(f"{metric}: {value:.3f}")
+    # Final save
+    with open(scores_path, 'w') as f:
+        json.dump(scores, f)
 
 async def main():
     os.makedirs(SCORES_DIR, exist_ok=True)
@@ -108,19 +103,19 @@ async def main():
     classifier = Classifier(
         client=client,
         tokenizer=tokenizer,
-        n_examples_shown=5,
+        n_examples_shown=8,
         method="detection",
-        log_prob=False,
-        temperature=0.0,
+        verbose=False,
     )
 
     for file_name in FILE_NAMES:
         await score_file(
             file_name,
             classifier,
+            SCORING_TYPE,
             SCORES_DIR,
-            DATA_DIR,
-            FEATURE_SAVE_DIR
+            FEATURES_DIR,
+            EXPLANATIONS_DIR,
         )
 
 if __name__ == "__main__":

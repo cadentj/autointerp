@@ -87,7 +87,7 @@ def _normalize(
 def quantile_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
-    n: int = 5,
+    n: int = 20,
     n_quantiles: int = 5,
 ):
     if len(token_windows) == 0:
@@ -107,6 +107,7 @@ def quantile_sampler(
                     token_windows[j],
                     activation_windows[j],
                     _normalize(activation_windows[j], max_activation),
+                    quantile=n_quantiles - i,
                 )
             )
 
@@ -117,7 +118,7 @@ def random_sampler(
     tokens: TensorType["batch", "seq"],
     locations: TensorType["features", 3],
     ctx_len: int,
-    n_samples: int = 5,
+    n_samples: int = 10,
 ):
     batch_idxs = t.unique(locations[:, 0])
     all_idxs = t.arange(tokens.shape[0], device=batch_idxs.device)
@@ -131,7 +132,7 @@ def random_sampler(
     for batch_idx, position in zip(non_activating_idxs, positions):
         window = tokens[batch_idx, position : position + ctx_len]
         activation = t.zeros(ctx_len)
-        examples.append(Example(window, activation, activation.int()))
+        examples.append(Example(window, activation, activation.int(), quantile=-1))
 
     return examples
 
@@ -162,9 +163,10 @@ def default_sampler(
     activation_windows: TensorType["batch", "seq"],
     n_train: int = 20,
     n_test: int = 5,
+    n_quantiles: int = 5,
+    train: bool = True,
     **sampler_kwargs,
 ):
-    train = sampler_kwargs.get("train", None)
     if train is None:
         raise ValueError("Train (bool) must be provided")
 
@@ -181,6 +183,7 @@ def default_sampler(
             token_windows[n_train:],
             activation_windows[n_train:],
             n=n_test,
+            n_quantiles=n_quantiles,
         )
 
 
@@ -208,9 +211,11 @@ def loader(
         )
 
         examples = sampler(token_windows, activation_windows, **sampler_kwargs)
-        random_examples = random_sampler(
-            tokens, _locations, ctx_len, n_samples=5
-        )
+        random_examples = None
+        if sampler_kwargs.get("n_random", 0) > 0:
+            random_examples = random_sampler(
+                tokens, _locations, ctx_len, n_samples=sampler_kwargs["n_random"]
+            )
 
         if examples is None:
             print(f"Not enough examples found for feature {feature}")
