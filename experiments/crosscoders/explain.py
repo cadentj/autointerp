@@ -26,11 +26,11 @@ GENERATION_KWARGS = {
 
 DATA_DIR = "/share/u/caden/neurondb/experiments/crosscoders"
 FILE_NAMES = [
-    "data_0_1025.pt",
-    "data_1026_2050.pt",
-    "data_2051_3067.pt",
-    "data_3068_4183.pt",
-    "data_4184_5294.pt",
+    # "data_0_1025.pt",
+    # "data_1026_2050.pt",
+    # "data_2051_3067.pt",
+    # "data_3068_4183.pt",
+    # "data_4184_5294.pt",
     "data_5296_6400.pt",
     "data_6401_7404.pt",
     "data_7405_7788.pt",
@@ -49,11 +49,16 @@ async def main():
         threshold=0.3,
         insert_as_prompt=True,
         verbose=False,
+
     )
 
-    async def process_feature(file_name, feature, explanations):
-        async with semaphore:  # Implement semaphore here
+    async def process_feature(feature, explanations):
+        async with semaphore:
             index = str(feature.index)
+            # Skip if we already have an explanation for this feature
+            if index in explanations:
+                pbar.update(1)
+                return
             explanation = await explainer(
                 feature, **GENERATION_KWARGS
             )
@@ -63,30 +68,34 @@ async def main():
     for file_name in FILE_NAMES:
         file_name = os.path.basename(file_name)
         feature_save_path = os.path.join(DATA_DIR, file_name)
-        output_file = os.path.join(FEATURE_SAVE_DIR, f"explanations_{file_name}.json")
+        output_file = os.path.join(FEATURE_SAVE_DIR, f"explanations_{file_name.replace('.pt', '')}.json")
         
+        # Load existing explanations if file exists
+        explanations = {}
+        if os.path.exists(output_file):
+            with open(output_file, 'r') as f:
+                explanations = json.load(f)
+                print(f"Loaded {len(explanations)} existing explanations from {output_file}")
+
         features = [
             f
             for f in load_torch(
                 feature_save_path,
                 max_examples=2_000,
                 ctx_len=128,
+                train=True,
             )
         ]
         
-        # Create/load existing explanations
-        explanations = {}
-        if os.path.exists(output_file):
-            with open(output_file, 'r') as f:
-                explanations = json.load(f)
+        # Update progress bar total to only count features without explanations
+        remaining_features = [f for f in features if str(f.index) not in explanations]
+        pbar = tqdm(desc=f"Explaining {file_name}", total=len(remaining_features))
 
-        pbar = tqdm(desc=f"Explaining {file_name}", total=len(features))
-
-        # Process features in batches of 100
-        for i in range(0, len(features), 100):
-            batch = features[i:i + 100]
+        # Process remaining features in batches of 100
+        for i in range(0, len(remaining_features), 100):
+            batch = remaining_features[i:i + 100]
             await asyncio.gather(
-                *(process_feature(file_name, feature, explanations) for feature in batch)
+                *(process_feature(feature, explanations) for feature in batch)
             )
             
             # Save after each batch of 100

@@ -83,6 +83,8 @@ def _normalize(
     normalized = activations / max_activation * 10
     return normalized.round().int()
 
+PAD_TOKEN_ID = 0
+print("WARNING: USING PRESET PAD TOKEN ID (0)")
 
 def quantile_sampler(
     token_windows: TensorType["batch", "seq"],
@@ -102,17 +104,20 @@ def quantile_sampler(
         end_idx = start_idx + examples_per_quantile
 
         for j in range(start_idx, end_idx):
+            pad_token_mask = token_windows[j] == PAD_TOKEN_ID
+            trimmed_window = token_windows[j][~pad_token_mask]
+            trimmed_activation = activation_windows[j][~pad_token_mask]
+
             examples.append(
                 Example(
-                    token_windows[j],
-                    activation_windows[j],
-                    _normalize(activation_windows[j], max_activation),
+                    trimmed_window,
+                    trimmed_activation,
+                    _normalize(trimmed_activation, max_activation),
                     quantile=n_quantiles - i,
                 )
             )
 
     return examples
-
 
 def random_sampler(
     tokens: TensorType["batch", "seq"],
@@ -120,22 +125,46 @@ def random_sampler(
     ctx_len: int,
     n_samples: int = 10,
 ):
-    batch_idxs = t.unique(locations[:, 0])
-    all_idxs = t.arange(tokens.shape[0], device=batch_idxs.device)
+    # Identify batches that are activating
+    activating_idxs = t.unique(locations[:, 0])
+    all_idxs = t.arange(tokens.shape[0], device=tokens.device)
+    
+    # Select non-activating indices
     mask = t.ones_like(all_idxs, dtype=t.bool)
-    mask[batch_idxs] = False
-    non_activating_idxs = all_idxs[mask][:n_samples]
-
-    positions = t.randint(0, tokens.shape[1] - ctx_len, (n_samples,))
-
+    mask[activating_idxs] = False
+    non_activating_idxs = all_idxs[mask]
+    
+    # Generate random offsets between 0 and 1
+    random_offsets = t.rand(len(non_activating_idxs), device=tokens.device)
+    
     examples = []
-    for batch_idx, position in zip(non_activating_idxs, positions):
-        window = tokens[batch_idx, position : position + ctx_len]
-        activation = t.zeros(ctx_len)
+    for i, batch_idx in enumerate(non_activating_idxs):
+        # Find the last non-padding token
+        sequence = tokens[batch_idx]
+        last_token_idx = (sequence != PAD_TOKEN_ID).nonzero().max().item()
+        
+        # Skip if sequence is too short
+        if last_token_idx + 1 < ctx_len:
+            continue
+            
+        # Calculate maximum valid start position
+        max_start_idx = last_token_idx - ctx_len + 1
+        
+        # Randomly select a start position
+        start_idx = (random_offsets[i] * max_start_idx).int()
+        
+        window = tokens[batch_idx, start_idx:start_idx + ctx_len]
+
+        if PAD_TOKEN_ID in window:
+            continue
+
+        activation = t.zeros(ctx_len, device=tokens.device)
         examples.append(Example(window, activation, activation.int(), quantile=-1))
 
-    return examples
+        if len(examples) >= n_samples:
+            break
 
+    return examples
 
 def max_activation_sampler(
     token_windows: TensorType["batch", "seq"],
@@ -146,14 +175,20 @@ def max_activation_sampler(
         return None
 
     max_activation = activation_windows.max()
-    examples = [
-        Example(
-            token_windows[i],
-            activation_windows[i],
-            _normalize(activation_windows[i], max_activation),
+    examples = []
+    for i in range(k):
+        pad_token_mask = token_windows[i] == PAD_TOKEN_ID
+        trimmed_window = token_windows[i][~pad_token_mask]
+        trimmed_activation = activation_windows[i][~pad_token_mask]
+
+        examples.append(
+            Example(
+                trimmed_window,
+                trimmed_activation,
+                _normalize(trimmed_activation, max_activation),
+                quantile=-1,
+            )
         )
-        for i in range(k)
-    ]
 
     return examples
 
@@ -246,7 +281,7 @@ def load_torch(
     for f in loader(
         data["activations"].cpu(),
         data["locations"].cpu(),
-        tokens,
+        tokens.cpu(),
         sampler,
         indices,
         ctx_len,

@@ -12,12 +12,11 @@ DSCORER_EXAMPLE_ONE = """Latent explanation: Words related to American football 
 
 Test examples:
 
-Example 0:<|endoftext|>Getty ImagesĊĊPatriots tight end Rob Gronkowski had his bossâĢĻ
-Example 1: names of months used in The Lord of the Rings:ĊĊâĢľâĢ¦the
-Example 2: Media Day 2015ĊĊLSU defensive end Isaiah Washington (94) speaks to the
-Example 3: shown, is generally not eligible for ads. For example, videos about recent tragedies,
-Example 4: line, with the left side âĢĶ namely tackle Byron Bell at tackle and guard Amini
-"""
+Example 1: <|endoftext|>Getty ImagesĊĊPatriots tight end Rob Gronkowski had his bossâĢĻ
+Example 2: names of months used in The Lord of the Rings:ĊĊâĢľâĢ¦the
+Example 3: Media Day 2015ĊĊLSU defensive end Isaiah Washington (94) speaks to the
+Example 4: shown, is generally not eligible for ads. For example, videos about recent tragedies,
+Example 5: line, with the left side âĢĶ namely tackle Byron Bell at tackle and guard Amini"""
 
 DSCORER_RESPONSE_ONE = "[1,0,0,0,1]"
 
@@ -26,12 +25,11 @@ DSCORER_EXAMPLE_TWO = """Latent explanation: The word "guys" in the phrase "you 
 
 Test examples:
 
-Example 0: enact an individual health insurance mandate?âĢĿ, Pelosi's response was to dismiss both
-Example 1: birth control access<|endoftext|> but I assure you women in Kentucky aren't laughing as they struggle
-Example 2: du Soleil Fall Protection Program with construction requirements that do not apply to theater settings because
-Example 3:Ċ<|endoftext|> distasteful. Amidst the slime lurk bits of Schadenfre
-Example 4: the<|endoftext|>ľI want to remind you all that 10 days ago (director Massimil
-"""
+Example 1: enact an individual health insurance mandate?âĢĿ, Pelosi's response was to dismiss both
+Example 2: birth control access<|endoftext|> but I assure you women in Kentucky aren't laughing as they struggle
+Example 3: du Soleil Fall Protection Program with construction requirements that do not apply to theater settings because
+Example 4: Ċ<|endoftext|> distasteful. Amidst the slime lurk bits of Schadenfre
+Example 5: the<|endoftext|>ľI want to remind you all that 10 days ago (director Massimil"""
 
 DSCORER_RESPONSE_TWO = "[0,0,0,0,0]"
 
@@ -40,12 +38,11 @@ DSCORER_EXAMPLE_THREE = """Latent explanation: "of" before words that start with
 
 Test examples:
 
-Example 0: climate, TomblinâĢĻs Chief of Staff Charlie Lorensen said.Ċ
-Example 1: no wonderworking relics, no true Body and Blood of Christ, no true Baptism
-Example 2:ĊĊDeborah Sathe, Head of Talent Development and Production at Film London,
-Example 3:ĊĊIt has been devised by Director of Public Prosecutions (DPP)
-Example 4: and fair investigation not even include the Director of Athletics? Â· Finally, we believe the
-"""
+Example 1: climate, TomblinâĢĻs Chief of Staff Charlie Lorensen said.Ċ
+Example 2: no wonderworking relics, no true Body and Blood of Christ, no true Baptism
+Example 3: ĊĊDeborah Sathe, Head of Talent Development and Production at Film London,
+Example 4: ĊĊIt has been devised by Director of Public Prosecutions (DPP)
+Example 5: and fair investigation not even include the Director of Athletics? Â· Finally, we believe the"""
 
 DSCORER_RESPONSE_THREE = "[1,1,1,1,1]"
 

@@ -13,28 +13,28 @@ Rules:
 
 ### EXAMPLE 1 ###
 
-EXAMPLE_1 = """Example 1:  and he was <<over the moon>> to find
-Example 2:  we'll be laughing <<till the cows come home>>! Pro
-Example 3:  thought Scotland was boring, but really there's more <<than meets the eye>>! I'd"""
+EXAMPLE_1 = """Example 1: and he was <<over the moon>> to find
+Example 2: we'll be laughing <<till the cows come home>>! Pro
+Example 3: thought Scotland was boring, but really there's more <<than meets the eye>>! I'd"""
 
 EXAMPLE_1_EXPLANATION = """\\boxed{Common idioms in text conveying positive sentiment.}"""
 
 ### EXAMPLE 2 ###
 
-EXAMPLE_2 = """Example 1:  a river is wide but the ocean is wid<<er>>. The ocean
-Example 2:  every year you get tall<<er>>," she
-Example 3:  the hole was small<<er>> but deep<<er>> than the"""
+EXAMPLE_2 = """Example 1: a river is wide but the ocean is wid<<er>>. The ocean
+Example 2: every year you get tall<<er>>," she
+Example 3: the hole was small<<er>> but deep<<er>> than the"""
 
 EXAMPLE_2_EXPLANATION = """\\boxed{The token "er" at the end of a comparative adjective describing size.}"""
 
 ### EXAMPLE 3 ###
 
-EXAMPLE_3 = """Example 1:  something happening inside my <<house>>", he
-Example 2:  presumably was always contained in <<a box>>", according
-Example 3:  people were coming into the <<smoking area>>".
+EXAMPLE_3 = """Example 1: something happening inside my <<house>>", he
+Example 2: presumably was always contained in <<a box>>", according
+Example 3: people were coming into the <<smoking area>>".
 
 However he
-Example 4:  Patrick: "why are you getting in the << way?>>" Later,"""
+Example 4: Patrick: "why are you getting in the << way?>>" Later,"""
 
 EXAMPLE_3_EXPLANATION = """\\boxed{Nouns representing distinct objects that contain something, sometimes preceding a quotation mark.}"""
 

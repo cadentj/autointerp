@@ -16,37 +16,37 @@ After each example is a set of activations, indicating the importance of some to
 
 ### EXAMPLE 1 ###
 
-EXAMPLE_1 = """Example 1:  and he was <<over the moon>> to find
+EXAMPLE_1 = """Example 1: and he was <<over the moon>> to find
 Activations: ("over", 5), (" the", 6), (" moon", 9)
-Example 2:  we'll be laughing <<till the cows come home>>! Pro
+Example 2: we'll be laughing <<till the cows come home>>! Pro
 Activations: ("till", 5), (" the", 5), (" cows", 8), (" come", 8), (" home", 8)
-Example 3:  thought Scotland was boring, but really there's more <<than meets the eye>>! I'd
+Example 3: thought Scotland was boring, but really there's more <<than meets the eye>>! I'd
 Activations: ("than", 5), (" meets", 7), (" the", 6), (" eye", 8)"""
 
 EXAMPLE_1_EXPLANATION = """\\boxed{Common idioms in text conveying positive sentiment.}"""
 
 ### EXAMPLE 2 ###
 
-EXAMPLE_2 = """Example 1:  a river is wide but the ocean is wid<<er>>. The ocean
+EXAMPLE_2 = """Example 1: a river is wide but the ocean is wid<<er>>. The ocean
 Activations: ("er", 8)
-Example 2:  every year you get tall<<er>>," she
+Example 2: every year you get tall<<er>>," she
 Activations: ("er", 2)
-Example 3:  the hole was small<<er>> but deep<<er>> than the
+Example 3: the hole was small<<er>> but deep<<er>> than the
 Activations: ("er", 9), ("er", 9)"""
 
 EXAMPLE_2_EXPLANATION = """\\boxed{The token "er" at the end of a comparative adjective describing size.}"""
 
 ### EXAMPLE 3 ###
 
-EXAMPLE_3 = """Example 1:  something happening inside my <<house>>", he
+EXAMPLE_3 = """Example 1: something happening inside my <<house>>", he
 Activations: ("house", 7)
-Example 2:  presumably was always contained in <<a box>>", according
+Example 2: presumably was always contained in <<a box>>", according
 Activations: ("a", 5), ("box", 9)
-Example 3:  people were coming into the <<smoking area>>".
+Example 3: people were coming into the <<smoking area>>".
 
 However he
 Activations: ("smoking", 2), ("area", 4)
-Example 4:  Patrick: "why are you getting in the << way?>>" Later,
+Example 4: Patrick: "why are you getting in the << way?>>" Later,
 Activations: ("way", 4), ("?", 2)"""
 
 EXAMPLE_3_EXPLANATION = """\\boxed{Nouns representing distinct objects that contain something, sometimes preceding a quotation mark.}"""

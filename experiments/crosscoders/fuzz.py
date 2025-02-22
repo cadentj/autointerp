@@ -12,8 +12,8 @@ from transformers import AutoTokenizer
 CLASSIFIER_MODEL = "meta-llama/llama-3.3-70b-instruct"
 FEATURES_DIR = "/share/u/caden/neurondb/experiments/crosscoders"
 EXPLANATIONS_DIR = "/share/u/caden/neurondb/experiments/crosscoders/outputs"
-SCORES_DIR = "/share/u/caden/neurondb/experiments/crosscoders/detection"
-SCORING_TYPE = "detection"
+SCORES_DIR = "/share/u/caden/neurondb/experiments/crosscoders/fuzzing"
+SCORING_TYPE = "fuzzing"
 
 FILE_NAMES = [
     "data_0_1025.pt",
@@ -49,7 +49,6 @@ FUZZING_KWARGS = {
     "n_test": 60,
     "train": False,
 }
-
 
 async def score_feature(
     feature,
@@ -144,7 +143,7 @@ async def main():
         client=client,
         tokenizer=tokenizer,
         n_examples_shown=5,
-        method="detection",
+        method=SCORING_TYPE,
         verbose=False,
     )
 

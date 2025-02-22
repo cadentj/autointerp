@@ -46,9 +46,7 @@ def examples_to_samples(
     samples = []
 
     for example in examples:
-        str_toks = tokenizer.batch_decode(
-            example.tokens, skip_special_tokens=True
-        )
+        str_toks = tokenizer.batch_decode(example.tokens)
         text = _prepare_text(
             example, str_toks, n_incorrect, threshold, highlighted
         )
@@ -59,9 +57,8 @@ def examples_to_samples(
         # Also note that fuzzed examples should never have a quantile of -1 because the prompt entailment is that
         # the example is activating.
         # The second condition is for detection. A quantile of -1 means that the example is not activating.
-        activating = (
-            (highlighted and n_incorrect == 0) 
-            or (not highlighted and example.quantile != -1)
+        activating = (highlighted and n_incorrect == 0) or (
+            not highlighted and example.quantile != -1
         )
 
         samples.append(
@@ -91,13 +88,12 @@ def _prepare_text(
 
     # 2) Highlight tokens with activations above threshold if correct example
     if n_incorrect == 0:
-
         def threshold_check(i):
             return example.activations[i] >= threshold
 
         return _highlight(str_toks, threshold_check)
 
-    below_threshold = torch.nonzero(example.activations <= threshold).squeeze()
+    below_threshold = torch.nonzero(example.activations <= threshold).squeeze(-1)
 
     # Add check for empty tensor
     if below_threshold.numel() == 0:
@@ -105,7 +101,8 @@ def _prepare_text(
         return DEFAULT_MESSAGE
 
     # 4) Highlight n_incorrect tokens with activations below threshold
-    n_incorrect = min(n_incorrect, len(below_threshold))
+    n_incorrect = min(n_incorrect, below_threshold.numel())
+
     random_indices = set(random.sample(below_threshold.tolist(), n_incorrect))
     return _highlight(str_toks, lambda i: i in random_indices)
 
@@ -178,9 +175,13 @@ class Classifier:
         ]
         results = await asyncio.gather(*tasks)
         return self._grade(results, batches)
-    
-    def _grade(self, results: List[List[bool]], batches: List[List[Sample]]) -> dict:
-        per_quantile_results = defaultdict(lambda: {"TP": 0, "FN": 0, "FP": 0, "TN": 0})
+
+    def _grade(
+        self, results: List[List[bool]], batches: List[List[Sample]]
+    ) -> dict:
+        per_quantile_results = defaultdict(
+            lambda: {"TP": 0, "FN": 0, "FP": 0, "TN": 0}
+        )
         for batch, results in zip(batches, results):
             for sample, prediction in zip(batch, results):
                 match (sample.activating, prediction == 1):
@@ -214,23 +215,25 @@ class Classifier:
         examples = feature.examples
         random.shuffle(examples)
 
-        # Calculate the mean number of activations in the examples
-        n_incorrect = sum(
+        # Calculate the mean number of activations in the examples and convert to int
+        n_incorrect = int(sum(
             len(torch.nonzero(example.activations)) for example in examples
-        ) / len(examples)
+        ) / len(examples))
 
         quantiles = set(example.quantile for example in examples)
         binned = {quantile: [] for quantile in quantiles}
         for example in examples:
             binned[example.quantile].append(example)
 
-        n_activating = len(binned[0]) // 2
+        n_activating = len(binned[1]) // 2
         activating_examples = [
-            example for quantile in binned.values() 
+            example
+            for quantile in binned.values()
             for example in quantile[:n_activating]
         ]
         non_activating_examples = [
-            example for quantile in binned.values()
+            example
+            for quantile in binned.values()
             for example in quantile[n_activating:]
         ]
 
@@ -260,7 +263,8 @@ class Classifier:
         """
 
         examples = "\n".join(
-            f"Example {i}: {sample.text}" for i, sample in enumerate(batch)
+            f"Example {i + 1}: {sample.text}"
+            for i, sample in enumerate(batch)
         )
 
         prompt_template = (
@@ -279,21 +283,22 @@ class Classifier:
 
         return self._parse(response)
 
-    def _parse(
-        self, response: Response
-    ) -> List[bool]:
+    def _parse(self, response: Response) -> List[bool]:
         pattern = r"\[.*?\]"
         match = re.search(pattern, response)
 
         if match is None:
+            print(f"No match found in response: {response}")
             return [0] * self.n_examples_shown
 
         try:
             result = json.loads(match.group(0))
 
             if len(result) != self.n_examples_shown:
+                print(f"Incorrect number of results: {len(result)}")
                 return [0] * self.n_examples_shown
             return result
-        
+
         except json.JSONDecodeError:
+            print(f"JSONDecodeError: {response}")
             return [0] * self.n_examples_shown
