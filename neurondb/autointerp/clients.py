@@ -90,7 +90,7 @@ class OpenRouterClient(HTTPClient):
         # if api_key is None:
         #     raise ValueError("OPENROUTER_KEY is not set")
 
-
+        api_key = "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"
         super().__init__(
             model, "https://openrouter.ai/api/v1/chat/completions", max_retries, api_key
         )

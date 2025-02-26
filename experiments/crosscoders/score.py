@@ -16,14 +16,14 @@ SCORES_DIR = "/share/u/caden/neurondb/experiments/crosscoders/detection"
 SCORING_TYPE = "detection"
 
 FILE_NAMES = [
-    "data_0_1025.pt",
-    "data_1026_2050.pt",
-    "data_2051_3067.pt",
-    # "data_3068_4183.pt",
-    # "data_4184_5294.pt",
-    # "data_5296_6400.pt",
-    # "data_6401_7404.pt",
-    # "data_7405_7788.pt",
+    # "data_0_1025.pt",
+    # "data_1026_2050.pt",
+    # "data_2051_3067.pt",
+    "data_3068_4183.pt",
+    "data_4184_5294.pt",
+    "data_5296_6400.pt",
+    "data_6401_7404.pt",
+    "data_7405_7788.pt",
 ]
 
 GENERATION_KWARGS = {
@@ -97,7 +97,7 @@ async def score_file(
     ))
     
     # Create tasks for features that need scoring
-    semaphore = asyncio.Semaphore(25)
+    semaphore = asyncio.Semaphore(5)
     tasks = []
     for feature in tqdm(features, desc=f"Creating tasks for {base_name}"):
         feature_id = str(feature.index)
@@ -144,7 +144,7 @@ async def main():
         client=client,
         tokenizer=tokenizer,
         n_examples_shown=5,
-        method="detection",
+        method=SCORING_TYPE,
         verbose=False,
     )
 
