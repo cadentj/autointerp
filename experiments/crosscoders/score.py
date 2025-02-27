@@ -5,7 +5,7 @@ from tqdm import tqdm
 import asyncio
 
 from neurondb import load_torch
-from neurondb.autointerp import Classifier, OpenRouterClient
+from autointerp.autointerp import Classifier, OpenRouterClient
 from transformers import AutoTokenizer
 
 # Constants

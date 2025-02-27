@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from transformers import AutoTokenizer
 from neurondb import load_torch
-from neurondb.autointerp import NsClient, simulate
+from autointerp.autointerp import NsClient, simulate
 
 t.set_grad_enabled(False)
 

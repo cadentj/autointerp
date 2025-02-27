@@ -6,7 +6,7 @@ from collections import defaultdict
 # from seed import set_seed
 from transformers import AutoTokenizer
 from neurondb import load_torch
-from neurondb.autointerp import Explainer, OpenRouterClient
+from autointerp.autointerp import Explainer, OpenRouterClient
 from tqdm.asyncio import tqdm
 
 # set_seed(42)
@@ -49,7 +49,6 @@ async def main():
         threshold=0.3,
         insert_as_prompt=True,
         verbose=False,
-
     )
 
     async def process_feature(feature, explanations):

@@ -1,5 +1,5 @@
 [project]
-name = "neurondb"
+name = "autointerp"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -18,7 +18,7 @@ dependencies = [
 
 # uv pip install -e .
 [tool.setuptools]
-packages = ["neurondb"]
+packages = ["autointerp"]
 
 [tool.uv.sources]
 nnsight = { path = "../nnsight", editable = true }
