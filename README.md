@@ -35,7 +35,8 @@ client = OpenRouterClient(model=...)
 explain = Explainer(client=client)
 score = Classifier(client=client, method="detection")
 
+# pretend this is in an async function
 for f in load(save_dir, train=True): 
     explanation = await explain(f)
-    score = score(explanation, f)
+    score = await score(explanation, f)
 ```
