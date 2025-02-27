@@ -1,12 +1,12 @@
 import os
 from collections import defaultdict
-from typing import Dict, List, Tuple
+from typing import Callable, Dict, List, Tuple
 
-import nnsight as ns
+from baukit import TraceDict
 import torch as t
-from nnsight import Envoy
 from torchtyping import TensorType
 from tqdm import tqdm
+from safetensors.torch import save_file
 
 from .schema import DictionaryRequest
 
@@ -92,18 +92,19 @@ class Cache:
     ) -> Tuple[TensorType["features"], TensorType["features"]]:
         return self.locations[module_path], self.activations[module_path]
 
-    def save_to_disk(self, save_dir: str, tokens_path: str):
+    def save_to_disk(self, save_dir: str, model_id: str, tokens_path: str):
         if tokens_path is not None:
             assert os.path.isabs(tokens_path), "Tokens path must be absolute"
 
         for module_path in self.locations.keys():
             os.makedirs(save_dir, exist_ok=True)
-            save_path = os.path.join(save_dir, f"{module_path}.pt")
-            t.save(
+            save_path = os.path.join(save_dir, f"{module_path}.safetensors")
+            save_file(
                 {
                     "locations": self.locations[module_path],
                     "activations": self.activations[module_path],
                     "tokens_path": tokens_path,
+                    "model_id": model_id,
                 },
                 save_path,
             )
@@ -145,7 +146,7 @@ def _batch_tokens(
 @t.no_grad()
 def cache_activations(
     model,
-    submodule_dict: Dict[Envoy, t.nn.Module],
+    submodule_dict: Dict[str, Callable],
     tokens: TensorType["batch", "seq"],
     batch_size: int,
     max_tokens: int = 100_000,
@@ -164,16 +165,15 @@ def cache_activations(
 
     with tqdm(total=max_tokens, desc="Caching features") as pbar:
         for batch_number, batch in enumerate(token_batches):
-            buffer = {}
-            with model.trace(batch, use_cache=False):
-                for submodule, dictionary in submodule_dict.items():
-                    latents = ns.apply(dictionary.encode, submodule.output[0])
-                    buffer[submodule._path] = latents.save()
+            with TraceDict(model, list(submodule_dict.keys()), stop=True) as ret:
+                _ = model(batch)
+                for path, dictionary in submodule_dict.items():
+                    acts = ret[path].output
+                    if isinstance(acts, tuple):
+                        acts = acts[0]
 
-                submodule.output.stop()
-
-            for module_path, latents in buffer.items():
-                cache.add(latents, batch_number, module_path)
+                    latents = dictionary(acts)
+                    cache.add(latents, batch_number, path)
 
             # Update tqdm
             pbar.update(tokens_per_batch)
