@@ -1,4 +1,4 @@
-from ...schema.base import Example
+from ...base import Example
 from ...schema.client import Conversation
 from typing import List, Dict
 from transformers import AutoTokenizer

@@ -1,29 +1,19 @@
 import re
-from transformers import AutoTokenizer
 
-from ..schema.base import Feature, Example
-from .prompts.explainer_prompt_w_acts import build_prompt as build_prompt_w_acts
-from .prompts.explainer_prompt import build_prompt as build_prompt_no_acts
+from .prompts.explainer_prompt import build_prompt
 from .clients import HTTPClient
-
+from ..base import Feature
 
 class Explainer:
     def __init__(
         self,
         client: HTTPClient,
-        subject_tokenizer: AutoTokenizer,
-        threshold: float = 0.6,
         insert_as_prompt: bool = False,
         verbose: bool = False,
-        activations: bool = False
     ):
         self.client = client
-        self.subject_tokenizer = subject_tokenizer
         self.verbose = verbose
-        self.threshold = threshold
         self.insert_as_prompt = insert_as_prompt
-        self.prompt_builder = build_prompt_w_acts if activations else build_prompt_no_acts
-        self.activations = activations
 
     async def __call__(self, feature: Feature, **generation_kwargs):
         messages = self._build_prompt(feature)
@@ -46,19 +36,6 @@ class Explainer:
             print(f"Explanation parsing failed: {e}")
             return "Explanation could not be parsed."
 
-    def _get_toks_and_acts(self, example: Example):
-        example_max_activation = example.activations.max().item()
-        example_threshold = example_max_activation * self.threshold
-
-        mask = example.activations > example_threshold
-
-        tokens = example.tokens[mask]
-        str_toks = self.subject_tokenizer.batch_decode(tokens)
-
-        normalized = example.normalized_activations[mask].tolist()
-
-        return zip(str_toks, normalized)
-
     def _build_prompt(self, feature: Feature):
         highlighted_examples = []
 
@@ -66,18 +43,11 @@ class Explainer:
             index = i + 1  # Start at 1
             formatted = self._highlight(index, example)
 
-            if self.activations:
-                acts = ", ".join(
-                    f'("{item[0]}", {item[1]})'
-                    for item in self._get_toks_and_acts(example)
-                )
-                formatted += "\nActivations: " + acts
-
             highlighted_examples.append(formatted)
 
         highlighted_examples = "\n".join(highlighted_examples)
 
-        return self.prompt_builder(
+        return build_prompt(
             examples=highlighted_examples,
             insert_as_prompt=self.insert_as_prompt,
         )
@@ -98,7 +68,7 @@ class Explainer:
         result = f"Example {index}: "
 
         activations = example.activations
-        str_toks = self.subject_tokenizer.batch_decode(example.tokens)
+        str_toks = example.str_tokens
 
         def check(i):
             return activations[i] > 0.0

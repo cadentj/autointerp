@@ -2,24 +2,19 @@ import asyncio
 import json
 import random
 import re
-import numpy as np
-from transformers import AutoTokenizer
 from typing import (
     Any,
     Callable,
     List,
     Literal,
     NamedTuple,
-    Optional,
     Sequence,
-    Tuple,
 )
 
 import torch
 from collections import defaultdict
-from ..schema.base import Feature, Example
-from ..schema.client import Response
-from .clients import HTTPClient
+from ..base import Feature, Example
+from .clients import HTTPClient, Response
 from .prompts.detection_prompt import prompt as detection_prompt
 from .prompts.fuzz_prompt import prompt as fuzz_prompt
 
@@ -38,7 +33,6 @@ class Sample(NamedTuple):
 
 def examples_to_samples(
     examples: List[Example],
-    tokenizer: AutoTokenizer,
     n_incorrect: int = 0,
     threshold: float = 0.3,
     highlighted: bool = False,
@@ -46,7 +40,7 @@ def examples_to_samples(
     samples = []
 
     for example in examples:
-        str_toks = tokenizer.batch_decode(example.tokens)
+        str_toks = example.str_tokens
         text = _prepare_text(
             example, str_toks, n_incorrect, threshold, highlighted
         )
@@ -88,12 +82,15 @@ def _prepare_text(
 
     # 2) Highlight tokens with activations above threshold if correct example
     if n_incorrect == 0:
+
         def threshold_check(i):
             return example.activations[i] >= threshold
 
         return _highlight(str_toks, threshold_check)
 
-    below_threshold = torch.nonzero(example.activations <= threshold).squeeze(-1)
+    below_threshold = torch.nonzero(example.activations <= threshold).squeeze(
+        -1
+    )
 
     # Add check for empty tensor
     if below_threshold.numel() == 0:
@@ -131,7 +128,6 @@ class Classifier:
     def __init__(
         self,
         client: HTTPClient,
-        tokenizer: AutoTokenizer,
         n_examples_shown: int = 10,
         method: Literal["detection", "fuzzing"] = "detection",
         threshold: float = 0.3,
@@ -151,7 +147,6 @@ class Classifier:
         self.n_examples_shown = n_examples_shown
         self.method = method
         self.threshold = threshold
-        self.tokenizer = tokenizer
         self.verbose = verbose
 
     async def __call__(
@@ -200,12 +195,10 @@ class Classifier:
         """Prepare samples for detection method"""
         random_samples = examples_to_samples(
             feature.random_examples,
-            self.tokenizer,
         )
 
         activating_samples = examples_to_samples(
             feature.examples,
-            self.tokenizer,
         )
 
         return random_samples + activating_samples
@@ -216,9 +209,12 @@ class Classifier:
         random.shuffle(examples)
 
         # Calculate the mean number of activations in the examples and convert to int
-        n_incorrect = int(sum(
-            len(torch.nonzero(example.activations)) for example in examples
-        ) / len(examples))
+        n_incorrect = int(
+            sum(
+                len(torch.nonzero(example.activations)) for example in examples
+            )
+            / len(examples)
+        )
 
         quantiles = set(example.quantile for example in examples)
         binned = {quantile: [] for quantile in quantiles}
@@ -239,7 +235,6 @@ class Classifier:
 
         random_samples = examples_to_samples(
             non_activating_examples,
-            self.tokenizer,
             n_incorrect=n_incorrect,
             highlighted=True,
             threshold=self.threshold,
@@ -247,7 +242,6 @@ class Classifier:
 
         activating_samples = examples_to_samples(
             activating_examples,
-            self.tokenizer,
             n_incorrect=0,
             highlighted=True,
             threshold=self.threshold,
@@ -263,8 +257,7 @@ class Classifier:
         """
 
         examples = "\n".join(
-            f"Example {i + 1}: {sample.text}"
-            for i, sample in enumerate(batch)
+            f"Example {i + 1}: {sample.text}" for i, sample in enumerate(batch)
         )
 
         prompt_template = (

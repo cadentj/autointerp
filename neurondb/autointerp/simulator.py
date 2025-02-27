@@ -12,7 +12,7 @@ from transformers import AutoTokenizer
 
 from .clients import NsClient
 from .prompts.simulation_prompt import format_prompt
-from ..schema.base import Example
+from ..base import Example
 from ..schema.client import PromptLogProbs
 
 VALID_ACTIVATION_TOKENS = list(str(i) for i in range(9 + 1))

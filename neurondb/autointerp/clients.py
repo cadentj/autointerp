@@ -1,22 +1,48 @@
-import json
 import asyncio
+import json
 import os
+from typing import List, NamedTuple
 
-from openai import AsyncOpenAI
-
-import torch as t
-from typing import List
-from transformers import AutoModelForCausalLM
 from anthropic import Anthropic
 from anthropic.types.message_create_params import (
     MessageCreateParamsNonStreaming,
 )
 from anthropic.types.messages.batch_create_params import Request
 import httpx
+from pydantic import BaseModel
+import torch as t
+from torchtyping import TensorType
+from transformers import AutoModelForCausalLM
 
-from ..schema.client import PromptLogProbs, Response, Conversation
 from ..utils import load_tokenizer
 
+### SCHEMA ###
+
+class Message(BaseModel):
+    role: str
+    content: str
+
+class Conversation(BaseModel):
+    messages: List[Message]
+
+class PromptLogProbs(NamedTuple):
+    indices: TensorType["seq", "top_k"]
+    values: TensorType["seq", "top_k"]
+    tokens: TensorType["seq"]
+
+class LogProbs(BaseModel):
+    tokens: List[str]
+    token_logprobs: List[float]
+
+class Choice(BaseModel):
+    message: Message
+    # logprobs: LogProbs | None = None
+
+class Response(BaseModel):
+    choices: List[Choice]
+
+
+### CLIENTS ###
 
 class HTTPClient:
     def __init__(
@@ -83,14 +109,12 @@ class LocalClient(HTTPClient):
         )
 
 
-
 class OpenRouterClient(HTTPClient):
     def __init__(self, model: str, max_retries=2):
-        # api_key = os.environ.get("OPENROUTER_KEY")
-        # if api_key is None:
-        #     raise ValueError("OPENROUTER_KEY is not set")
+        api_key = os.environ.get("OPENROUTER_KEY")
+        if api_key is None:
+            raise ValueError("OPENROUTER_KEY is not set")
 
-        api_key = "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"
         super().__init__(
             model, "https://openrouter.ai/api/v1/chat/completions", max_retries, api_key
         )
@@ -140,30 +164,17 @@ class AnthropicClient:
 
 class NsClient:
     def __init__(self, model_id: str, k=15, **model_kwargs):
-        # model = AutoModelForCausalLM.from_pretrained(
-        #     model_id,
-        #     device_map="auto",
-        #     attn_implementation="flash_attention_2",
-        #     **model_kwargs,
-        # )
-        from unsloth import FastLanguageModel
-
-        model, tokenizer = FastLanguageModel.from_pretrained(
-            model_name=model_id,
-            dtype="bfloat16",
-            load_in_4bit=False,
+        model = AutoModelForCausalLM.from_pretrained(
+            model_id,
+            device_map="auto",
+            attn_implementation="flash_attention_2",
+            **model_kwargs,
         )
-        FastLanguageModel.for_inference(model)
         tokenizer = load_tokenizer(model_id)
 
         self.k = k
         self.model = model
         self.tokenizer = tokenizer
-
-        try:
-            _ = self.model.lm_head
-        except Exception:
-            raise ValueError("Client not compatible with this model.")
 
     def _prepare_input(self, conversations: List[Conversation]):
         for conversation in conversations:

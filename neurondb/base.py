@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import List, Dict, NamedTuple, Optional
 
 from torchtyping import TensorType
@@ -7,15 +8,16 @@ DictionaryRequest = Dict[str, List[int]]
 
 class Example(NamedTuple):
     tokens: TensorType["seq"]
+    str_tokens: List[str]
     activations: TensorType["seq"]
     normalized_activations: TensorType["seq"]
     quantile: Optional[int] = None
     
-class Feature(NamedTuple):
+@dataclass
+class Feature:
     index: int
     max_activation: float
     examples: List[Example]
-    random_examples: List[Example]
 
     def display(
         self,
