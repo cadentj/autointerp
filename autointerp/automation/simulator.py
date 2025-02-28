@@ -10,7 +10,7 @@ import numpy as np
 from torchtyping import TensorType
 from transformers import AutoTokenizer
 
-from .clients import NsClient
+from .clients import LogProbsClient
 from .prompts.simulation_prompt import format_prompt
 from ..base import Example
 from .clients import PromptLogProbs
@@ -181,8 +181,7 @@ def _setup_activation_token_ids(tokenizer: AutoTokenizer):
 def simulate(
     explanation: str,
     examples: List[Example],
-    client: NsClient,
-    subject_tokenizer: AutoTokenizer,
+    client: LogProbsClient,
     return_predictions: bool = False,
 ) -> float:
     simulator_tokenizer = client.tokenizer
@@ -191,7 +190,7 @@ def simulate(
     tab_id = simulator_tokenizer.encode("\t", add_special_tokens=False)[0]
 
     prompts = [
-        format_prompt(explanation, example, subject_tokenizer)
+        format_prompt(explanation, example)
         for example in examples
     ]
 

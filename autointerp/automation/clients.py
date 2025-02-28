@@ -3,18 +3,13 @@ import json
 import os
 from typing import List, NamedTuple
 
-from anthropic import Anthropic
-from anthropic.types.message_create_params import (
-    MessageCreateParamsNonStreaming,
-)
-from anthropic.types.messages.batch_create_params import Request
 import httpx
 from pydantic import BaseModel
 import torch as t
 from torchtyping import TensorType
 from transformers import AutoModelForCausalLM
 
-from ..utils import load_tokenizer
+from .utils import load_tokenizer
 
 ### SCHEMA ###
 
@@ -120,56 +115,14 @@ class OpenRouterClient(HTTPClient):
         )
 
 
-class AnthropicClient:
-    def __init__(self, model: str, max_retries: int = 2):
-        self.client = Anthropic()
-        self.max_retries = max_retries
-        self.model = model
-
-        self.requests = []
-
-    def _add_cache_control(self, messages: Conversation):
-        # Set second to last message to cache control
-        content = messages[-2]["content"]
-        messages[-2]["content"] = [
-            {
-                "type": "text",
-                "text": content,
-                "cache_control": {"type": "ephemeral"},
-            }
-        ]
-
-        return messages
-
-    def upload(self):
-        batch = self.client.messages.batches.create(requests=self.requests)
-
-        return batch
-
-    async def generate(self, messages: Conversation, **kwargs):
-        feature_id = kwargs.pop("feature_id")
-        messages = self._add_cache_control(messages)
-
-        request = Request(
-            custom_id=feature_id,
-            params=MessageCreateParamsNonStreaming(
-                model=self.model, messages=messages, **kwargs
-            ),
-        )
-
-        self.requests.append(request)
-
-        return "\\boxed{Added request for " + feature_id + "}"
-
-
-class NsClient:
+class LogProbsClient:
     def __init__(self, model_id: str, k=15, **model_kwargs):
         model = AutoModelForCausalLM.from_pretrained(
             model_id,
-            device_map="auto",
-            attn_implementation="flash_attention_2",
+            # device_map="auto",
+            # attn_implementation="flash_attention_2",
             **model_kwargs,
-        )
+        ).to("cuda")
         tokenizer = load_tokenizer(model_id)
 
         self.k = k

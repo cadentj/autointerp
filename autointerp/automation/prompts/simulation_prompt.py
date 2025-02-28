@@ -61,15 +61,13 @@ def _format_example(
 
     return "\n".join(formatted_example)
 
-def _format_example_for_simulation(example: Example, tokenizer: AutoTokenizer) -> str: 
+def _format_example_for_simulation(example: Example) -> str: 
     """Format an example into a string of newline, tab separated tokens 
     and activations.
     """
 
-    str_tokens = tokenizer.batch_decode(example.tokens, skip_special_tokens=True)
-
     formatted_example = []
-    for token in str_tokens:
+    for token in example.str_tokens:
         formatted_example.append(f"{token}\t{UNKNOWN_ACTIVATION_STRING}")
 
     return "\n".join(formatted_example)
@@ -96,7 +94,7 @@ def _build_messages(conversation: List[str]) -> List[Dict]:
 
     return messages
 
-def format_prompt(explanation: str, example: Example, tokenizer: AutoTokenizer) -> Conversation:
+def format_prompt(explanation: str, example: Example) -> Conversation:
     """Format a list of few shot examples into a prompt."""
 
     messages = [SYSTEM_PROMPT]
@@ -133,7 +131,7 @@ def format_prompt(explanation: str, example: Example, tokenizer: AutoTokenizer) 
     )
 
     assistant_response = ASSISTANT_TEMPLATE.format(
-        example=_format_example_for_simulation(example, tokenizer)
+        example=_format_example_for_simulation(example)
     )
 
     messages.extend([

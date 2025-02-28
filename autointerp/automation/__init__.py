@@ -1,14 +1,13 @@
 from .explainer import Explainer
 from .classifier import Classifier
-from .clients import LocalClient, NsClient, OpenRouterClient, AnthropicClient
+from .clients import LocalClient, LogProbsClient, OpenRouterClient
 from .simulator import simulate
 
 __all__ = [
     "Explainer",
+    "Classifier",
     "LocalClient",
     "OpenRouterClient",
-    "NsClient",
+    "LogProbsClient",
     "simulate",
-    "AnthropicClient",
-    "Classifier",
 ]

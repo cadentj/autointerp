@@ -23,6 +23,7 @@ def quantile_sampler(
     tokenizer: AutoTokenizer,
     n_examples: int = 20,
     n_quantiles: int = 5,
+    **kwargs,
 ):
     if len(token_windows) == 0:
         return None
@@ -60,6 +61,7 @@ def max_activation_sampler(
     activation_windows: TensorType["batch", "seq"],
     tokenizer: AutoTokenizer,
     n_examples: int = 20,
+    **kwargs,
 ):
     if len(token_windows) < n_examples:
         return None
