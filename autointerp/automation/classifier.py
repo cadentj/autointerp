@@ -48,11 +48,11 @@ def examples_to_samples(
         # IMPORTANT NOTE:
         # Activating means whether the example's ground truth is to be "correct" or "incorrect"
         # The first condition is for fuzzing. If the example has incorrectly marked tokens, it is not activating.
-        # Also note that fuzzed examples should never have a quantile of -1 because the prompt entailment is that
+        # Also note that fuzzed examples should never have a quantile of 0 because the prompt entailment is that
         # the example is activating.
-        # The second condition is for detection. A quantile of -1 means that the example is not activating.
+        # The second condition is for detection. A quantile of 0 means that the example is not activating.
         activating = (highlighted and n_incorrect == 0) or (
-            not highlighted and example.quantile != -1
+            not highlighted and example.quantile != 0
         )
 
         samples.append(
