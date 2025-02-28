@@ -64,16 +64,6 @@ features = load("/root/autointerp/cache/model.layers.0.pt")
 data = t.load("/root/autointerp/cache/model.layers.0.pt")
 locations = data["locations"]
 
-# %%
-
 from autointerp.samplers import SimilaritySearch
 
 similarity_search = SimilaritySearch("google/gemma-2-2b", tokens, locations, 128)
-
-# %%
-
-similarity_search(features)
-
-# %%
-
-similarity_search.ctx_locations[:,0].max()

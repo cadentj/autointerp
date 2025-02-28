@@ -6,7 +6,7 @@ from transformers import AutoTokenizer
 from tqdm import tqdm
 
 from .base import Example, Feature
-from .samplers import default_sampler
+from .samplers import default_sampler, SimilaritySearch
 
 
 def _pool_max_activation_windows(
@@ -148,5 +148,11 @@ def load(
 
         feature = Feature(feature, max_activation, examples)
         features.append(feature)
+
+    if not train:
+        similarity_search = SimilaritySearch(
+            data["model_id"], tokens, locations, ctx_len
+        )
+        similarity_search(features)
 
     return features

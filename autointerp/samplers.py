@@ -2,6 +2,7 @@ from typing import List
 
 from sentence_transformers import SentenceTransformer
 import torch as t
+import torch.nn.functional as F
 from torchtyping import TensorType
 from transformers import AutoTokenizer
 
@@ -16,23 +17,18 @@ def _normalize(
     return normalized.round().int()
 
 
-# TODO: Make this configurable
-PAD_TOKEN_ID = 0
-print("WARNING: USING PRESET PAD TOKEN ID (0)")
-
-
 def quantile_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
     tokenizer: AutoTokenizer,
-    n: int = 20,
+    n_examples: int = 20,
     n_quantiles: int = 5,
 ):
     if len(token_windows) == 0:
         return None
 
     max_activation = activation_windows.max()
-    examples_per_quantile = n // n_quantiles
+    examples_per_quantile = n_examples // n_quantiles
 
     examples = []
     for i in range(n_quantiles):
@@ -40,7 +36,7 @@ def quantile_sampler(
         end_idx = start_idx + examples_per_quantile
 
         for j in range(start_idx, end_idx):
-            pad_token_mask = token_windows[j] == PAD_TOKEN_ID
+            pad_token_mask = token_windows[j] == tokenizer.pad_token_id
             trimmed_window = token_windows[j][~pad_token_mask]
             trimmed_activation = activation_windows[j][~pad_token_mask]
 
@@ -63,15 +59,15 @@ def max_activation_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
     tokenizer: AutoTokenizer,
-    k: int = 20,
+    n_examples: int = 20,
 ):
-    if len(token_windows) < k:
+    if len(token_windows) < n_examples:
         return None
 
     max_activation = activation_windows.max()
     examples = []
-    for i in range(k):
-        pad_token_mask = token_windows[i] == PAD_TOKEN_ID
+    for i in range(n_examples):
+        pad_token_mask = token_windows[i] == tokenizer.pad_token_id
         trimmed_window = token_windows[i][~pad_token_mask]
         trimmed_activation = activation_windows[i][~pad_token_mask]
 
@@ -109,19 +105,16 @@ class SimilaritySearch:
         flat_indices = locations[:, 0] * seq_len + locations[:, 1]
         ctx_indices = flat_indices // ctx_len
         self.ctx_locations = t.stack([ctx_indices, locations[:, 2]], dim=1)
-        max_ctx_idx = self.ctx_locations[:, 0].max()
+        max_ctx_idx = self.ctx_locations[:, 0].max().item()
 
         # Reshape strides and strides mask
-        mask = tokens != self.subject_tokenizer.pad_token_id
-        strides_mask = mask.unfold(dimension=1, size=ctx_len, step=ctx_len)
-        strides = tokens.unfold(dimension=1, size=ctx_len, step=ctx_len)
-
-        # Filter for valid strides
-        valid_strides_mask = strides_mask.all(dim=2)
-        valid_strides = strides[valid_strides_mask]
+        batch_size, seq_len = tokens.shape
+        n_contexts = batch_size * (seq_len // ctx_len)
+        strides = tokens.reshape(n_contexts, ctx_len)
+        strides = strides[: max_ctx_idx + 1]
 
         # Embed context windows
-        str_data = self.subject_tokenizer.batch_decode(valid_strides)
+        str_data = self.subject_tokenizer.batch_decode(strides)
         print("Encoding token contexts...")
         embeddings = self.model.encode(
             str_data,
@@ -131,13 +124,10 @@ class SimilaritySearch:
         )
 
         # Set all strides and valid strides
-        self.all_strides = strides
-        self.valid_strides = valid_strides
+        self.strides = strides
 
         # Normalize embeddings
-        normalized_embeddings = (
-            embeddings / embeddings.norm(dim=1, keepdim=True)
-        ).t()
+        normalized_embeddings = F.normalize(embeddings, p=2, dim=1).t()
         self.normalized_embeddings = normalized_embeddings.to("cuda")
 
     def _query(
@@ -146,9 +136,7 @@ class SimilaritySearch:
         query_embeddings: TensorType["n_queries", "d_model"],
         k: int = 10,
     ):
-        query_embeddings_normalized = query_embeddings / query_embeddings.norm(
-            dim=1, keepdim=True
-        )
+        query_embeddings_normalized = F.normalize(query_embeddings, p=2, dim=1)
 
         similarities: TensorType["n_queries", "n_contexts"] = t.matmul(
             query_embeddings_normalized, self.normalized_embeddings
@@ -161,9 +149,6 @@ class SimilaritySearch:
             locations = self.ctx_locations[mask]
             similarities[i, locations[:, 0]] = -float("inf")
 
-        print(self.ctx_locations.shape)
-        print(similarities)
-
         _, indices = t.topk(similarities, k=k, dim=1)
 
         return indices.cpu()
@@ -172,10 +157,9 @@ class SimilaritySearch:
         self,
         idxs: TensorType["k"],
     ):
-        print(idxs)
         examples = []
         for idx in idxs:
-            token_window = self.all_strides[idx]
+            token_window = self.strides[idx]
             pad_token_mask = (
                 token_window == self.subject_tokenizer.pad_token_id
             )
@@ -245,13 +229,13 @@ def default_sampler(
             token_windows[:n_train],
             activation_windows[:n_train],
             tokenizer,
-            k=n_train,
+            n_examples=n_train,
         )
     else:
         return quantile_sampler(
             token_windows[n_train:],
             activation_windows[n_train:],
             tokenizer,
-            n=n_test,
+            n_examples=n_test,
             n_quantiles=n_quantiles,
         )
