@@ -1,5 +1,3 @@
-# %%
-
 from autointerp import cache_activations
 from datasets import load_dataset
 from gemma import JumpReLUSAE
@@ -20,7 +18,7 @@ tokens = tokenizer(
 )
 tokens = tokens["input_ids"]
 
-# Drop all rows with pad tokens
+# NOTE: Drop all rows with pad tokens
 mask = ~(tokens == 0).any(dim=1)
 tokens = tokens[mask]
 

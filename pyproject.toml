@@ -10,7 +10,10 @@ dependencies = [
     "httpx>=0.27.2",
     "pydantic>=2.10.6",
     "sentence-transformers>=3.4.1",
+    "setuptools>=75.8.2",
+    "sglang[all]>=0.4.3.post2",
     "torchtyping>=0.1.5",
+    "transformers==4.48.3",
 ]
 
 # uv pip install -e .

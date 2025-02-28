@@ -170,7 +170,12 @@ def _parse_and_score(
     return per_example_correlation_scores, all_ev_correlation_score
 
 
-def _setup_activation_token_ids(tokenizer: AutoTokenizer):
+def _setup_activation_token_ids(tokenizer: AutoTokenizer) -> None:
+    """Set the tokenizer ids for valid activation tokens.
+    
+    Global variables are cursed but I don't want to pass the tokenizer
+    through the functions lol.
+    """
     global ACTIVATION_TOKEN_IDS
     ACTIVATION_TOKEN_IDS = {
         tokenizer.encode(token, add_special_tokens=False)[0]: token

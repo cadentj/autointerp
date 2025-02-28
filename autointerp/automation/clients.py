@@ -99,8 +99,25 @@ class HTTPClient:
 # NOTE: Not tested with httpx
 class LocalClient(HTTPClient):
     def __init__(self, model: str, max_retries=2):
+        from sglang.test.test_utils import is_in_ci
+        from sglang.utils import wait_for_server
+
+        if is_in_ci():
+            from patch import launch_server_cmd
+        else:
+            from sglang.utils import launch_server_cmd
+
+        server_process, port = launch_server_cmd(
+            f"""
+            python -m sglang.launch_server --model-path {model} \
+            --host 0.0.0.0
+            """
+        )
+
+        wait_for_server(f"http://localhost:{port}")
+
         super().__init__(
-            model, "http://localhost:8000/v1", max_retries, "EMPTY"
+            model, "http://localhost:{port}/v1/chat/completions", max_retries, "EMPTY"
         )
 
 

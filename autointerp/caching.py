@@ -157,7 +157,9 @@ def cache_activations(
     filters: Dict[str, List[int]] = {},
     remove_bos: bool = True,
 ) -> Cache:
-    """Cache dictionary activations.
+    """Cache dictionary activations. 
+
+    Note: Padding is not supported at the moment. Please remove padding from tokenizer.
 
     Args:
         model: Model to cache activations from.
@@ -166,7 +168,6 @@ def cache_activations(
         batch_size: Number of sequences per batch.
         max_tokens: Maximum number of tokens to cache.
     """
-    print("Padding is not supported at the moment. Please remove padding tokens.")
 
     if remove_bos:
         print("Skipping BOS tokens.")
