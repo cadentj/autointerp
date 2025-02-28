@@ -5,7 +5,7 @@ import torch as t
 from torchtyping import TensorType
 from transformers import AutoTokenizer
 
-from .schema import Example, Feature
+from .base import Example, Feature
 
 
 def _normalize(
@@ -46,9 +46,11 @@ def quantile_sampler(
 
             examples.append(
                 Example(
-                    trimmed_window,
-                    trimmed_activation,
-                    _normalize(trimmed_activation, max_activation),
+                    tokens=trimmed_window,
+                    activations=trimmed_activation,
+                    normalized_activations=_normalize(
+                        trimmed_activation, max_activation
+                    ),
                     quantile=n_quantiles - i,
                     str_tokens=tokenizer.batch_decode(trimmed_window),
                 )
@@ -75,9 +77,11 @@ def max_activation_sampler(
 
         examples.append(
             Example(
-                trimmed_window,
-                trimmed_activation,
-                _normalize(trimmed_activation, max_activation),
+                tokens=trimmed_window,
+                activations=trimmed_activation,
+                normalized_activations=_normalize(
+                    trimmed_activation, max_activation
+                ),
                 quantile=-1,
                 str_tokens=tokenizer.batch_decode(trimmed_window),
             )
@@ -87,85 +91,106 @@ def max_activation_sampler(
 
 
 class SimilaritySearch:
-    def __init__(self, model_id: str, subject_id: str):
-        self.model = SentenceTransformer(model_id)
-        self.subject_tokenizer = AutoTokenizer.from_pretrained(subject_id)
-
-        self.all_strides: TensorType["n_contexts", "seq_len"] = None
-        self.valid_strides: TensorType["n_contexts", "seq_len"] = None
-        self.embeddings: TensorType["n_contexts", "d_model"] = None
-
-        self.loaded = False
-
-    def load(
+    def __init__(
         self,
+        subject_model_id: str,
         tokens: TensorType["batch", "seq_len"],
+        locations: TensorType["batch", "2"],
         ctx_len: int,
-        ignore_index: int,
+        embedding_model_id: str = "all-MiniLM-L6-v2",
     ):
-        # Mask over invalid tokens
-        mask = tokens != ignore_index
-        mask_strides = mask.unfold(dimension=1, size=ctx_len, step=ctx_len)
+        self.model = SentenceTransformer(embedding_model_id)
+        self.subject_tokenizer = AutoTokenizer.from_pretrained(
+            subject_model_id
+        )
+
+        # Set context locations
+        seq_len = tokens.shape[1]
+        flat_indices = locations[:, 0] * seq_len + locations[:, 1]
+        ctx_indices = flat_indices // ctx_len
+        self.ctx_locations = t.stack([ctx_indices, locations[:, 2]], dim=1)
+        max_ctx_idx = self.ctx_locations[:, 0].max()
+
+        # Reshape strides and strides mask
+        mask = tokens != self.subject_tokenizer.pad_token_id
+        strides_mask = mask.unfold(dimension=1, size=ctx_len, step=ctx_len)
         strides = tokens.unfold(dimension=1, size=ctx_len, step=ctx_len)
 
         # Filter for valid strides
-        valid_strides_mask = mask_strides.all(dim=2)
+        valid_strides_mask = strides_mask.all(dim=2)
         valid_strides = strides[valid_strides_mask]
 
         # Embed context windows
         str_data = self.subject_tokenizer.batch_decode(valid_strides)
-        print("Encoding strides...")
+        print("Encoding token contexts...")
         embeddings = self.model.encode(
-            str_data, device="cuda", show_progress_bar=True
+            str_data,
+            device="cuda",
+            show_progress_bar=True,
+            convert_to_tensor=True,
         )
 
+        # Set all strides and valid strides
         self.all_strides = strides
         self.valid_strides = valid_strides
-        self.embeddings = t.from_numpy(embeddings)
+
+        # Normalize embeddings
+        normalized_embeddings = (
+            embeddings / embeddings.norm(dim=1, keepdim=True)
+        ).t()
+        self.normalized_embeddings = normalized_embeddings.to("cuda")
 
     def _query(
         self,
+        features: List[Feature],
         query_embeddings: TensorType["n_queries", "d_model"],
-        locations: List[TensorType["features", 3]],
         k: int = 10,
     ):
         query_embeddings_normalized = query_embeddings / query_embeddings.norm(
             dim=1, keepdim=True
         )
-        embeddings_normalized = self.embeddings / self.embeddings.norm(
-            dim=1, keepdim=True
-        )
 
         similarities: TensorType["n_queries", "n_contexts"] = t.matmul(
-            query_embeddings_normalized, embeddings_normalized.t()
+            query_embeddings_normalized, self.normalized_embeddings
         )
 
-        # set similarities to -inf for the stride indices
-        for i, location in enumerate(locations):
-            stride_indices = location[:, 0] * location[:, 1]
-            similarities[i, stride_indices] = -float("inf")
+        # # set similarities to -inf for the stride indices
+        for i, features in enumerate(features):
+            idx = features.index
+            mask = self.ctx_locations[:, 1] == idx
+            locations = self.ctx_locations[mask]
+            similarities[i, locations[:, 0]] = -float("inf")
 
-        indices, _ = t.topk(similarities, k=k, dim=1)
+        print(self.ctx_locations.shape)
+        print(similarities)
 
-        return indices
+        _, indices = t.topk(similarities, k=k, dim=1)
+
+        return indices.cpu()
 
     def _get_similar_examples(
         self,
-        indices: TensorType["k"],
+        idxs: TensorType["k"],
     ):
+        print(idxs)
         examples = []
-        for index in indices:
-            token_window = self.all_strides[index]
-            pad_token_mask = token_window == PAD_TOKEN_ID
+        for idx in idxs:
+            token_window = self.all_strides[idx]
+            pad_token_mask = (
+                token_window == self.subject_tokenizer.pad_token_id
+            )
             trimmed_window = token_window[~pad_token_mask]
             activation_window = t.zeros_like(trimmed_window)
 
             examples.append(
                 Example(
-                    trimmed_window,
-                    activation_window,
-                    activation_window,
-                    quantile=None,
+                    tokens=trimmed_window,
+                    activations=activation_window,
+                    normalized_activations=activation_window,
+                    quantile=-1,
+                    str_tokens=self.subject_tokenizer.batch_decode(
+                        trimmed_window
+                    ),
                 )
             )
 
@@ -174,14 +199,9 @@ class SimilaritySearch:
     def __call__(
         self,
         features: List[Feature],
-        locations: TensorType["features", 3],
         batch_size: int = 64,
-        k: int = 10,
+        n_examples: int = 10,
     ):
-        # Convert locations to stride indices
-        ctx_len = self.all_strides.shape[1]
-        locations = locations[:, 1] // ctx_len
-
         queries = [
             t.cat([e.tokens for e in feature.examples]) for feature in features
         ]
@@ -203,14 +223,9 @@ class SimilaritySearch:
         ]
 
         for features, query_batch in query_embedding_batches:
-            _locations = [
-                locations[locations[:, 2] == f.index] for f in features
-            ]
-            topk_indices = self._query(query_batch, _locations, k=k)
-            for i, feature in enumerate(features):
-                feature.similar_examples = self._get_similar_examples(
-                    topk_indices[i]
-                )
+            topk_indices = self._query(features, query_batch, k=n_examples)
+            for idxs, feature in zip(topk_indices, features):
+                feature.similar_examples = self._get_similar_examples(idxs)
 
 
 def default_sampler(
@@ -218,8 +233,8 @@ def default_sampler(
     activation_windows: TensorType["batch", "seq"],
     tokenizer: AutoTokenizer,
     n_train: int = 20,
-    n_test: int = 5,
-    n_quantiles: int = 5,
+    n_test: int = 40,
+    n_quantiles: int = 10,
     train: bool = True,
 ):
     if len(token_windows) < n_train + n_test:

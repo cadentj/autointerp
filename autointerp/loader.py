@@ -1,17 +1,17 @@
-from typing import List, Tuple, Callable, Generator
+from typing import List, Tuple, Callable
 
 import torch as t
 from torchtyping import TensorType
 from transformers import AutoTokenizer
 from tqdm import tqdm
 
-from .schema import Example, Feature
+from .base import Example, Feature
 from .samplers import default_sampler
 
 
 def _pool_max_activation_windows(
-    activations: TensorType["batch", "seq", "feature"],
-    locations: TensorType["batch", "seq", "feature"],
+    activations: TensorType["features"],
+    locations: TensorType["features", 3],
     tokens: TensorType["batch", "seq"],
     ctx_len: int,
     max_examples: int,
@@ -19,7 +19,7 @@ def _pool_max_activation_windows(
     batch_idxs = locations[:, 0]
     seq_idxs = locations[:, 1]
     seq_len = tokens.shape[1]
-    
+
     # 1) Flatten the location indices to get the index of each context and the index within the context
     flat_indices = batch_idxs * seq_len + seq_idxs
     ctx_indices = flat_indices // ctx_len
@@ -57,7 +57,23 @@ def _pool_max_activation_windows(
     return token_windows, activation_windows
 
 
-def _get_valid_features(locations, indices):
+def _get_valid_features(
+    locations: TensorType["features", 3],
+    indices: List[int] | int,
+) -> List[int]:
+    """Some features might not have been cached since they were too rare.
+    Filter for valid features that were actually cached.
+
+    Also handle whether a list or single index is provided.
+
+    Args:
+        locations: Locations of cached activations.
+        indices: Optional list of indices of features to load.
+
+    Returns:
+        List of valid features.
+    """
+
     features = t.unique(locations[:, 2]).tolist()
 
     if isinstance(indices, list) and indices is not None:
@@ -83,18 +99,34 @@ def load(
     indices: List[int] | int = None,
     ctx_len: int = 64,
     max_examples: int = 2_000,
-    train: bool = True
-) -> Generator[Tuple[List[Example], float], None, None]:
+    train: bool = True,
+) -> List[Feature]:
+    """Load cached activations from disk.
+
+    Args:
+        path: Path to cached activations.
+        sampler: Samplers define how to reconstruct examples.
+        indices: Optional list of indices of features to load.
+        ctx_len: Sequence length of each example.
+        max_examples: Maximum number of examples to load. Set to -1 to load all.
+        train: Whether to load training or test examples.
+    """
     data = t.load(path)
     tokens = t.load(data["tokens_path"])
-    tokenizer = AutoTokenizer.from_pretrained(data["tokenizer_id"])
-    locations = data["locations"]
-    activations = data["activations"]
+    tokenizer = AutoTokenizer.from_pretrained(data["model_id"])
 
-    assert tokens.shape[1] % ctx_len == 0, "Token sequence length must be a multiple of ctx_len"
+    # Locations corresponds to rows of (batch, seq, feature)
+    locations: TensorType["features", 3] = data["locations"]
+    # Activations is the corresponding activation for each location
+    activations: TensorType["features"] = data["activations"]
+
+    assert tokens.shape[1] % ctx_len == 0, (
+        "Token sequence length must be a multiple of ctx_len"
+    )
 
     available_features = _get_valid_features(locations, indices)
 
+    features = []
     for feature in tqdm(available_features, desc="Loading features"):
         indices = locations[:, 2] == feature
         _locations = locations[indices]
@@ -106,12 +138,15 @@ def load(
             _activations, _locations, tokens, ctx_len, max_examples
         )
 
-        examples = sampler(token_windows, activation_windows, tokenizer, train=train)
+        examples = sampler(
+            token_windows, activation_windows, tokenizer, train=train
+        )
 
         if examples is None:
             print(f"Not enough examples found for feature {feature}")
             continue
 
         feature = Feature(feature, max_activation, examples)
+        features.append(feature)
 
-        yield feature
+    return features

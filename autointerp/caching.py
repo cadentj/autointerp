@@ -6,15 +6,13 @@ from baukit import TraceDict
 import torch as t
 from torchtyping import TensorType
 from tqdm import tqdm
-from safetensors.torch import save_file
-
-from .schema import DictionaryRequest
 
 MAX_INT = t.iinfo(t.int32).max
 
-
 class Cache:
-    def __init__(self, batch_size: int, filters: DictionaryRequest, remove_bos: bool):
+    def __init__(
+        self, batch_size: int, filters: Dict[str, List[int]], remove_bos: bool
+    ):
         self.locations = defaultdict(list)
         self.activations = defaultdict(list)
         self.filters = filters
@@ -28,7 +26,7 @@ class Cache:
         module_path: str,
     ):
         if self.remove_bos:
-            latents = latents[:, 1:]
+            latents[:, 0] = 0
 
         locations, activations = self._get_nonzeros(latents, module_path)
         locations = locations.cpu()
@@ -64,6 +62,7 @@ class Cache:
     ):
         size = latents.shape[1] * latents.shape[0] * latents.shape[2]
         if size > MAX_INT:
+            # Some latent tensors are too large. Compute nonzeros in batches.
             nonzero_locations, nonzero_activations = self._get_nonzeros_batch(
                 latents
             )
@@ -71,6 +70,7 @@ class Cache:
             nonzero_locations = t.nonzero(latents.abs() > 1e-5)
             nonzero_activations = latents[latents.abs() > 1e-5]
 
+        # Apply filters if they exist
         filter = self.filters.get(module_path, None)
         if filter is None:
             return nonzero_locations, nonzero_activations
@@ -87,19 +87,23 @@ class Cache:
                 self.activations[module_path], dim=0
             )
 
-    def get(
-        self, module_path: str
-    ) -> Tuple[TensorType["features"], TensorType["features"]]:
-        return self.locations[module_path], self.activations[module_path]
-
     def save_to_disk(self, save_dir: str, model_id: str, tokens_path: str):
-        if tokens_path is not None:
-            assert os.path.isabs(tokens_path), "Tokens path must be absolute"
+        """Save cached activations to disk. Requires a path to tokens and
+        model ID for easy loading.
+
+        Args:
+            save_dir: Directory to save cached activations to.
+            model_id: Huggingface model ID.
+            tokens_path: Absolute path to tokens.
+        """
+
+        if tokens_path is not None and not os.path.isabs(tokens_path):
+            raise ValueError("Tokens path must be absolute.")
 
         for module_path in self.locations.keys():
             os.makedirs(save_dir, exist_ok=True)
-            save_path = os.path.join(save_dir, f"{module_path}.safetensors")
-            save_file(
+            save_path = os.path.join(save_dir, f"{module_path}.pt")
+            t.save(
                 {
                     "locations": self.locations[module_path],
                     "activations": self.activations[module_path],
@@ -110,28 +114,28 @@ class Cache:
             )
 
 
-def _make_filters(
-    request: DictionaryRequest,
-) -> Dict[str, TensorType["indices"]]:
-    return {
-        module_path: t.tensor(indices, dtype=t.int64).to("cuda")
-        for module_path, indices in request.items()
-    }
-
-
 def _batch_tokens(
     tokens: TensorType["batch", "seq"],
     batch_size: int,
     max_tokens: int,
-    remove_bos: bool,
 ) -> Tuple[List[TensorType["batch", "seq"]], int]:
-    # Subtract 1 if we're removing the BOS token
-    # Not including it as an activation, so don't include in count
-    seq_len = tokens.shape[1] + (-1 if remove_bos else 0)
+    """Batch tokens tensor and return the number of tokens per batch.
+
+    Args:
+        tokens: Tokens tensor.
+        batch_size: Number of sequences per batch.
+        max_tokens: Maximum number of tokens to cache.
+
+    Returns:
+        List of token batches and the number of tokens per batch.
+    """
 
     # Cut max tokens by sequence length
+    seq_len = tokens.shape[1]
     max_batch = max_tokens // seq_len
     tokens = tokens[:max_batch]
+
+    # Create n_batches of tokens
     n_batches = len(tokens) // batch_size
     token_batches = [
         tokens[batch_size * i : batch_size * (i + 1), :]
@@ -150,32 +154,47 @@ def cache_activations(
     tokens: TensorType["batch", "seq"],
     batch_size: int,
     max_tokens: int = 100_000,
-    filters: DictionaryRequest = {},
+    filters: Dict[str, List[int]] = {},
     remove_bos: bool = True,
 ) -> Cache:
-    if remove_bos:
-        print("NOT CACHING BOS!")
+    """Cache dictionary activations.
 
-    filters = _make_filters(filters)
+    Args:
+        model: Model to cache activations from.
+        submodule_dict: Dictionary of submodules to cache activations from.
+        tokens: Tokens tensor.
+        batch_size: Number of sequences per batch.
+        max_tokens: Maximum number of tokens to cache.
+    """
+
+    if remove_bos:
+        print("Skipping BOS tokens.")
+
+    filters = {
+        module_path: t.tensor(indices, dtype=t.int64).to("cuda")
+        for module_path, indices in filters.items()
+    }
     cache = Cache(batch_size, filters, remove_bos)
 
     token_batches, tokens_per_batch = _batch_tokens(
-        tokens, batch_size, max_tokens, remove_bos
+        tokens, batch_size, max_tokens
     )
 
     with tqdm(total=max_tokens, desc="Caching features") as pbar:
         for batch_number, batch in enumerate(token_batches):
-            with TraceDict(model, list(submodule_dict.keys()), stop=True) as ret:
+            batch = batch.to("cuda")
+            with TraceDict(
+                model, list(submodule_dict.keys()), stop=True
+            ) as ret:
                 _ = model(batch)
-                for path, dictionary in submodule_dict.items():
-                    acts = ret[path].output
-                    if isinstance(acts, tuple):
-                        acts = acts[0]
 
-                    latents = dictionary(acts)
-                    cache.add(latents, batch_number, path)
+            for path, dictionary in submodule_dict.items():
+                acts = ret[path].output
+                if isinstance(acts, tuple):
+                    acts = acts[0]
+                latents = dictionary(acts)
+                cache.add(latents, batch_number, path)
 
-            # Update tqdm
             pbar.update(tokens_per_batch)
 
     cache.finish()

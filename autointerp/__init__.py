@@ -1,16 +1,15 @@
-from .neuronpedia import load_neuronpedia
-from .loader import load_torch, loader, default_sampler
+from .loader import load
+from .samplers import default_sampler, quantile_sampler, max_activation_sampler, SimilaritySearch
 from .caching import cache_activations
-from .schema import Feature, Example
+from .base import Feature, Example
 
 __all__ = [
-    "load_neuronpedia",
-    "load_torch",
-    "loader",
+    "load",
     "cache_activations",
     "default_sampler",
     "quantile_sampler",
     "max_activation_sampler",
+    "SimilaritySearch",
     "Feature",
     "Example",
 ]

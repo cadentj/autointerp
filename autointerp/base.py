@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Dict, NamedTuple, Optional
+from typing import List, NamedTuple, Optional
 
 from torchtyping import TensorType
 from transformers import AutoTokenizer
-
-DictionaryRequest = Dict[str, List[int]]
 
 class Example(NamedTuple):
     tokens: TensorType["seq"]
