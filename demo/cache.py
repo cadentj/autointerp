@@ -1,7 +1,9 @@
-from autointerp import cache_activations
 from datasets import load_dataset
-from gemma import JumpReLUSAE
+import torch as t
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from autointerp import cache_activations
+from gemma import JumpReLUSAE
 
 data = load_dataset("kh4dien/fineweb-100m-sample", split="train[:25%]")
 
@@ -37,3 +39,4 @@ cache.save_to_disk(
     model_id="google/gemma-2-2b",
     tokens_path=f"{save_dir}/tokens.pt",
 )
+t.save(tokens, f"{save_dir}/tokens.pt")

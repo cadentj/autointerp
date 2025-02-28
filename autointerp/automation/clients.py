@@ -96,28 +96,11 @@ class HTTPClient:
     def postprocess(self, response) -> str:
         return response.choices[0].message.content
 
-# NOTE: Not tested with httpx
+
 class LocalClient(HTTPClient):
     def __init__(self, model: str, max_retries=2):
-        from sglang.test.test_utils import is_in_ci
-        from sglang.utils import wait_for_server
-
-        if is_in_ci():
-            from patch import launch_server_cmd
-        else:
-            from sglang.utils import launch_server_cmd
-
-        server_process, port = launch_server_cmd(
-            f"""
-            python -m sglang.launch_server --model-path {model} \
-            --host 0.0.0.0
-            """
-        )
-
-        wait_for_server(f"http://localhost:{port}")
-
         super().__init__(
-            model, "http://localhost:{port}/v1/chat/completions", max_retries, "EMPTY"
+            model, "http://localhost:30000/v1/chat/completions", max_retries, "EMPTY"
         )
 
 
@@ -136,8 +119,6 @@ class LogProbsClient:
     def __init__(self, model_id: str, k=15, **model_kwargs):
         model = AutoModelForCausalLM.from_pretrained(
             model_id,
-            # device_map="auto",
-            # attn_implementation="flash_attention_2",
             **model_kwargs,
         ).to("cuda")
         tokenizer = load_tokenizer(model_id)

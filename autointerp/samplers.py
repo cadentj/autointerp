@@ -21,10 +21,25 @@ def quantile_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
     tokenizer: AutoTokenizer,
-    n_examples: int = 20,
-    n_quantiles: int = 5,
-    **kwargs,
+    n_examples: int,
+    n_quantiles: int,
+    n_top_exclude: int
 ):
+    """Sample the top n_examples from each quantile of the activation distribution.
+
+    Sampling n_examples from 1 quantile is equivalent to max activation sampling.
+
+    Args:
+        token_windows: Tensor of shape (batch, seq) containing the tokens of the windows.
+        activation_windows: Tensor of shape (batch, seq) containing the activations of the windows.
+        tokenizer: Tokenizer to decode the windows.
+        n_examples: Number of examples to sample from each quantile.
+        n_quantiles: Number of quantiles to sample from.
+        n_top_exclude: Number of top examples to exclude from sampling.
+    """
+    token_windows = token_windows[n_top_exclude:]
+    activation_windows = activation_windows[n_top_exclude:]
+
     if len(token_windows) == 0:
         return None
 
@@ -55,38 +70,18 @@ def quantile_sampler(
 
     return examples
 
-
-def max_activation_sampler(
-    token_windows: TensorType["batch", "seq"],
-    activation_windows: TensorType["batch", "seq"],
-    tokenizer: AutoTokenizer,
+def make_quantile_sampler(
     n_examples: int = 20,
-    **kwargs,
+    n_quantiles: int = 1,
+    n_top_exclude: int = 0,
 ):
-    if len(token_windows) < n_examples:
-        return None
-
-    max_activation = activation_windows.max()
-    examples = []
-    for i in range(n_examples):
-        pad_token_mask = token_windows[i] == tokenizer.pad_token_id
-        trimmed_window = token_windows[i][~pad_token_mask]
-        trimmed_activation = activation_windows[i][~pad_token_mask]
-
-        examples.append(
-            Example(
-                tokens=trimmed_window,
-                activations=trimmed_activation,
-                normalized_activations=_normalize(
-                    trimmed_activation, max_activation
-                ),
-                quantile=-1,
-                str_tokens=tokenizer.batch_decode(trimmed_window),
-            )
-        )
-
-    return examples
-
+    from functools import partial
+    return partial(
+        quantile_sampler,
+        n_examples=n_examples,
+        n_quantiles=n_quantiles,
+        n_top_exclude=n_top_exclude,
+    )
 
 class SimilaritySearch:
     def __init__(
@@ -211,35 +206,6 @@ class SimilaritySearch:
         for features, query_batch in query_embedding_batches:
             topk_indices = self._query(features, query_batch, k=n_examples)
             for idxs, feature in zip(topk_indices, features):
-                feature.non_activating_test_examples = (
+                feature.non_activating_examples = (
                     self._get_similar_examples(idxs)
                 )
-
-
-def default_sampler(
-    token_windows: TensorType["batch", "seq"],
-    activation_windows: TensorType["batch", "seq"],
-    tokenizer: AutoTokenizer,
-    n_train: int = 20,
-    n_test: int = 40,
-    n_quantiles: int = 10,
-    train: bool = True,
-):
-    if len(token_windows) < n_train + n_test:
-        return None
-
-    if train:
-        return max_activation_sampler(
-            token_windows[:n_train],
-            activation_windows[:n_train],
-            tokenizer,
-            n_examples=n_train,
-        )
-    else:
-        return quantile_sampler(
-            token_windows[n_train:],
-            activation_windows[n_train:],
-            tokenizer,
-            n_examples=n_test,
-            n_quantiles=n_quantiles,
-        )

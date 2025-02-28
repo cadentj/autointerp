@@ -23,14 +23,20 @@ class Example(NamedTuple):
 @dataclass
 class Feature:
     index: int
+    """Index of the feature in the SAE."""
+
     max_activation: float
-    train_examples: List[Example]
-    activating_test_examples: List[Example]
-    non_activating_test_examples: List[Example] = field(default_factory=list)
+    """Maximum activation of the feature across all examples."""
+
+    activating_examples: List[Example]
+    """Activating examples."""
+
+    non_activating_examples: List[Example] = field(default_factory=list)
+    """Non-activating examples."""
 
     @property
     def examples(self) -> List[Example]:
-        return self.train_examples + self.activating_test_examples + self.non_activating_test_examples
+        return self.activating_examples + self.non_activating_examples
 
     def display(
         self,

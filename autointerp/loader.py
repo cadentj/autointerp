@@ -5,8 +5,8 @@ from torchtyping import TensorType
 from transformers import AutoTokenizer
 from tqdm import tqdm
 
-from .base import Example, Feature
-from .samplers import default_sampler, SimilaritySearch
+from .base import Feature
+from .samplers import SimilaritySearch
 
 
 def _pool_max_activation_windows(
@@ -95,12 +95,11 @@ def _get_valid_features(
 
 def load(
     path: str,
-    sampler: Callable = default_sampler,
+    sampler: Callable,
     indices: List[int] | int = None,
     ctx_len: int = 64,
     max_examples: int = 2_000,
-    train: bool = True,
-    load_non_activating_test: bool = True,
+    load_non_activating: bool = False,
 ) -> List[Feature]:
     """Load cached activations from disk.
 
@@ -111,7 +110,6 @@ def load(
         ctx_len: Sequence length of each example.
         max_examples: Maximum number of examples to load. Set to -1 to load all.
         train: Whether to load training or test examples.
-        load_non_activating_test: Whether to load non-activating test examples.
     """
     data = t.load(path)
     tokens = t.load(data["tokens_path"])
@@ -140,23 +138,20 @@ def load(
             _activations, _locations, tokens, ctx_len, max_examples
         )
 
-        examples = sampler(
-            token_windows, activation_windows, tokenizer, train=train
-        )
+        examples = sampler(token_windows, activation_windows, tokenizer)
 
         if examples is None:
             print(f"Not enough examples found for feature {feature}")
             continue
 
         feature = Feature(
-            feature,
-            max_activation,
-            train_examples=examples if train else [],
-            activating_test_examples=examples if not train else [],
+            index=feature,
+            max_activation=max_activation,
+            activating_examples=examples,
         )
         features.append(feature)
 
-    if not train and load_non_activating_test:
+    if load_non_activating:
         print("Running similarity search...")
         similarity_search = SimilaritySearch(
             data["model_id"], tokens, locations, ctx_len

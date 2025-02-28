@@ -4,6 +4,7 @@ from .prompts.explainer_prompt import build_prompt
 from .clients import HTTPClient
 from ..base import Feature
 
+
 class Explainer:
     def __init__(
         self,
@@ -18,9 +19,7 @@ class Explainer:
     async def __call__(self, feature: Feature, **generation_kwargs):
         messages = self._build_prompt(feature)
 
-        response = await self.client.generate(
-            messages, **generation_kwargs
-        )
+        response = await self.client.generate(messages, **generation_kwargs)
 
         if self.verbose:
             with open(f"response-{feature.index}.txt", "w") as f:
@@ -39,7 +38,7 @@ class Explainer:
     def _build_prompt(self, feature: Feature):
         highlighted_examples = []
 
-        for i, example in enumerate(feature.train_examples):
+        for i, example in enumerate(feature.activating_examples):
             index = i + 1  # Start at 1
             formatted = self._highlight(index, example)
 

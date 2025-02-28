@@ -194,33 +194,36 @@ class Classifier:
     def _prepare_detection(self, feature: Feature) -> List[Sample]:
         """Prepare samples for detection method"""
         random_samples = examples_to_samples(
-            feature.non_activating_test_examples,
+            feature.non_activating_examples,
         )
 
         activating_samples = examples_to_samples(
-            feature.activating_test_examples,
+            feature.activating_examples,
         )
 
         return random_samples + activating_samples
 
     def _prepare_fuzzing(self, feature: Feature) -> List[Sample]:
         """Prepare samples for fuzzing method"""
-        examples = feature.examples
+        examples = feature.activating_examples
         random.shuffle(examples)
 
-        # Calculate the mean number of activations in the examples and convert to int
-        n_incorrect = int(
-            sum(
-                len(torch.nonzero(example.activations)) for example in examples
-            )
-            / len(examples)
+        # 1) Count average number of non-zero activations in each example
+        stacked_activations = torch.stack(
+            [example.activations for example in examples]
         )
+        nonzero_counts = torch.count_nonzero(
+            stacked_activations, dim=list(range(1, stacked_activations.ndim))
+        )
+        n_incorrect = int(nonzero_counts.float().mean().item())
 
+        # 2) Bin examples by quantile
         quantiles = set(example.quantile for example in examples)
         binned = {quantile: [] for quantile in quantiles}
         for example in examples:
             binned[example.quantile].append(example)
 
+        # 3) Assign half of each quantile to be correct/incorrect
         n_activating = len(binned[1]) // 2
         activating_examples = [
             example
@@ -233,13 +236,13 @@ class Classifier:
             for example in quantile[n_activating:]
         ]
 
+        # 4) Create samples
         random_samples = examples_to_samples(
             non_activating_examples,
             n_incorrect=n_incorrect,
             highlighted=True,
             threshold=self.threshold,
         )
-
         activating_samples = examples_to_samples(
             activating_examples,
             n_incorrect=0,
