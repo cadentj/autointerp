@@ -194,11 +194,11 @@ class Classifier:
     def _prepare_detection(self, feature: Feature) -> List[Sample]:
         """Prepare samples for detection method"""
         random_samples = examples_to_samples(
-            feature.random_examples,
+            feature.non_activating_test_examples,
         )
 
         activating_samples = examples_to_samples(
-            feature.examples,
+            feature.activating_test_examples,
         )
 
         return random_samples + activating_samples

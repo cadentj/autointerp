@@ -1,5 +1,5 @@
 from ...base import Example
-from ...schema.client import Conversation
+from ..clients import Conversation
 from typing import List, Dict
 from transformers import AutoTokenizer
 

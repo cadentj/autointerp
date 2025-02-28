@@ -19,3 +19,4 @@ uv.lock
 
 # Wandb
 wandb/
+cache/

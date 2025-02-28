@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import List, NamedTuple, Optional
+from dataclasses import dataclass, field
+from typing import List, NamedTuple
 
 from torchtyping import TensorType
 from transformers import AutoTokenizer
@@ -25,11 +25,12 @@ class Feature:
     index: int
     max_activation: float
     train_examples: List[Example]
-    test_examples: List[Example]
+    activating_test_examples: List[Example]
+    non_activating_test_examples: List[Example] = field(default_factory=list)
 
     @property
     def examples(self) -> List[Example]:
-        return self.train_examples + self.test_examples
+        return self.train_examples + self.activating_test_examples + self.non_activating_test_examples
 
     def display(
         self,

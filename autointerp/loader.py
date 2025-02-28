@@ -149,8 +149,8 @@ def load(
         feature = Feature(
             feature,
             max_activation,
-            train_examples=examples if train else None,
-            test_examples=examples if not train else None,
+            train_examples=examples if train else [],
+            activating_test_examples=examples if not train else [],
         )
         features.append(feature)
 

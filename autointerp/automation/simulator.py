@@ -13,7 +13,7 @@ from transformers import AutoTokenizer
 from .clients import NsClient
 from .prompts.simulation_prompt import format_prompt
 from ..base import Example
-from ..schema.client import PromptLogProbs
+from .clients import PromptLogProbs
 
 VALID_ACTIVATION_TOKENS = list(str(i) for i in range(9 + 1))
 ACTIVATION_TOKEN_IDS = None
