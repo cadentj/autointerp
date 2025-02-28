@@ -12,6 +12,8 @@ TEMPLATES = {
 }
 
 def load_tokenizer(model_id: str) -> AutoTokenizer:
+    """Load custom chat template for simulation scoring."""
+
     assert model_id in TEMPLATES, f"Model {model_id} not supported"
 
     tokenizer = AutoTokenizer.from_pretrained(model_id)

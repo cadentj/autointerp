@@ -12,7 +12,7 @@ async def score():
     sampler = make_quantile_sampler(
         n_examples=20, n_quantiles=10, n_top_exclude=20
     )
-    features = load(FEATURE_PATH, sampler)
+    features = load(FEATURE_PATH, sampler, load_non_activating=True)
     tasks = [scorer(feature, "some explanation here") for feature in features]
     scores = await asyncio.gather(*tasks)
     print(scores)
