@@ -53,17 +53,14 @@ cache.save_to_disk(
     "/root/autointerp/cache", "google/gemma-2-2b", "/root/autointerp/cache/tokens.pt"
 )
 
+# %%
+
+from autointerp.loader import load
+
+features = load("/root/autointerp/cache/model.layers.0.pt", train=False)
 
 # %%
 
-from autointerp import load
-import torch as t
 
-tokens = t.load("/root/autointerp/cache/tokens.pt")
-features = load("/root/autointerp/cache/model.layers.0.pt")
-data = t.load("/root/autointerp/cache/model.layers.0.pt")
-locations = data["locations"]
 
-from autointerp.samplers import SimilaritySearch
 
-similarity_search = SimilaritySearch("google/gemma-2-2b", tokens, locations, 128)

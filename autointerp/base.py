@@ -6,16 +6,30 @@ from transformers import AutoTokenizer
 
 class Example(NamedTuple):
     tokens: TensorType["seq"]
+    """Token ids tensor."""
+
     str_tokens: List[str]
+    """Decoded stringified tokens."""
+
     activations: TensorType["seq"]
+    """Raw activations."""
+
     normalized_activations: TensorType["seq"]
-    quantile: Optional[int] = None
+    """Normalized activations. Used for similarity search."""
+
+    quantile: int
+    """Quantile of the activation. -1 if not applicable. 0 if non-activating."""
     
 @dataclass
 class Feature:
     index: int
     max_activation: float
-    examples: List[Example]
+    train_examples: List[Example]
+    test_examples: List[Example]
+
+    @property
+    def examples(self) -> List[Example]:
+        return self.train_examples + self.test_examples
 
     def display(
         self,

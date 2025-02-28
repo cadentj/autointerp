@@ -171,7 +171,7 @@ class SimilaritySearch:
                     tokens=trimmed_window,
                     activations=activation_window,
                     normalized_activations=activation_window,
-                    quantile=-1,
+                    quantile=0,
                     str_tokens=self.subject_tokenizer.batch_decode(
                         trimmed_window
                     ),
@@ -209,7 +209,7 @@ class SimilaritySearch:
         for features, query_batch in query_embedding_batches:
             topk_indices = self._query(features, query_batch, k=n_examples)
             for idxs, feature in zip(topk_indices, features):
-                feature.similar_examples = self._get_similar_examples(idxs)
+                feature.test_examples.extend(self._get_similar_examples(idxs))
 
 
 def default_sampler(

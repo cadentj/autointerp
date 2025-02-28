@@ -146,10 +146,16 @@ def load(
             print(f"Not enough examples found for feature {feature}")
             continue
 
-        feature = Feature(feature, max_activation, examples)
+        feature = Feature(
+            feature,
+            max_activation,
+            train_examples=examples if train else None,
+            test_examples=examples if not train else None,
+        )
         features.append(feature)
 
     if not train:
+        print("Running similarity search...")
         similarity_search = SimilaritySearch(
             data["model_id"], tokens, locations, ctx_len
         )
