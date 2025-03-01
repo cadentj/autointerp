@@ -99,7 +99,7 @@ def load(
     indices: List[int] | int = None,
     ctx_len: int = 64,
     max_examples: int = 2_000,
-    load_non_activating: bool = False,
+    load_non_activating: int = 0,
 ) -> List[Feature]:
     """Load cached activations from disk.
 
@@ -109,7 +109,7 @@ def load(
         indices: Optional list of indices of features to load.
         ctx_len: Sequence length of each example.
         max_examples: Maximum number of examples to load. Set to -1 to load all.
-        train: Whether to load training or test examples.
+        load_non_activating: Number of non-activating examples to load.
     """
     data = t.load(path)
     tokens = t.load(data["tokens_path"])
@@ -151,7 +151,7 @@ def load(
         )
         features.append(feature)
 
-    if load_non_activating:
+    if load_non_activating > 0:
         print("Running similarity search...")
         similarity_search = SimilaritySearch(
             data["model_id"], tokens, locations, ctx_len

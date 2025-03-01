@@ -37,7 +37,6 @@ class Explainer:
 
     def _build_prompt(self, feature: Feature):
         highlighted_examples = []
-
         for i, example in enumerate(feature.activating_examples):
             index = i + 1  # Start at 1
             formatted = self._highlight(index, example)

@@ -27,4 +27,5 @@ dev = [
     "dotenv>=0.9.9",
     "huggingface-hub[hf-transfer]>=0.29.1",
     "ipykernel>=6.29.5",
+    "ipython>=8.33.0",
 ]

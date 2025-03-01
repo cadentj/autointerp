@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Callable
 
 from sentence_transformers import SentenceTransformer
 import torch as t
@@ -24,7 +24,7 @@ def quantile_sampler(
     n_examples: int,
     n_quantiles: int,
     n_top_exclude: int
-):
+) -> List[Example]:
     """Sample the top n_examples from each quantile of the activation distribution.
 
     Sampling n_examples from 1 quantile is equivalent to max activation sampling.
@@ -74,7 +74,20 @@ def make_quantile_sampler(
     n_examples: int = 20,
     n_quantiles: int = 1,
     n_top_exclude: int = 0,
-):
+) -> Callable:
+    """Create a quantile sampler function.
+
+    Sampling n_examples from 1 quantile is equivalent to max activation sampling.
+
+    Args:
+        n_examples: Number of examples to sample from each quantile.
+        n_quantiles: Number of quantiles to sample from.
+        n_top_exclude: Number of top examples to exclude from sampling.
+
+    Returns:
+        A function that samples examples from a quantile.
+    """
+
     from functools import partial
     return partial(
         quantile_sampler,
@@ -84,6 +97,19 @@ def make_quantile_sampler(
     )
 
 class SimilaritySearch:
+    """Use similarity search to sample non-activating examples.
+
+    Calling an instance of this class on a batch of features will initialize their
+    non_activating_examples with examples sampled from the token dataset. 
+
+    Args:
+        subject_model_id: The model id of the subject model.
+        tokens: The tokens of the subject model.
+        locations: The locations of the subject model.
+        ctx_len: The context length of the subject model.
+        embedding_model_id: The model id of the embedding model.
+    """
+
     def __init__(
         self,
         subject_model_id: str,
@@ -132,18 +158,28 @@ class SimilaritySearch:
         features: List[Feature],
         query_embeddings: TensorType["n_queries", "d_model"],
         k: int = 10,
-    ):
-        query_embeddings_normalized = F.normalize(query_embeddings, p=2, dim=1)
+    ) -> TensorType["n_queries", "n_contexts"]:
+        """Query the normalized embeddings to find the top k most similar contexts.
 
+        Args:
+            features: A list of features.
+            query_embeddings: The query embeddings.
+            k: The number of most similar contexts to return.
+        """
+        # Compute the similarity between query top examples
+        query_embeddings_normalized = F.normalize(query_embeddings, p=2, dim=1)
         similarities: TensorType["n_queries", "n_contexts"] = t.matmul(
             query_embeddings_normalized, self.normalized_embeddings
         )
 
-        # # set similarities to -inf for the stride indices
         for i, features in enumerate(features):
             idx = features.index
+
+            # Get context indices where the feature is activating
             mask = self.ctx_locations[:, 1] == idx
             locations = self.ctx_locations[mask]
+
+            # Set the similarity of the activating contexts to -inf
             similarities[i, locations[:, 0]] = -float("inf")
 
         _, indices = t.topk(similarities, k=k, dim=1)
@@ -153,7 +189,8 @@ class SimilaritySearch:
     def _get_similar_examples(
         self,
         idxs: TensorType["k"],
-    ):
+    ) -> List[Example]:
+        """Given context indices, create non-activating examples."""
         examples = []
         for idx in idxs:
             token_window = self.strides[idx]
@@ -182,12 +219,21 @@ class SimilaritySearch:
         features: List[Feature],
         batch_size: int = 64,
         n_examples: int = 10,
-    ):
+    ) -> None:
+        """Sample non-activating examples from the token dataset.
+
+        Args:
+            features: A list of features.
+            batch_size: The batch size for encoding.
+            n_examples: The number of examples to sample.
+        """
+        # Concatenate the first 20 examples of each feature into a single "query"
         queries = [
-            t.cat([e.tokens for e in feature.examples]) for feature in features
+            t.cat([e.tokens for e in feature.examples[:20]]) for feature in features
         ]
         queries = self.subject_tokenizer.batch_decode(queries)
 
+        # Encode the queries
         query_embeddings = self.model.encode(
             queries,
             device="cuda",
@@ -195,6 +241,7 @@ class SimilaritySearch:
             convert_to_tensor=True,
         )
 
+        # Batch the queries
         query_embedding_batches = [
             (
                 features[i : i + batch_size],
@@ -203,6 +250,7 @@ class SimilaritySearch:
             for i in range(0, len(query_embeddings), batch_size)
         ]
 
+        # Run similarity search for each batch and add non-activating examples to the features
         for features, query_batch in query_embedding_batches:
             topk_indices = self._query(features, query_batch, k=n_examples)
             for idxs, feature in zip(topk_indices, features):

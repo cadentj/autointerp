@@ -1,8 +1,12 @@
 from dataclasses import dataclass, field
-from typing import List, NamedTuple
+from typing import List, NamedTuple, TypeVar
 
+import torch
 from torchtyping import TensorType
 from transformers import AutoTokenizer
+
+# Define seq as a type variable for sequence length
+seq = TypeVar('seq')
 
 class Example(NamedTuple):
     tokens: TensorType["seq"]
@@ -44,7 +48,7 @@ class Feature:
         threshold: float = 0.0,
         n: int = 10,
     ) -> str:
-        from IPython.core.display import HTML, display
+        from IPython.display import HTML, display
 
         def _to_string(tokens: TensorType["seq"], activations: TensorType["seq"]) -> str:
             result = []
@@ -67,3 +71,6 @@ class Feature:
         ]
 
         display(HTML("<br><br>".join(strings)))
+        
+    # Alias for display method
+    show = display

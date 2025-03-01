@@ -45,7 +45,7 @@ def examples_to_samples(
             example, str_toks, n_incorrect, threshold, highlighted
         )
 
-        # IMPORTANT NOTE:
+        # NOTE:
         # Activating means whether the example's ground truth is to be "correct" or "incorrect"
         # The first condition is for fuzzing. If the example has incorrectly marked tokens, it is not activating.
         # Also note that fuzzed examples should never have a quantile of 0 because the prompt entailment is that
@@ -97,7 +97,7 @@ def _prepare_text(
         print("Failed to prepare example - no tokens below threshold.")
         return DEFAULT_MESSAGE
 
-    # 4) Highlight n_incorrect tokens with activations below threshold
+    # 3) Highlight n_incorrect tokens with activations below threshold
     n_incorrect = min(n_incorrect, below_threshold.numel())
 
     random_indices = set(random.sample(below_threshold.tolist(), n_incorrect))
