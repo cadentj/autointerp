@@ -40,7 +40,7 @@ def quantile_sampler(
     token_windows = token_windows[n_top_exclude:]
     activation_windows = activation_windows[n_top_exclude:]
 
-    if len(token_windows) == 0:
+    if len(token_windows) < n_examples:
         return None
 
     max_activation = activation_windows.max()
