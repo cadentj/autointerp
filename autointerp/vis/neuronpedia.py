@@ -66,7 +66,7 @@ class NeuronpediaExample(BaseModel):
 class NeuronpediaResponse(BaseModel):
     layer_id: str = Field(validation_alias=AliasChoices("layer", "layer_id"))
     index: int
-    examples: List[NeuronpediaExample]
+    activations: List[NeuronpediaExample]
     max_activation: float = Field(
         alias=AliasChoices("max_activation", "maxActApprox")
     )
@@ -105,7 +105,7 @@ class NeuronpediaResponse(BaseModel):
 
         strings = [
             _to_html(example.tokens, example.values)
-            for example in self.examples[:n]
+            for example in self.activations[:n]
         ]
 
         display(HTML("<br><br>".join(strings)))
