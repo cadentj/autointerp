@@ -66,6 +66,7 @@ class NeuronpediaExample(BaseModel):
 class NeuronpediaResponse(BaseModel):
     layer_id: str = Field(validation_alias=AliasChoices("layer", "layer_id"))
     index: int
+
     activations: List[NeuronpediaExample]
     max_activation: float = Field(
         alias=AliasChoices("max_activation", "maxActApprox")
@@ -79,19 +80,23 @@ class NeuronpediaResponse(BaseModel):
     neg_str: Optional[List[str]] = None
     neg_values: Optional[List[float]] = None
 
-    def display(
+    def to_html(
         self,
         threshold: float = 0.0,
         n: int = 10,
     ) -> str:
-        from IPython.display import HTML, display
-
-        def _to_html(tokens: List[str], activations: List[float]) -> str:
+        def _to_html(
+            tokens: List[str], activations: List[float]
+        ) -> str:
             result = []
             max_act = max(activations)
             _threshold = max_act * threshold
 
             for i in range(len(tokens)):
+                if any(t in tokens[i] for t in ["<", ">", "/"]):
+                    result.append("HTML_SKIP")
+                    continue
+
                 if activations[i] > _threshold:
                     # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
                     opacity = 0.2 + 0.8 * (activations[i] / max_act)
@@ -108,7 +113,16 @@ class NeuronpediaResponse(BaseModel):
             for example in self.activations[:n]
         ]
 
-        display(HTML("<br><br>".join(strings)))
+        return "<br><br>".join(strings)
+
+    def display(
+        self,
+        threshold: float = 0.0,
+        n: int = 10,
+    ) -> None:
+        from IPython.display import HTML, display
+
+        display(HTML(self.to_html(threshold, n)))
 
 
 class NeuronpediaCache:
@@ -125,6 +139,18 @@ class NeuronpediaCache:
             return cls(
                 [NeuronpediaResponse(**feature) for feature in json.load(f)]
             )
+
+    def save_to_html(self, path: str) -> None:
+        html = []
+        title = "<h2>Layer {layer_id}, Index {index}</h2>"
+        for feature in self.features:
+            html.append(
+                title.format(layer_id=feature.layer_id, index=feature.index)
+            )
+            html.append(feature.to_html())
+
+        with open(path, "w") as f:
+            f.write("<br>".join(html))
 
 
 Models = Literal["gemma-2-2b", "gemma-2-9b"]
