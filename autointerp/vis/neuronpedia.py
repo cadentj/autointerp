@@ -66,7 +66,7 @@ class NeuronpediaExample(BaseModel):
 class NeuronpediaResponse(BaseModel):
     layer_id: str = Field(validation_alias=AliasChoices("layer", "layer_id"))
     index: int
-    examples: List[NeuronpediaExample]
+    activations: List[NeuronpediaExample]
     max_activation: float = Field(
         alias=AliasChoices("max_activation", "maxActApprox")
     )
@@ -92,6 +92,10 @@ class NeuronpediaResponse(BaseModel):
             _threshold = max_act * threshold
 
             for i in range(len(tokens)):
+                if any(t in tokens[i] for t in ["<", ">", "/"]):
+                    result.append("HTML_SKIP")
+                    continue
+
                 if activations[i] > _threshold:
                     # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
                     opacity = 0.2 + 0.8 * (activations[i] / max_act)
@@ -114,7 +118,7 @@ class NeuronpediaResponse(BaseModel):
         self,
         threshold: float = 0.0,
         n: int = 10,
-    ) -> str:
+    ) -> None:
         from IPython.display import HTML, display
 
         display(HTML(self.to_html(threshold, n)))
@@ -135,7 +139,7 @@ class NeuronpediaCache:
                 [NeuronpediaResponse(**feature) for feature in json.load(f)]
             )
 
-    def save_to_html(self, path: str):
+    def save_to_html(self, path: str) -> None:
         html = []
         title = "<h2>Layer {layer_id}, Index {index}</h2>"
         for feature in self.features:
