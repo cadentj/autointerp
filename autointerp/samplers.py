@@ -23,7 +23,8 @@ def quantile_sampler(
     tokenizer: AutoTokenizer,
     n_examples: int,
     n_quantiles: int,
-    n_top_exclude: int
+    n_exclude: int,
+    n_top_exclude: int,
 ) -> List[Example]:
     """Sample the top n_examples from each quantile of the activation distribution.
 
@@ -35,12 +36,13 @@ def quantile_sampler(
         tokenizer: Tokenizer to decode the windows.
         n_examples: Number of examples to sample from each quantile.
         n_quantiles: Number of quantiles to sample from.
-        n_top_exclude: Number of top examples to exclude from sampling.
+        n_exclude: Number of top examples to exclude from sampling.
     """
     token_windows = token_windows[n_top_exclude:]
     activation_windows = activation_windows[n_top_exclude:]
 
-    if len(token_windows) < n_examples:
+    n_excluded = n_quantiles * n_exclude
+    if len(token_windows) < (n_examples - n_excluded):
         return None
 
     max_activation = activation_windows.max()
@@ -48,7 +50,7 @@ def quantile_sampler(
 
     examples = []
     for i in range(n_quantiles):
-        start_idx = i * examples_per_quantile
+        start_idx = (i * examples_per_quantile) + n_exclude
         end_idx = start_idx + examples_per_quantile
 
         for j in range(start_idx, end_idx):
@@ -73,6 +75,7 @@ def quantile_sampler(
 def make_quantile_sampler(
     n_examples: int = 20,
     n_quantiles: int = 1,
+    n_exclude: int = 0,
     n_top_exclude: int = 0,
 ) -> Callable:
     """Create a quantile sampler function.
@@ -82,6 +85,7 @@ def make_quantile_sampler(
     Args:
         n_examples: Number of examples to sample from each quantile.
         n_quantiles: Number of quantiles to sample from.
+        n_exclude: Number of examples to exclude from sampling per quantile.
         n_top_exclude: Number of top examples to exclude from sampling.
 
     Returns:
@@ -93,6 +97,7 @@ def make_quantile_sampler(
         quantile_sampler,
         n_examples=n_examples,
         n_quantiles=n_quantiles,
+        n_exclude=n_exclude,
         n_top_exclude=n_top_exclude,
     )
 

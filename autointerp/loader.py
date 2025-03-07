@@ -99,6 +99,7 @@ def load(
     indices: List[int] | int = None,
     ctx_len: int = 64,
     max_examples: int = 2_000,
+    max_features: int = None,
     load_non_activating: int = 0,
 ) -> List[Feature]:
     """Load cached activations from disk.
@@ -151,6 +152,9 @@ def load(
         )
         features.append(feature)
 
+        if max_features is not None and len(features) >= max_features:
+            break
+
     if load_non_activating > 0:
         print("Running similarity search...")
         similarity_search = SimilaritySearch(
@@ -159,3 +163,48 @@ def load(
         similarity_search(features)
 
     return features
+
+
+# %%
+
+from autointerp.automation import OpenRouterClient
+import asyncio
+
+client = OpenRouterClient("meta-llama/Llama-3.3-70B-Instruct")
+
+import nest_asyncio
+
+nest_asyncio.apply()
+
+message = [
+    {
+        "role": "user",
+        "content": "Hello, world!"
+    }
+]
+
+import httpx
+
+client = httpx.AsyncClient()
+import os
+async def generate():
+    # response = await client.generate(
+    #     messages=message,
+    #     raw=True,
+    # )
+    # return response
+
+    response = await client.post(
+        url="https://openrouter.ai/api/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {"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"}",
+        },
+        json={
+            "model": "meta-llama/Llama-3.3-70B-Instruct",
+            "messages": message,
+        },
+    )
+
+    return response.json()
+
+print(asyncio.run(generate()))
