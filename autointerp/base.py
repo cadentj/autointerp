@@ -1,12 +1,9 @@
 from dataclasses import dataclass, field
-from typing import List, NamedTuple, TypeVar
+from typing import List, NamedTuple
 
-import torch
 from torchtyping import TensorType
 from transformers import AutoTokenizer
 
-# Define seq as a type variable for sequence length
-seq = TypeVar('seq')
 
 class Example(NamedTuple):
     tokens: TensorType["seq"]
@@ -22,8 +19,9 @@ class Example(NamedTuple):
     """Normalized activations. Used for similarity search."""
 
     quantile: int
-    """Quantile of the activation. -1 if not applicable. 0 if non-activating."""
-    
+    """Quantile of the activation. -1 if random non-activating. 0 if non-activating."""
+
+
 @dataclass
 class Feature:
     index: int
@@ -50,7 +48,9 @@ class Feature:
     ) -> str:
         from IPython.display import HTML, display
 
-        def _to_string(tokens: TensorType["seq"], activations: TensorType["seq"]) -> str:
+        def _to_string(
+            tokens: TensorType["seq"], activations: TensorType["seq"]
+        ) -> str:
             result = []
             max_act = activations.max()
             _threshold = max_act * threshold
@@ -59,18 +59,22 @@ class Feature:
                 if activations[i] > _threshold:
                     # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
                     opacity = 0.2 + 0.8 * (activations[i] / max_act)
-                    result.append(f'<mark style="opacity: {opacity:.2f}">{tokens[i]}</mark>')
+                    result.append(
+                        f'<mark style="opacity: {opacity:.2f}">{tokens[i]}</mark>'
+                    )
                 else:
                     result.append(tokens[i])
-            
+
             return "".join(result)
-        
+
         strings = [
-            _to_string(tokenizer.batch_decode(example.tokens), example.activations)
+            _to_string(
+                tokenizer.batch_decode(example.tokens), example.activations
+            )
             for example in self.examples[:n]
         ]
 
         display(HTML("<br><br>".join(strings)))
-        
+
     # Alias for display method
     show = display

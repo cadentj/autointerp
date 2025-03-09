@@ -5,13 +5,15 @@ from autointerp import load, make_quantile_sampler
 from tqdm import tqdm
 import json
 import os
+import torch as t
 
 EXPLAINER_MODEL = "meta-llama/Llama-3.3-70B-Instruct"
+# EXPLAINER_MODEL = "openai/o3-mini-high"
 FEATURE_PATHS = [
-    f"/share/u/caden/autointerp/experiments/group_{i}.pt" for i in [0, 1, 2, 3]
+    f"/share/u/caden/autointerp/experiments/other/group_{i}.pt" for i in [0, 1, 2, 3]
 ]
 BATCH_SIZE = 100
-EXPLANATIONS_PATH = "/share/u/caden/autointerp/experiments/outputs/explanations.json"
+EXPLANATIONS_PATH = "/share/u/caden/autointerp/experiments/other_outputs/llama_explanations.json"
 KWARGS = {
     "provider" : {
         "order" : ["DeepInfra"]
@@ -37,12 +39,12 @@ def write_explanations(explanations):
 
 async def explain():
     client = OpenRouterClient(EXPLAINER_MODEL)
-    explainer = Explainer(client=client)
+    explainer = Explainer(client=client, verbose=True)
     os.makedirs(os.path.dirname(EXPLANATIONS_PATH), exist_ok=True)
 
     semaphore = asyncio.Semaphore(20)
 
-    sampler = make_quantile_sampler(n_examples=20, n_quantiles=1)
+    sampler = make_quantile_sampler(n_examples=30, n_quantiles=3)
 
     for path in FEATURE_PATHS:
         features = load(path, sampler)
@@ -51,11 +53,11 @@ async def explain():
         for batch in range(0, len(features), BATCH_SIZE):
             feature_batch = features[batch : batch + BATCH_SIZE]
 
-            async def process_with_semaphore(feature):
+            async def process(feature):
                 async with semaphore:
                     return await explainer(feature, **KWARGS)
 
-            tasks = [process_with_semaphore(feature) for feature in feature_batch]
+            tasks = [process(feature) for feature in feature_batch]
             
             batch_explanations = await asyncio.gather(*tasks)
             batch_explanations = {
@@ -67,6 +69,9 @@ async def explain():
             write_explanations(batch_explanations)
 
             pbar.update(len(feature_batch))
+
+        #     break
+        # break
 
         pbar.close()
 

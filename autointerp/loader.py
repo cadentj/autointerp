@@ -6,7 +6,7 @@ from transformers import AutoTokenizer
 from tqdm import tqdm
 
 from .base import Feature
-from .samplers import SimilaritySearch
+from .samplers import SimilaritySearch, RandomSampler
 
 
 def _pool_max_activation_windows(
@@ -100,7 +100,8 @@ def load(
     ctx_len: int = 64,
     max_examples: int = 2_000,
     max_features: int = None,
-    load_non_activating: int = 0,
+    load_similar_non_activating: int = 0,
+    load_random_non_activating: int = 0,
 ) -> List[Feature]:
     """Load cached activations from disk.
 
@@ -155,56 +156,18 @@ def load(
         if max_features is not None and len(features) >= max_features:
             break
 
-    if load_non_activating > 0:
+    if load_similar_non_activating > 0:
         print("Running similarity search...")
         similarity_search = SimilaritySearch(
-            data["model_id"], tokens, locations, ctx_len
+            tokenizer, tokens, locations, ctx_len
         )
-        similarity_search(features)
+        similarity_search(features, n_examples=load_similar_non_activating)
+
+    if load_random_non_activating > 0:
+        print("Running random non-activating search...")
+        random_sampler = RandomSampler(
+            tokenizer, tokens, locations, ctx_len
+        )
+        random_sampler(features, n_examples=load_random_non_activating)
 
     return features
-
-
-# %%
-
-from autointerp.automation import OpenRouterClient
-import asyncio
-
-client = OpenRouterClient("meta-llama/Llama-3.3-70B-Instruct")
-
-import nest_asyncio
-
-nest_asyncio.apply()
-
-message = [
-    {
-        "role": "user",
-        "content": "Hello, world!"
-    }
-]
-
-import httpx
-
-client = httpx.AsyncClient()
-import os
-async def generate():
-    # response = await client.generate(
-    #     messages=message,
-    #     raw=True,
-    # )
-    # return response
-
-    response = await client.post(
-        url="https://openrouter.ai/api/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {"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"}",
-        },
-        json={
-            "model": "meta-llama/Llama-3.3-70B-Instruct",
-            "messages": message,
-        },
-    )
-
-    return response.json()
-
-print(asyncio.run(generate()))
