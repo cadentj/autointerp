@@ -10,10 +10,10 @@ import torch as t
 EXPLAINER_MODEL = "meta-llama/Llama-3.3-70B-Instruct"
 # EXPLAINER_MODEL = "openai/o3-mini-high"
 FEATURE_PATHS = [
-    f"/share/u/caden/autointerp/experiments/other/group_{i}.pt" for i in [0, 1, 2, 3]
+    f"/share/u/caden/autointerp/experiments/crosscoder/group_{i}.pt" for i in [0, 1, 2, 3]
 ]
 BATCH_SIZE = 100
-EXPLANATIONS_PATH = "/share/u/caden/autointerp/experiments/other_outputs/llama_explanations.json"
+EXPLANATIONS_PATH = "/share/u/caden/autointerp/experiments/crosscoder/llama_explanations.json"
 KWARGS = {
     "provider" : {
         "order" : ["DeepInfra"]
@@ -39,12 +39,12 @@ def write_explanations(explanations):
 
 async def explain():
     client = OpenRouterClient(EXPLAINER_MODEL)
-    explainer = Explainer(client=client, verbose=True)
+    explainer = Explainer(client=client, verbose=False)
     os.makedirs(os.path.dirname(EXPLANATIONS_PATH), exist_ok=True)
 
     semaphore = asyncio.Semaphore(20)
 
-    sampler = make_quantile_sampler(n_examples=30, n_quantiles=3)
+    sampler = make_quantile_sampler(n_examples=10, n_quantiles=3)
 
     for path in FEATURE_PATHS:
         features = load(path, sampler)

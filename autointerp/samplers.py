@@ -5,7 +5,7 @@ import torch as t
 import torch.nn.functional as F
 from torchtyping import TensorType
 from transformers import AutoTokenizer
-
+from tqdm import tqdm
 from .base import Example, Feature
 
 
@@ -36,24 +36,37 @@ def quantile_sampler(
         tokenizer: Tokenizer to decode the windows.
         n_examples: Number of examples to sample from each quantile.
         n_quantiles: Number of quantiles to sample from.
-        n_exclude: Number of top examples to exclude from sampling.
-    """
-    token_windows = token_windows[n_top_exclude:]
-    activation_windows = activation_windows[n_top_exclude:]
+        n_exclude: Number of examples to exclude from the beginning of each quantile.
+        n_top_exclude: Number of top examples to exclude from the entire dataset.
 
-    n_excluded = n_quantiles * n_exclude
-    if token_windows.shape[0] < (n_examples + n_excluded):
+    Returns:
+        List of Example objects, with n_examples from each quantile.
+        Returns None if there aren't enough examples to satisfy the requirements.
+    """
+    if n_top_exclude > 0:
+        token_windows = token_windows[n_top_exclude:]
+        activation_windows = activation_windows[n_top_exclude:]
+
+    total_examples = token_windows.shape[0]
+    quantile_size = total_examples // n_quantiles
+
+    if (quantile_size - n_exclude) < n_examples:
         return None
 
     max_activation = activation_windows.max()
-    examples_per_quantile = n_examples // n_quantiles
 
     examples = []
     for i in range(n_quantiles):
-        start_idx = (i * examples_per_quantile) + n_exclude
-        end_idx = start_idx + examples_per_quantile
+        quantile_start = i * quantile_size
+        quantile_end = (
+            (i + 1) * quantile_size if i < n_quantiles - 1 else total_examples
+        )
 
-        for j in range(start_idx, end_idx):
+        sample_start = quantile_start + n_exclude
+
+        assert sample_start + n_examples <= quantile_end
+
+        for j in range(sample_start, sample_start + n_examples):
             pad_token_mask = token_windows[j] == tokenizer.pad_token_id
             trimmed_window = token_windows[j][~pad_token_mask]
             trimmed_activation = activation_windows[j][~pad_token_mask]
@@ -65,7 +78,8 @@ def quantile_sampler(
                     normalized_activations=_normalize(
                         trimmed_activation, max_activation
                     ),
-                    quantile=n_quantiles - i,
+                    quantile=n_quantiles
+                    - i,  # Reverse order so highest quantile is n_quantiles
                     str_tokens=tokenizer.batch_decode(trimmed_window),
                 )
             )
@@ -81,13 +95,11 @@ def make_quantile_sampler(
 ) -> Callable:
     """Create a quantile sampler function.
 
-    Sampling n_examples from 1 quantile is equivalent to max activation sampling.
-
     Args:
         n_examples: Number of examples to sample from each quantile.
         n_quantiles: Number of quantiles to sample from.
-        n_exclude: Number of examples to exclude from sampling per quantile.
-        n_top_exclude: Number of top examples to exclude from sampling.
+        n_exclude: Number of examples to exclude from the beginning of each quantile.
+        n_top_exclude: Number of top examples to exclude from the entire dataset.
 
     Returns:
         A function that samples examples from a quantile.
@@ -151,16 +163,16 @@ class RandomSampler:
     def __call__(self, features: List[Feature], n_examples: int = 10) -> None:
         all_random_idxs = t.rand(len(features), n_examples)
 
-        for feature, random_idxs in zip(features, all_random_idxs):
+        for feature, random_idxs in tqdm(zip(features, all_random_idxs)):
             locations_mask = self.ctx_locations[:, 1] == feature.index
             locations_idxs = self.ctx_locations[locations_mask, 0]
 
-            random_idxs = random_idxs * locations_idxs.numel()
+            random_idxs = random_idxs * (locations_idxs.numel() - 1)
             random_idxs = random_idxs.round().int()
 
             non_activating_stride_idxs = locations_idxs[random_idxs]
 
-            for stride_idx in non_activating_stride_idxs:
+            for stride_idx in non_activating_stride_idxs[:n_examples]:
                 token_window = self.strides[stride_idx]
                 pad_token_mask = (
                     token_window == self.subject_tokenizer.pad_token_id
@@ -173,7 +185,7 @@ class RandomSampler:
                         tokens=trimmed_window,
                         activations=activation_window,
                         normalized_activations=activation_window,
-                        quantile=-1, # Random non-activating
+                        quantile=-1,  # Random non-activating
                         str_tokens=self.subject_tokenizer.batch_decode(
                             trimmed_window
                         ),

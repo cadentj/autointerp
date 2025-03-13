@@ -41,7 +41,7 @@ def write_scores(scores):
         json.dump(existing_scores, f)
 
 
-async def score():
+def score():
     client = OpenRouterClient(SCORER_MODEL, max_retries=5)
     scorer = Classifier(client=client, method="detection", n_examples_shown=5)
     os.makedirs(os.path.dirname(SCORES_PATH), exist_ok=True)
@@ -52,40 +52,10 @@ async def score():
 
     explanations = json.load(open(EXPLANATIONS_PATH, "r"))
 
-    for path in FEATURE_PATHS:
-        features = load(
-            path,
-            sampler,
-            load_similar_non_activating=20,
-            load_random_non_activating=20,
-        )
-        pbar = tqdm(total=len(features))
+    features = load(
+        FEATURE_PATHS[0],
+        sampler,
+        load_similar_non_activating=20,
+        load_random_non_activating=20,
+    )
 
-        for batch in range(0, len(features), BATCH_SIZE):
-            feature_batch = features[batch : batch + BATCH_SIZE]
-
-            async def process(feature):
-                async with semaphore:
-                    return await scorer(
-                        feature, explanations[str(feature.index)], **KWARGS
-                    )
-
-            tasks = [process(feature) for feature in feature_batch]
-
-            batch_scores = await asyncio.gather(*tasks)
-            batch_scores = {
-                feature.index: score
-                for feature, score in zip(feature_batch, batch_scores)
-            }
-            write_scores(batch_scores)
-
-            pbar.update(len(feature_batch))
-
-        #     break
-        # break
-
-        pbar.close()
-
-
-if __name__ == "__main__":
-    asyncio.run(score())
