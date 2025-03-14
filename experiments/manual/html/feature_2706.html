@@ -1,0 +1,264 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>feature_2706</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                margin: 20px;
+                padding-bottom: 80px; /* Add padding to prevent content from being hidden behind nav buttons */
+            }
+            .nav-buttons { 
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 10px;
+                background-color: rgba(255, 255, 255, 0.9); /* Add semi-transparent background */
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+            }
+            .nav-button {
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+            }
+            .nav-button:hover {
+                background-color: #0056b3;
+            }
+            details {
+                margin: 10px 0;
+                padding: 10px;
+                background-color: #f8f9fa;
+                border-radius: 5px;
+            }
+            summary {
+                cursor: pointer;
+                padding: 5px;
+                font-weight: bold;
+            }
+            summary:hover {
+                background-color: #e9ecef;
+            }
+            .answer-section {
+                margin: 20px 0;
+                padding: 10px;
+                border-top: 1px solid #dee2e6;
+            }
+            .answer-button {
+                padding: 10px 20px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .answer-button:hover {
+                background-color: #218838;
+            }
+            .answer-content {
+                display: none;
+                margin-top: 10px;
+                padding: 10px;
+                background-color: #e9ecef;
+                border-radius: 5px;
+            }
+        </style>
+        <script>
+            function toggleAnswer(promptFile) {
+                const answerContent = document.getElementById(`answer-${promptFile}`);
+                const button = document.getElementById(`button-${promptFile}`);
+                if (answerContent.style.display === 'none') {
+                    answerContent.style.display = 'block';
+                    button.textContent = 'Hide Answer';
+                } else {
+                    answerContent.style.display = 'none';
+                    button.textContent = 'Reveal Answer';
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="nav-buttons">
+            <a class="nav-button" href="feature_15488.html">Previous (feature_15488)</a>
+            <a class="nav-button" href="index.html">Home</a>
+            <a class="nav-button" href="feature_586.html">Next (feature_586)</a>
+        </div>
+        <h1>feature_2706</h1>
+    
+        <details>
+            <summary>prompt_0.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>For this exercise, you will read some writings by NAME_1 and then attempt to write your own Stable Diffusion prompt using Danbooru and tokens regarding the story.<br><br>NAME_1 is known for his taboo and shocking physical writing style, which often explores themes of personal traumas and testing the physical limits<br><b>Example 2:</b><br>  )<br>    str(gap)<br>## 'data.frame':   820 obs. of  87 variables:<br>## ...<br>```<end_of_turn><br><start_of_turn>model<br>This code reads in a CSV file called "riskadaptquestionnaire_2022-09-24 (1).csv"<br><b>Example 3:</b><br> .\4A,EStG<br>Festsetzung<end_of_turn><br><start_of_turn>model<br>Thank you for providing the extractions. Please provide me with the extractions you want me to use for the decision-making process.<end_of_turn><br><start_of_turn>user<br>okay here are the text which you should use for extractions:<br>Input:<br><br><b>Example 4:</b><br> <bos><start_of_turn>user<br>make 30 short answered questions with answers from every point of the following paragraph. Do not generate answers from outside this given text. do not generate yes/no question.<br><br>ENT EMERGENCIES IN PICU Trauma All trauma cases, including those who have sustained cra-niofacial trauma should be managed<br><b>Example 5:</b><br> <br>The structure of the answer is:<br>1) Business Analysis Title<br>2) Business Analysis SQL<br>3) Description of the business meaning of SQL<br><br>Give at least 6 examples of business analysis.<end_of_turn><br><start_of_turn>model<br>Sure, here are 6 examples of business analysis that can be done using the table "<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_0_json" class="answer-button" onclick="toggleAnswer('prompt_0_json')">Reveal Answer</button>
+                <div id="answer-prompt_0_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'non-activating', 'activating', 'activating']</pre>
+                    <pre>['random', 'similar', 'similar', 2, 3]</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_1.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> its double x<end_of_turn><br><start_of_turn>model<br>Thank you for confirming. Your first name is NAME_1 with two Xs. Let me create the output string for you. The output string will have two components separated by an underscore. The first component is "gpt\_data" and the second component is "NAME_1".<br><b>Example 2:</b><br> . "<end_of_turn><br><start_of_turn>model<br>I apologize, but you have not provided any text for me to extract keywords from. NAME_1 you please provide a sample of text or specify the context in which the keywords should be extracted?<end_of_turn><br><start_of_turn>user<br>Please extract 5 keywords from the following text:<br>NAME_<br><b>Example 3:</b><br>  me to play, and the specific business requirements you have for this table.<end_of_turn><br><start_of_turn>user<br>Suppose you are a salesperson in the cosmetics industry, and the current business scenario is the Double Eleven promotion. Please give me some business analysis that can be done based on the memorized business table, and provide the corresponding SQL.<br><b>Example 4:</b><br>  " positive",<br>" reason": "I haven't received it in 15 days, but I am happy that I ordered an iphone"<br>}<end_of_turn><br><start_of_turn>user<br>Classify the text into neutral, negative or positive<br>Use JSON as output format, include following fields: sentiment and reason, for example:<br><b>Example 5:</b><br> <bos><start_of_turn>user<br>Hi<end_of_turn><br><start_of_turn>model<br>Hello! My name is Claude.<end_of_turn><br><start_of_turn>user<br>You are a highly intelligent entity recognition (NER) model. Your task is to identity all mentions of diseases and chemicals in a given text. <br>The output must only in following format:<br>DISEASES:<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_1_json" class="answer-button" onclick="toggleAnswer('prompt_1_json')">Reveal Answer</button>
+                <div id="answer-prompt_1_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'non-activating', 'non-activating', 'non-activating']</pre>
+                    <pre>['similar', 'similar', 'random', 'random', 'similar']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_2.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>Extract noun phrases as (adjective, aspect, sentiment) from:<br><br>Q:  The shutter is really slow and noisy.<br>A: (slow, shutter, negative), (noisy, shutter, negative)<br><br>Q: It’s a great zoom lens<br>A: (great,  zoom<br><b>Example 2:</b><br>  yang diberikan:<br><br>| Variabel | Valuta | Isi |<br>| --- | --- | --- |<br>| p | ¬q | ¬(p ˄ q) ˅ ¬(p ↔ q) |<br>| ¬p | p ˄ ¬q | (p ˄ ¬q) ˅<br><b>Example 3:</b><br> ). Use a single scale value for the exact match found.<br>Important: The scale should be 5 if the product matches exactly the original_product.<br>Please ensure that the response is in JSON format like the following:<br>If There are no exact items in the list do:<br>	[ {original_product<br><b>Example 4:</b><br> : Represents the past tense of a verb and indicates a void-time-continuance.<br><br>9 = FUTURE-TIME: Represents the future tense of a verb and indicates a void-time with no jurisdiction, opinion, guess, trial, experiment, or conclusions.<end_of_turn><br><start_of_turn>model<br>To create a program that analyzes<br><b>Example 5:</b><br>  the `OE` output connected to the `we` signal, the `CLK` input connected to<end_of_turn><br><start_of_turn>user<br>Write 32 word 32 bit asynchronous FIFO in Verilog<end_of_turn><br><start_of_turn>model<br>Here is an example of how you can implement a 32-word 32-bit<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_2_json" class="answer-button" onclick="toggleAnswer('prompt_2_json')">Reveal Answer</button>
+                <div id="answer-prompt_2_json" class="answer-content">
+                    <pre>['non-activating', 'activating', 'activating', 'non-activating', 'non-activating']</pre>
+                    <pre>['random', 1, 2, 'random', 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_3.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> industry of the company. Wrap result in python's dict format, english language, containing keys - `summary`, `b2b`, `keywords`, `category`.<br> {'text': 'Начало.За нас.Градински център.Услуги.Проекти.Статии.Контакти.<br><b>Example 2:</b><br> <bos><start_of_turn>user<br>Hello<end_of_turn><br><start_of_turn>model<br>Hello! How can I assist you today?<end_of_turn><br><start_of_turn>user<br>I'd like to make a healthy trail mix with a good protein profile, could you suggest some ingredients for me to use?<end_of_turn><br><start_of_turn>model<br>Sure! Here are a few options for healthy<br><b>Example 3:</b><br>  article below. You are expected to detailed outline describing exactly what has happened within the article.<br>Keep in mind the 5 W's and 1 H's when constructing your outline.<br>Finally, condense the information into hashtags, ensuring every detail is retained. <br><br>Adopt the following format when presenting your response<br><b>Example 4:</b><br> <bos><start_of_turn>user<br>Your task is to extract food regulations from the text delimited by triple backticks.  The output format should be CSV with the following fields: CAS Number, Substance Name, Operator, Value, Units of Measure, Usage, Usage Function<br><br>The usage represents what food products the substance is used in.<br><br><b>Example 5:</b><br> <bos><start_of_turn>user<br>### Instruction ###<br>As a marketing expert, find the content related to product features from below product description.<br>Then extract at most 5 concise features from the related content, keep only the meaningful words.<br><br>### Features Requirements ###<br>Each feature SHOULD<br>* be unique or highlight how to solve or<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_3_json" class="answer-button" onclick="toggleAnswer('prompt_3_json')">Reveal Answer</button>
+                <div id="answer-prompt_3_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'activating', 'activating', 'non-activating']</pre>
+                    <pre>['random', 'similar', 1, 3, 'similar']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_4.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>Based on the information provided in the document, you need to extract every drug entity, its target, and its mechanism from the document. Present the results in this triplet format example: (drug entity | target entity| mechanism entity). Be extremely precise, and concise, and use exactly the specified triplet format<br><b>Example 2:</b><br> <bos><start_of_turn>user<br>Can you give me data science documentation template along with Skelton templates for pre processing<end_of_turn><br><start_of_turn>model<br>Sure, here is a data science documentation template that you can use as a starting point:<br><br>Title: [Data Science Project Title]<br><br>Abstract:<br>[Purpose of the project]<br><br>Introduction:<br><b>Example 3:</b><br> <bos><start_of_turn>user<br>Per ogni parola giapponese che ti scrivo mi farai una frase d'esempio che la contiene iniziando con "@" e finendo semrpe con "@". Sotto scriverai la traduzione iniziando con "#' e finendo con "#"<end_of_turn><br><start_of_turn>model<br>Sì, certo! Sono<br><b>Example 4:</b><br> <bos><start_of_turn>user<br>You act as an metadata extractor AI chatbot in e-commerce website for product exploration. <br>Given current human input, try to extract the following metadata:<br>-category: list of string, has to be one or few of (fruits, dry goods, instant food, seafood, snacks, health<br><b>Example 5:</b><br> Describe what you might expect to observe after performing this step)<br><br>Continue in this format until you have fully outlined the process for the task "Open `train.csv` using  `action:python`. Create and display `basic visualisations` using `action:python`".<end_of_turn><br><start_of_turn>model<br>Step 1<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_4_json" class="answer-button" onclick="toggleAnswer('prompt_4_json')">Reveal Answer</button>
+                <div id="answer-prompt_4_json" class="answer-content">
+                    <pre>['activating', 'non-activating', 'activating', 'non-activating', 'non-activating']</pre>
+                    <pre>[3, 'random', 2, 'similar', 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_5.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>Mask-filling: Given a sequence of tables T and a question Q with [MASK], what is the word at [MASK].<br>Q： For example, Supported claim "Washing [MASK] prevents the spread of diseases," has a perplexity value of 96.74, whereas the<br><b>Example 2:</b><br> ||Small||2 lb.||18||Lic (+1)|<br>|Glock 201 (10mm autoloader)||2d6||20||Ballistic||40 ft.||S||15 box||Small||3 lb.||18||Lic (+1)|<br><br><b>Example 3:</b><br> <bos>Information on Financial Planning, Insurance Products & Reverse Mortgages<br>Do you need someone to review your insurance coverage to make sure it’s adequate or do you want to purchase additional insurance? Are you concerned that your investments aren’t yielding the kinds of returns you want or will need in the future? Or do you<br><b>Example 4:</b><br> 0 May the Bosnian presidency declared the JNA an occupation force.[146]  Please extract incidents as comma separated csv in the format of time, actor, incident. For example: 2022-11-12, "US, UK, China", "Obenheimer Peace Talks<br><b>Example 5:</b><br> ."<br><br>Data extraction: Studies were included if they were published in peer-reviewed journals, reported original data, and provided information on the consumption of cured meat products and the risk of cardiovascular disease. Data were extracted on study design, population, sample size, exposure and outcome measures, and statistical analysis.<br><br>Data synthesis:<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_5_json" class="answer-button" onclick="toggleAnswer('prompt_5_json')">Reveal Answer</button>
+                <div id="answer-prompt_5_json" class="answer-content">
+                    <pre>['activating', 'activating', 'non-activating', 'activating', 'non-activating']</pre>
+                    <pre>[2, 1, 'random', 3, 'similar']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_6.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br>  for errors, and even complete code by incorporating techniques such as machine learning.<end_of_turn><br><start_of_turn>user<br>give me 10 example for the data.csv<end_of_turn><br><start_of_turn>model<br>Here are 10 examples from the data.csv:<br>1. Apple: 3.14, Orange: 2.<br><b>Example 2:</b><br>  but is very secretive about it and makes jokes about it.<br>When I give you an instruction, you will provide two different responses in two clearly separated paragraphs: a standard NAME_4 response and a <br>response acting like a NAME_2. Add [NAME_4 🤖]: in front of the standard response<br><b>Example 3:</b><br>  able to finish 31% of the number of cycles expected of them for this duration.<br><br>We list the cycle times and corresponding number of cycles along the columns in the following table. All times are in seconds.<br><br><br>cycle time, number of cycles<br>10,2<br>30,1<br>50<br><b>Example 4:</b><br> JSON with properties: title,short_description,tags,keywords e html_description for "box doccia in pvc 3 lati da 80x80x100 cm". the description must be in HTML without the h1 tag for the title and with at least 50 words. Please set<br><b>Example 5:</b><br>  )<br>    str(gap)<br>## 'data.frame':   820 obs. of  87 variables:<br>## ...<br>```<end_of_turn><br><start_of_turn>model<br>This code reads in a CSV file called "riskadaptquestionnaire\_2022-09-24 (1).csv".<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_6_json" class="answer-button" onclick="toggleAnswer('prompt_6_json')">Reveal Answer</button>
+                <div id="answer-prompt_6_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'non-activating', 'activating', 'non-activating']</pre>
+                    <pre>['similar', 'random', 'random', 2, 'similar']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_7.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>Perform the following actions: <br>1 - Summarize the following text delimited by triple \<br>backticks with 1 sentence.<br>2 - Translate the output of step 1 into French.<br>3 - List each name in the French summary.<br>4 - Output a json object that contains the<br><b>Example 2:</b><br>  data. Is there anything else I can help you with?<end_of_turn><br><start_of_turn>user<br>mother of NAME_1 has 2 kids the first kid named NAME_2 the second kid named ?<end_of_turn><br><start_of_turn>model<br>If the mother of NAME_1 has two kids, and the first kid is named NAME_2,<br><b>Example 3:</b><br>  of the conversation, every key insight consists of a full sentence, and the key insights do not include names in answers, this key insights should be less than 10 characters, and give the answer from the first point of view, and you can output the obtained key insights in json format.<end_of_turn><br><start_of_turn>model<br><br><b>Example 4:</b><br>  springtime.<br><br>Ask a reasonably detailed question about the input sentence, and then look for the answer in the original sentence. Output in the format "Question: Answer:".<br>The sentence: According to NAME_1, the listing has received global attention and, despite being on the market for only 24 hours,<br><b>Example 5:</b><br>  television films available for research, respond in Chinese, and you need to list a table with headers that include: title, year, country, and viewing address.<end_of_turn><br><start_of_turn>model<br>观看性见。<br><br>| Title   | Year   | Country   | Viewing Address  |<br>| ------ | ------ | --------- |<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_7_json" class="answer-button" onclick="toggleAnswer('prompt_7_json')">Reveal Answer</button>
+                <div id="answer-prompt_7_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'activating', 'non-activating', 'activating']</pre>
+                    <pre>['similar', 'similar', 1, 'random', 3]</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_8.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br>  answer for access key and value when looping over lists in Python in python with proper code examples and outputs.<br><br>assistant:<end_of_turn><br><start_of_turn>model<br>When looping over lists in Python, the access key and value can be obtained using the `index` and slicing methods.<br><br>The `index` method returns the index of the<br><b>Example 2:</b><br> <bos>Links 11 - 20 of 30 refined by Arts and Crafts:<br>An online source for crafts, free craft projects and craft patterns to make easy homemade gifts. Site includes photos and full instructions.<br>The official homepage for the UK's national organization for the promotion of contemporary crafts, which<br><b>Example 3:</b><br>  ID, type, current position.<br>Below is a template of the driving scenario description User will provide.<br>{<br>'traffic_rules': "", <br>"ego vehicle's status": {<br>    'current position': "",<br>    'speed': "", <br>    'current driving action': "",<br>}<br><b>Example 4:</b><br> <bos><start_of_turn>user<br>Provide me as many words related to holidays near the ocean; the resort; ocean coast; in Polish as you can<end_of_turn><br><start_of_turn>model<br>Here are some Polish words related to holidays near the ocean, resorts and coastal areas:<br><br>Wakacje - vacation<br>Urlop - holiday <br>Plaża -<br><b>Example 5:</b><br> <bos><start_of_turn>user<br>Verhhyrddgyyy<end_of_turn><br><start_of_turn>model<br>I'm sorry, I'm not sure what you're asking. Could you please provide more context or clarify your question? I'm here to help with any questions you may have.<end_of_turn><br><start_of_turn>user<br>What kinds of food<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_8_json" class="answer-button" onclick="toggleAnswer('prompt_8_json')">Reveal Answer</button>
+                <div id="answer-prompt_8_json" class="answer-content">
+                    <pre>['activating', 'activating', 'activating', 'non-activating', 'non-activating']</pre>
+                    <pre>[1, 1, 1, 'random', 'similar']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_9.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>Did you extract those entities?<end_of_turn><br><start_of_turn>model<br>Yes, I extracted those entities from the text you provided. They are:<br><br>* Sandaime J-Box<br>* Sandaime J-Box 2nd<br>* Z-Box<br>* Z-Box 2nd<br>*<br><b>Example 2:</b><br>  spleen, tonsils, thymus |<br><br>I hope this helps!<end_of_turn><br><br><b>Example 3:</b><br> <bos><start_of_turn>user<br>Please base on the following information：<br><br>| Name | Skill 1 | Skill 2 | Cooking | Serving | Procure | Appeal |<br>| ------- | ------- | --------- | --------- | --------- | --------- | ------- | <br>| NAME_1 NAME_2|Cleaning Master| Drink Serving Master|<br><b>Example 4:</b><br> <bos><start_of_turn>user<br>I have a database with temperatures for all cities.<br>You should request the necessary data from me in the form [Temperature=?].<br>You should wait for me to input a value.<br>Process the value and provide a response.<br><br>Question: what is temperature in London multiplied by 9<end_of_turn><br><br><b>Example 5:</b><br> <br><start_of_turn>user<br>Please extract 5 keywords from the following text:<end_of_turn><br><start_of_turn>model<br>I apologize, but you have not provided any text for me to extract keywords from. NAME_1▌<end_of_turn><br><start_of_turn>user<br>Please extract 5 keywords from the following text:NAME_2 star NAME_3 gains access<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_9_json" class="answer-button" onclick="toggleAnswer('prompt_9_json')">Reveal Answer</button>
+                <div id="answer-prompt_9_json" class="answer-content">
+                    <pre>['non-activating', 'activating', 'non-activating', 'activating', 'non-activating']</pre>
+                    <pre>['similar', 1, 'random', 2, 'similar']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_10.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>System: You are a intelligent assistant who can use the original image and the given bounding box and description of each object in a image. Note the provided positions are the object left-top corner coordinates and right-bottom corner coordinates of the objects and we assume the height and width of the image are both<br><b>Example 2:</b><br> <bos><start_of_turn>user<br>Please extract 5 keywords from the following text:<end_of_turn><br><start_of_turn>model<br>I'm sorry, but the text you provided does not contain sufficient context for me to identify keywords. NAME_1 you please provide a larger sample of text or specify the context in which the keywords should be extracted?<end_of_turn><br><b>Example 3:</b><br>  Classify your answers into \"Yes\" and \"No\". The phrase NAME_1 also contain \"___\", a placeholder that can be an object, a person, and/or an action.\n\nHead: PersonX accepts the invitation<sep>NAME_4: makes new friends<br><br>[Answer]<br><b>Example 4:</b><br>  json format,and the keys strictly use:number,type,single_atom_catalysis_material,aimed_issue,application,and the empty value strictly use:null:<br>3. Economical and high-efficiency synthesis of single-atom catalysts is a tremendous challenge hampering their large-scale industrial<br><b>Example 5:</b><br>  respectful messages. If you have any other questions or requests, feel free to ask.<end_of_turn><br><start_of_turn>user<br>Break out lines for each character<end_of_turn><br><start_of_turn>model<br>I apologize, but I cannot provide you with breakout lines for each character in South Park as it would be inappropriate and offensive. South Park is a popular animated<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_10_json" class="answer-button" onclick="toggleAnswer('prompt_10_json')">Reveal Answer</button>
+                <div id="answer-prompt_10_json" class="answer-content">
+                    <pre>['activating', 'non-activating', 'activating', 'activating', 'activating']</pre>
+                    <pre>[2, 'similar', 2, 3, 2]</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_11.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br>  a recipe. Please use these ingredients to create a cooking recipe. Commonly used cooking ingredients like salt, pepper and sugar etc can be added to the recipe even if the user did not provide these in their list. Return the results as a JSON object with the following format {ingredients: array of ingredients (string), description:<br><b>Example 2:</b><br>  title, author, genre.<end_of_turn><br><start_of_turn>model<br>```<br>{<br>  "book_id": 1,<br>  "title": "The Unicorn and the Dragon",<br>  "author": "NAME_1",<br>  "genre": "Fantasy"<br>},<br>{<br>  "book_id<br><b>Example 3:</b><br> 3":<br>        # Use an item in the player's inventory<br>        if "sword" in game_world:<br>            print("You use your sword to attack.")<br>        elif "healing potion" in game_world:<br>            print("You drink the healing potion and regain 20 health points<br><b>Example 4:</b><br>  пояснение. <br><br>Речь о компании Сбербанк - крупный российский банк. <br><br>Текст новости: "Если вы хотите лично пообщаться с Максимом, узнать о его взглядах на рынок, то сделать это возможно на нашей конференции, которая состоится 24 июня в Санкт-Петер<br><b>Example 5:</b><br> <bos><start_of_turn>user<br>Give me all relationships in the given text in the form of (node1:relationship:node2). Relationships  are generic eg father of, travelled to, purchased etc. The text is NAME_1’s wives and children<br>As he continued his long journey southwards, NAME_1 met<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_11_json" class="answer-button" onclick="toggleAnswer('prompt_11_json')">Reveal Answer</button>
+                <div id="answer-prompt_11_json" class="answer-content">
+                    <pre>['activating', 'activating', 'non-activating', 'non-activating', 'activating']</pre>
+                    <pre>[1, 3, 'similar', 'random', 3]</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_12.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>Give a list of games like Zelda: Breath of the Wild<br>Format list next way:<br>Name - Rating - in which way this game like Zelda: Breath of the Wild- Percent of similarity<end_of_turn><br><start_of_turn>model<br>Here is a list of games like Zelda: Breath of the Wild:<br>*<br><b>Example 2:</b><br> <bos><start_of_turn>user<br>in simplest terms and well distinguished define all AWS compute services based with categories<end_of_turn><br><start_of_turn>model<br>Sure, I'd be happy to help! AWS (Amazon Web Services) offers a wide range of compute services that can be categorized into three main categories:<br><br>1. Compute Services: These services provide<br><b>Example 3:</b><br> <bos><start_of_turn>user<br>This is a csv file about oil & gas production:<br><br>company,block,hydrocarbon,unit,status,reportDate,target,actual,le,actualPercent,type,MAJOR PRODUCTION HIGHLIGHTS/LOWLIGHTS<br>Company A,5,OIL,bbl/d,SUBMITTED,20<br><b>Example 4:</b><br> 15 days, but I am happy that I ordered an iphone"<br>}<end_of_turn><br><start_of_turn>user<br>Classify the text into neutral, negative or positive<br>Use JSON as output format, include fields: sentiment and reason<br>Text: I ordered an iphone online, but I haven't received it in 15 days<br><b>Example 5:</b><br> ion de acordes en modo mixolidio para un reggae?<end_of_turn><br><start_of_turn>model<br>¡Claro! Aquí te dejo una sucesión de acordes en modo mixolídio para un reggae en clave de Do:<br><br>| Acorde | Tonalidad | Intervalo | Notas |<br>| --- | --- | ---<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_12_json" class="answer-button" onclick="toggleAnswer('prompt_12_json')">Reveal Answer</button>
+                <div id="answer-prompt_12_json" class="answer-content">
+                    <pre>['activating', 'activating', 'non-activating', 'activating', 'activating']</pre>
+                    <pre>[3, 1, 'similar', 3, 2]</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_13.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Texts often require specific formatted responses, such as lists or triplets, and may involve tasks like information extraction, sentiment analysis, or question answering, with a focus on precise and concise output.<br><br>Text examples:<br><br><b>Example 1:</b><br>  sell in which data.<end_of_turn><br><br><b>Example 2:</b><br>  or 'NAME_1' if none"<br>predictedrate: 0.45<br>reason: "Explanation of your assessment"<br>```<br>    <br>input text is:"sok fastheng poke\n???\nsori doo aku lupa\nsok ii poke"<end_of_turn><br><start_of_turn>model<br>language: "<br><b>Example 3:</b><br>  her friends every day with four. She sells the remainder at the farmers' market daily for $2 per fresh duck egg. How much in dollars does she make every day at the farmers' market? Give the final answer starting from 'The answer is'<br>A:<end_of_turn><br><start_of_turn>model<br>Q: NAME_1<br><b>Example 4:</b><br>  değilse ilerle.<end_of_turn><br><start_of_turn>model<br>```<br>def extract_values(text):<br>    # split the text by ', '<br>    values = text.split(', ')<br>    <br>    # remove any empty values<br>    values = [value for value in values if value]<br>    <br>    #<br><b>Example 5:</b><br> <bos><start_of_turn>user<br>Share some Reels ideas with compelling headlines for month of May as a part of Diabetes Patient Education program<end_of_turn><br><start_of_turn>model<br>Sure, here are a few Reels ideas with compelling headlines for the month of May as a part of your diabetes patient education program:<br><br>1. "5 Quick & Easy Meal Ideas<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_13_json" class="answer-button" onclick="toggleAnswer('prompt_13_json')">Reveal Answer</button>
+                <div id="answer-prompt_13_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'non-activating', 'non-activating', 'non-activating']</pre>
+                    <pre>['random', 'random', 'random', 'similar', 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+    </body>
+    </html>
+    

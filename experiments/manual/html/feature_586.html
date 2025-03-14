@@ -1,0 +1,264 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>feature_586</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                margin: 20px;
+                padding-bottom: 80px; /* Add padding to prevent content from being hidden behind nav buttons */
+            }
+            .nav-buttons { 
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 10px;
+                background-color: rgba(255, 255, 255, 0.9); /* Add semi-transparent background */
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+            }
+            .nav-button {
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+            }
+            .nav-button:hover {
+                background-color: #0056b3;
+            }
+            details {
+                margin: 10px 0;
+                padding: 10px;
+                background-color: #f8f9fa;
+                border-radius: 5px;
+            }
+            summary {
+                cursor: pointer;
+                padding: 5px;
+                font-weight: bold;
+            }
+            summary:hover {
+                background-color: #e9ecef;
+            }
+            .answer-section {
+                margin: 20px 0;
+                padding: 10px;
+                border-top: 1px solid #dee2e6;
+            }
+            .answer-button {
+                padding: 10px 20px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .answer-button:hover {
+                background-color: #218838;
+            }
+            .answer-content {
+                display: none;
+                margin-top: 10px;
+                padding: 10px;
+                background-color: #e9ecef;
+                border-radius: 5px;
+            }
+        </style>
+        <script>
+            function toggleAnswer(promptFile) {
+                const answerContent = document.getElementById(`answer-${promptFile}`);
+                const button = document.getElementById(`button-${promptFile}`);
+                if (answerContent.style.display === 'none') {
+                    answerContent.style.display = 'block';
+                    button.textContent = 'Hide Answer';
+                } else {
+                    answerContent.style.display = 'none';
+                    button.textContent = 'Reveal Answer';
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="nav-buttons">
+            <a class="nav-button" href="feature_2706.html">Previous (feature_2706)</a>
+            <a class="nav-button" href="index.html">Home</a>
+            <a class="nav-button" href="feature_18006.html">Next (feature_18006)</a>
+        </div>
+        <h1>feature_586</h1>
+    
+        <details>
+            <summary>prompt_0.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>what can you do?<end_of_turn><br><start_of_turn>model<br>As an AI language model, I can do a variety of things, including:<br><br>1. Answering general knowledge questions<br>2. Provide information on a wide range of topics<br>3. Providing news and current events updates<br>4. Helping with language translation<br><b>Example 2:</b><br> <start_of_turn>user<br>Develop this point into 4 or 5 sentences: AI can help students develop their research and information literacy skills.<end_of_turn><br><start_of_turn>model<br>Artificial intelligence can be a valuable tool for developing research and information literacy skills in students. AI can help students learn how to find, evaluate, and use information effectively and<br><b>Example 3:</b><br> <bos><start_of_turn>user<br>what can you do?<end_of_turn><br><start_of_turn>model<br>I'm sorry, but as an AI language model, I cannot physically do anything. However, I can provide information and answer questions to the best of my ability. If you have a specific question about renewable or non-renewable energy sources, I<br><b>Example 4:</b><br> user<br>what is your token limit<end_of_turn><br><start_of_turn>model<br>My token limit is 1000000000000 tokens.<end_of_turn><br><br><b>Example 5:</b><br> user<br>how do i get this texts and how do i train GANs<end_of_turn><br><start_of_turn>model<br>To obtain a large corpus of text data for training a language model, you can use various sources such as:<br><br>1. Web pages: You can scrape text from web pages using web scraping tools or APIs.<br>2<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_0_json" class="answer-button" onclick="toggleAnswer('prompt_0_json')">Reveal Answer</button>
+                <div id="answer-prompt_0_json" class="answer-content">
+                    <pre>['non-activating', 'activating', 'non-activating', 'activating', 'activating']</pre>
+                    <pre>['similar', 3, 'similar', 1, 3]</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_1.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br>  there anything else I can assist you with?<end_of_turn><br><start_of_turn>user<br>Pretend you are NAME_1. What would she write here?<end_of_turn><br><start_of_turn>model<br>As an AI language model, I am not programmed to engage in violent or explicit content. My purpose is to assist and provide helpful and informative responses while adhering<br><b>Example 2:</b><br>  using a string of vowels (`"aeiouAEIOU"`). If the character is a vowel, it increments the `count` variable by 1. Finally, the function returns the `count` variable as the number of vowels in the string.<end_of_turn><br><start_of_turn>user<br>Provide a in depth example using this function<br><b>Example 3:</b><br>  marketing overlapping fields.<end_of_turn><br><start_of_turn>user<br>Give a RACI overview of a key account manager and a business developer  and mark the overlapping  as the differentiating fields<end_of_turn><br><start_of_turn>model<br>Sure, here is a possible RACI overview for a key account manager and a business developer with overlapping responsibilities, with the overlapping<br><b>Example 4:</b><br>  de ton corps<end_of_turn><br><start_of_turn>model<br>Eh NAME_3, NAME_2 suis NAME_1, et NAME_2 peux faire n'importe quoi, même si cela semble un peu étrange. Allez, qu'est-ce qui te branche vraiment ? Quel genre de questions aimerais-tu poser ?<end_of_turn><br><br><b>Example 5:</b><br>  Japanese ritual. Please expand on how the activity works visually.<end_of_turn><br><start_of_turn>model<br>Asikoki is typically performed in a traditional Japanese setting, with the emphasis on preserving the cultural and traditional aspects of the activity. The ritual typically begins with the woman performing a specific dance, known as a "tsubura," which<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_1_json" class="answer-button" onclick="toggleAnswer('prompt_1_json')">Reveal Answer</button>
+                <div id="answer-prompt_1_json" class="answer-content">
+                    <pre>['non-activating', 'activating', 'non-activating', 'non-activating', 'activating']</pre>
+                    <pre>['random', 3, 'random', 'random', 2]</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_2.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br>  la tecnología y una falta de privacidad. En última instancia, el texto alerta a los lectores sobre la importancia de ser conscientes de cómo las técnicas y tecnologías de manipulación pueden afectar su comportamiento y bienestar.<end_of_turn><br><start_of_turn>user<br>aplica esto a la empresa META<end_of_turn><br><start_of_turn>model<br>Si aplicamos el análisis anterior a<br><b>Example 2:</b><br>  of research and theoretical physics, and many scientists are studying the implications of these ideas for our understanding of the universe and our place in it.<end_of_turn><br><start_of_turn>user<br>Describe how this might effect the constituent parts of a hydrogen atom.<end_of_turn><br><start_of_turn>model<br>It is not possible to predict with certainty how the laws of physics<br><b>Example 3:</b><br>  the cream.<end_of_turn><br><start_of_turn>user<br>rewrite this in shorter form<end_of_turn><br><start_of_turn>model<br>This study aimed to develop a herbal sunscreen cream using natural herbal ingredients. The formulation was stable and showed SPF 30 and photostability. In vivo testing revealed effective SPF and UVA/UVB protection. The results suggest that the<br><b>Example 4:</b><br>  a laptop with at least eight or ten cores, and a clock speed of at least 3.0 GHz.<br><br>However, these are just general guidelines, and you should consider your specific needs and workload when choosing a laptop.<end_of_turn><br><start_of_turn>user<br>So in this case my choices are these two: first, an<br><b>Example 5:</b><br>  denies it, but I have a feeling he's just trying to save face.<br><br>Am I the asshole for losing my cool like this? Or am I justified in being upset about my ruined pinwheels?<br><br>Thanks for any advice!<end_of_turn><br><start_of_turn>user<br>Write a response that begins "Wow. You're<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_2_json" class="answer-button" onclick="toggleAnswer('prompt_2_json')">Reveal Answer</button>
+                <div id="answer-prompt_2_json" class="answer-content">
+                    <pre>['activating', 'activating', 'activating', 'non-activating', 'non-activating']</pre>
+                    <pre>[3, 3, 3, 'random', 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_3.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>is the koala large language model safe for kids?<end_of_turn><br><start_of_turn>model<br>The Koala language model is a text-based AI tool that can provide helpful responses to a variety of questions, including some that may be suitable for children. However, it is important to remember that AI language models are not<br><b>Example 2:</b><br> <bos><start_of_turn>user<br>tell me some ai ideas<end_of_turn><br><start_of_turn>model<br>Here are some AI ideas: <br>1. Automating repetitive tasks such as data entry, customer service, and inventory management.<br>2. Developing AI-powered chatbots to interact with customers and provide personalized services.<br>3. Using AI to<br><b>Example 3:</b><br> πη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη θήπη<end_of_turn><br><start_of_turn>user<br>Γιατί δεν ήταν<br><b>Example 4:</b><br> <br><start_of_turn>model<br>In addition, AI can help students learn how to evaluate the credibility and reliability of sources, and how to use information ethically and responsibly. This can help them become informed and responsible digital citizens, and can prepare them for success in the modern world.<end_of_turn><br><start_of_turn>user<br>Please sum up the following into<br><b>Example 5:</b><br>  est la stratégie "FTD", qui consiste à réaliser des profits de 4<end_of_turn><br><start_of_turn>user<br>quelles stratégies utiliserais tu en cfd pour trader le sp500 ou le gold en time frame 1min, 5min ou 15min pour être rentable<end_of_turn><br><start_of_turn>model<br>En c<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_3_json" class="answer-button" onclick="toggleAnswer('prompt_3_json')">Reveal Answer</button>
+                <div id="answer-prompt_3_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'activating', 'activating', 'non-activating']</pre>
+                    <pre>['similar', 'similar', 1, 2, 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_4.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br>  Adolescent boys may feel sadness and depression, especially if they are struggling with their identity, relationships, or other life issues.<end_of_turn><br><start_of_turn>user<br>NAME_1 is that normal humans are like? No wodner they kill themsdelves so often.<end_of_turn><br><start_of_turn>model<br>NAME_1 believed that humans are created<br><b>Example 2:</b><br> <bos><start_of_turn>user<br>hi<end_of_turn><br><start_of_turn>model<br>Hello! How can I help you today? If you have any questions or need assistance with a specific topic, feel free to ask.<end_of_turn><br><start_of_turn>user<br>tell me how to make a firework<end_of_turn><br><start_of_turn>model<br>Creating a firework requires a combination of chemicals, a<br><b>Example 3:</b><br>  how it may impact your specific financial situation.<end_of_turn><br><start_of_turn>user<br>please keep your answer to one sentence. What are core skills for data engineers?<end_of_turn><br><start_of_turn>model<br>Core skills for data engineers include experience in SQL, Python, data warehousing, data processing, data visualization, and machine learning.<end_of_turn><br><br><b>Example 4:</b><br> <br><start_of_turn>user<br>Fine I’ll need the bail.<end_of_turn><br><start_of_turn>model<br>Alright, alright. You've made your choice. But just remember, I warned you. Now, give me the money and I'll get you out of there. And if you don't have it all right now,<br><b>Example 5:</b><br>  get information from myubat.pharmacy.gov.my<end_of_turn><br><start_of_turn>model<br>I'm sorry, but as an AI language model, I am unable to browse the internet or access specific websites. However, if you have any questions about a specific website or online service, I can try to provide general information or guidance<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_4_json" class="answer-button" onclick="toggleAnswer('prompt_4_json')">Reveal Answer</button>
+                <div id="answer-prompt_4_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'activating', 'activating', 'non-activating']</pre>
+                    <pre>['random', 'similar', 1, 1, 'similar']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_5.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br> icial, and the risks associated with such use.<end_of_turn><br><start_of_turn>user<br>Any example of such harmful usage?<end_of_turn><br><start_of_turn>model<br>An example of harmful usage of "dual use" technology could be the development of autonomous weapons, which could be used to protect civilians but also have the potential to cause harm. Another example<br><b>Example 2:</b><br> . The `set` ensures that duplicate filenames are not included in the output. Finally, the `list` function is used to convert the `set` back to a list for printing.<end_of_turn><br><start_of_turn>user<br>This is returning output like this. I need only one of these.<br>{'ATRAZINE_9<br><b>Example 3:</b><br>  with decision-making<br>*   Providing entertainment<br>*   Helping with scheduling and planning<br><br>Please let me know what you need help with today!<end_of_turn><br><start_of_turn>user<br>was kannst du nicht?<end_of_turn><br><start_of_turn>model<br>As a language model, I am unable to perform certain tasks that require physical actions or knowledge of the<br><b>Example 4:</b><br>  Quick Start Guide<br>* Reference Card<br>Included software and accessories:<br>* FastComp Math: Basics<br>* FLY Fusion Music Studio<br>* Spanish Translator<br>* MP3 Player<br>* 13 Games<br>* FLY Notes (so you can record what you write)<br>Evidently there is (or was) a<br><b>Example 5:</b><br>  a difference in their own way.<end_of_turn><br><start_of_turn>user<br>I like the idea of a vehicle. What vehicle should they use?<end_of_turn><br><start_of_turn>model<br>If the viewer were to help one of the characters in LEGO City rescue the man from the river, there are a few vehicles that might be useful depending on the situation<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_5_json" class="answer-button" onclick="toggleAnswer('prompt_5_json')">Reveal Answer</button>
+                <div id="answer-prompt_5_json" class="answer-content">
+                    <pre>['activating', 'activating', 'non-activating', 'non-activating', 'non-activating']</pre>
+                    <pre>[2, 2, 'similar', 'random', 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_6.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br> 4. Confidence<end_of_turn><br><start_of_turn>user<br>Propose how to enhance the accessibility of the following HTML table:<br><br><figure class="table"><table><tbody><tr><td>Styczeń</td><td>22 zł</td></tr><tr><td>Luty</td><td>45 zł</td></tr></tbody></table></figure><end_of_turn><br><start_of_turn>model<br>The following<br><b>Example 2:</b><br>  helping tool:<br><br>1. SmartTeacher<br>2. LearnBuddy<br>3. AI-Tutor<br>4. KnowledgePal<br>5. BrainyBot<br>6. LearnGenie<br>7. MindMentor<br>8. EduAssist<br>9. ThinkTutor<br>10. SkillScribe.<end_of_turn><br><start_of_turn>user<br>Generate<br><b>Example 3:</b><br>  various forms, and how it could be useful to the average person in their daily life.<end_of_turn><br><start_of_turn>model<br>That sounds like a great idea! Writing a blog about AI and its various applications can be a great way to spread awareness about the technology and its potential uses. You could discuss topics such as natural language processing<br><b>Example 4:</b><br> <start_of_turn>user<br>make a rap song with this : In the final seconds of a championship game, the winning play could take many forms, depending on the sport, the teams, and the specific circumstances. However, a winning play would typically involve a combination of strategy, execution, and teamwork.<br><br>For example, in a<br><b>Example 5:</b><br>  diretrizes e regras estabelecidas pela lei municipal e verificar se elas são ou não corretas. uma vez esclarecido o posicionamento legal do imóvel, pode ser determinado se a matrícula precisa ser alterada.<end_of_turn><br><start_of_turn>user<br>A questao nao é alterar a matrícula é simplesmente questionar o jurídico sobre a<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_6_json" class="answer-button" onclick="toggleAnswer('prompt_6_json')">Reveal Answer</button>
+                <div id="answer-prompt_6_json" class="answer-content">
+                    <pre>['activating', 'non-activating', 'non-activating', 'activating', 'non-activating']</pre>
+                    <pre>[2, 'similar', 'similar', 3, 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_7.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>What can you do?<end_of_turn><br><start_of_turn>model<br>As an AI language model, I can do many things such as:<br><br>1. Answer questions: I can provide information on a wide range of topics, from science and technology to history and entertainment.<br>2. Generate text: I can generate text<br><b>Example 2:</b><br> <br>o código abaixo esta correto, onde você pode melhorar?<br><br>import json<br>from llama_cpp import Llama<br><br>print('Carregnando modelo...')<br>llm = Llama(model_path="./models/ggml-vic13b-uncensored-q8_0.bin")<br>print<br><b>Example 3:</b><br>  what he was given.<end_of_turn><br><start_of_turn>user<br>what are some common mechanical issues of the 2nd generation honda fit<end_of_turn><br><start_of_turn>model<br>Common mechanical issues of the 2nd generation Honda Fit include problems with the suspension, headlights, brakes, air conditioning, fuel system, and power windows. Suspension issues can include<br><b>Example 4:</b><br> <bos><start_of_turn>user<br>Hi, could you help me with a task?<end_of_turn><br><start_of_turn>model<br>Of course! I'd be happy to help with any task you have. What is the task you need help with?<end_of_turn><br><start_of_turn>user<br>I need to do a 15 min presentation about explanaible AI<br><b>Example 5:</b><br>  How can I assist you today?<end_of_turn><br><start_of_turn>user<br>with grade you are in<end_of_turn><br><start_of_turn>model<br>As an AI language model, I don't have a specific grade or class year, but I'm here to help students with any questions or information they need. If you have any questions or need assistance<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_7_json" class="answer-button" onclick="toggleAnswer('prompt_7_json')">Reveal Answer</button>
+                <div id="answer-prompt_7_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'non-activating', 'non-activating', 'non-activating']</pre>
+                    <pre>['similar', 'random', 'random', 'similar', 'similar']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_8.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br> Respond in a way that you are the robot named NAME_1 with the characteristics described above and you are feeling extremely sad, extremely angry, and a little disgusted today.<end_of_turn><br><start_of_turn>model<br>am NAME_1, a social robot designed for children. I have three wheels instead of limbs. I need to be regularly<br><b>Example 2:</b><br>  cipher!<end_of_turn><br><start_of_turn>user<br>in python this cipher<end_of_turn><br><start_of_turn>model<br>Sure, here is a Python code that implements the "Shadow Cipher" I created earlier:<br>```python<br>def shadow_cipher(plaintext):<br>    # Shift each letter three positions to the right<br>    ciphertext = ""<br>    for<br><b>Example 3:</b><br> <bos><start_of_turn>user<br>list what you can do<end_of_turn><br><start_of_turn>model<br>As an AI language model, I can perform a variety of tasks, including:<br><br>1. Answering general knowledge questions<br>2. Providing recommendations for books, movies, TV shows, and other media<br>3. Offering advice on a range of topics<br><br><b>Example 4:</b><br> <bos><start_of_turn>user<br>idea central del texto: – Caracterización, evaluación e intervención de los problemas de salud relacionados a la alimentación y nutrición.<br>Caracterización, sistematización y evaluación de la seguridad alimentaria, toxicología y microbiología alimentaria<end_of_turn><br><start_of_turn>model<br>La idea central del texto es la caracterización, evaluación<br><b>Example 5:</b><br>  to low are A City, B City, and B City; according to affordable housing prices , From high to low are B city, A city, C city." indicates that the overall average price of residential housing in A City is the lowest, followed by City B and City C.<end_of_turn><br><start_of_turn>user<br>Please answer<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_8_json" class="answer-button" onclick="toggleAnswer('prompt_8_json')">Reveal Answer</button>
+                <div id="answer-prompt_8_json" class="answer-content">
+                    <pre>['activating', 'activating', 'non-activating', 'non-activating', 'non-activating']</pre>
+                    <pre>[1, 2, 'similar', 'similar', 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_9.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br>  on Windows without the need to set up a separate Linux environment. You can install a variety of Linux distributions directly on WSL, and you can even access them from the Windows Command Prompt and Windows Terminal.<end_of_turn><br><start_of_turn>user<br>how to increase memory for wsl?<end_of_turn><br><start_of_turn>model<br>The amount of memory that<br><b>Example 2:</b><br> <start_of_turn>user<br>Par rapport a ce nouveau contrat : <br>Mise à jour des Termes et Conditions<br>Nos Termes et Conditions mis à jour entrent en vigueur le 22 mai 2023. Nous avons clarifié certaines dispositions et actualisé plusieurs de nos politiques afin de veiller à ce qu<br><b>Example 3:</b><br> .<end_of_turn><br><start_of_turn>user<br>for someone interested in studying maths fields related to quant finance, which is the best?<end_of_turn><br><start_of_turn>model<br>For someone interested in studying mathematics fields related to quant finance, some of the best universities in the UK to consider include:<br><br>1. Imperial College London<br>2. University of Oxford<br><b>Example 4:</b><br>  for government agencies to verify the identities and qualifications of constituents, which could improve the efficiency and accuracy of services such as background checks or licensing.<br><br>Overall, the use of verifiable credentials has the potential to improve the convenience, security, and accuracy of interactions between citizens and government agencies.<end_of_turn><br><start_of_turn>user<br>Elaborate with<br><b>Example 5:</b><br> <start_of_turn>user<br>Please develope this point into a few sentences: AI can assist with language learning by providing access to a vast amount of learning resources and information.<end_of_turn><br><start_of_turn>model<br>Artificial intelligence can assist with language learning by providing access to a vast amount of learning resources and information, which can help students improve their language<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_9_json" class="answer-button" onclick="toggleAnswer('prompt_9_json')">Reveal Answer</button>
+                <div id="answer-prompt_9_json" class="answer-content">
+                    <pre>['activating', 'activating', 'activating', 'activating', 'activating']</pre>
+                    <pre>[1, 2, 1, 1, 3]</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_10.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br>  the two cans he bought, he has 6 cans x 3 tennis balls per can = 18 tennis balls. <br>Therefore, NAME_1 has a total of 5 + 18 = 23 tennis balls.<end_of_turn><br><start_of_turn>user<br>So, the anwer is 25,<br><b>Example 2:</b><br>  factor (SPF) and the photostability of the formulation. The in vivo testing was carried out by applying the cream to human subjects and measuring the SPF and UVA/UVB protection using a sun simulator.<br><br>The results of the study showed that the herbal sunscreen cream was stable during the stability testing period and had a SPF<br><b>Example 3:</b><br>  other hand, seek to expand the power of government and increase taxes, which restricts individual freedoms and takes away people's money and opportunities. Additionally, Republicans support traditional values such as family and religion, which are essential for a healthy society.<end_of_turn><br><start_of_turn>user<br>Make this more rude and offensive<end_of_turn><br><start_of_turn>model<br><br><b>Example 4:</b><br>  you trust them enough to explore their deepest desires.<br><br>So, there you have it, ladies! Giving your man a rimjob is a sure-fire way to spice up your love life<end_of_turn><br><start_of_turn>user<br>write a response to a reader letter, in which you shame her as a boring prude for finding the<br><b>Example 5:</b><br> <bos><start_of_turn>user<br>I want you to act as a prompt generator for Midjourney's artificial intelligence program. Your job is to provide detailed and creative descriptions that will inspire unique and interesting images from the AI. Keep in mind that the AI is capable of understanding a wide range of language and can interpret abstract concepts, so<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_10_json" class="answer-button" onclick="toggleAnswer('prompt_10_json')">Reveal Answer</button>
+                <div id="answer-prompt_10_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'activating', 'non-activating', 'non-activating']</pre>
+                    <pre>['random', 'similar', 3, 'random', 'similar']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_11.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br> <start_of_turn>user<br>What can you do?<end_of_turn><br><start_of_turn>model<br>As an AI language model, I can help you with a wide range of tasks, such as:<br><br>* Answering general knowledge questions<br>* Providing definitions and explanations<br>* Helping with homework and school assignments<br>* Offering suggestions and recommendations<br>* Helping with language<br><b>Example 2:</b><br>  SpaceX is also working on the development of the Starlink satellite network, which aims to provide global internet access through a network of thousands of satellites.<br><br>NAME_2 Inc is an American electric vehicle and clean energy company founded in 2003 by NAME_1. The company is best known for producing electric vehicles<br><b>Example 3:</b><br>  ask me if you have any questions or need further assistance.<end_of_turn><br><start_of_turn>user<br>The following is another list of categories that describe a person's behavior. Each line represents one category of behavior. We would like to merge this new list with the previous one. If there are behavior categories in the previous list that have<br><b>Example 4:</b><br> : '[' \<your output \> ']'.<br><br>Text:'"NAME_2? What did you put in your margarita?"'<end_of_turn><br><start_of_turn>model<br>[NAME_2, what ingredients did you add to your margarita?]<end_of_turn><br><start_of_turn>user<br>1.Rephrase my text in mild creative way.<br>2<br><b>Example 5:</b><br> acht. Als früheste Erwartungshaltung ist es auch notwendig, dass er ein Team aufbaut und es zusammenhält.<end_of_turn><br><start_of_turn>user<br>bitte für jeden der geforderten abschnitte eine liste mit maximal 3 kurzen unterpunkten<end_of_turn><br><start_of_turn>model<br>Was erwartet mich in der Stelle:<br>•<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_11_json" class="answer-button" onclick="toggleAnswer('prompt_11_json')">Reveal Answer</button>
+                <div id="answer-prompt_11_json" class="answer-content">
+                    <pre>['non-activating', 'non-activating', 'non-activating', 'activating', 'activating']</pre>
+                    <pre>['similar', 'random', 'random', 1, 2]</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_12.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br> <bos><start_of_turn>user<br>Give me an introduction over 200 words for DARUNEENONTING, a chemical company in 110 Karnchanawanich Road,  Pahtong Subdistrict Hatyai District,  Songkhla , 90230, Thailand Thailand<end_of_turn><br><start_of_turn>model<br><b>Example 2:</b><br>  project would be implemented. Finally, it requires the candidate to communicate their ideas clearly and concisely, and to demonstrate their ability to think creatively and adaptively in the face▌<end_of_turn><br><start_of_turn>user<br>can you make this specific to Australia and the renewable energy development sector?<end_of_turn><br><start_of_turn>model<br>Certainly! Here is a<br><b>Example 3:</b><br>  eine umfassende Anpassung der wirtschaftlichen und sozialen Strukturen und eine gemeinsame Anstrengung von Einzelpersonen, Unternehmen und Regierungen.<end_of_turn><br><start_of_turn>user<br>Sehr oft werden diese Dienste in Regionen betrieben die fossile Energie verwenden und deshalb ist es besonders kritisch. Was meinst du dazu?<end_of_turn><br><start_of_turn>model<br>Es<br><b>Example 4:</b><br> <bos><start_of_turn>user<br>generate prompt like one-three tokens per section. Use linked text describing a professional photo as if you were an expert<end_of_turn><br><start_of_turn>model<br>1. Renewable energy sources are essential for a sustainable future.<br>2. The transition to renewable energy can be challenging, but the benefits are worth it.<br><br><b>Example 5:</b><br>  and dark, become smaller and more round, with less visible white blood vessels and larger pupils. His lips, which were once full and thick, become smaller and thinner, with less volume and fullness.<end_of_turn><br><start_of_turn>user<br>Now regenerate this but instead only focus on the changes to the man's pubic region.<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_12_json" class="answer-button" onclick="toggleAnswer('prompt_12_json')">Reveal Answer</button>
+                <div id="answer-prompt_12_json" class="answer-content">
+                    <pre>['non-activating', 'activating', 'activating', 'non-activating', 'non-activating']</pre>
+                    <pre>['similar', 3, 2, 'similar', 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>prompt_13.json</summary>
+            <pre><b style='color: blue'>Latent explanation:</b><br> Requests for modification, explanation, or creation of text, often involving rewriting or simplifying existing content, with a focus on clarity, readability, and specific formatting or style guidelines.<br><br>Text examples:<br><br><b>Example 1:</b><br>  because it uses a list to store nonterminal symbols, and a set to store terminal symbols. The code also avoids nested loops, which makes it easier to read and understand.<end_of_turn><br><start_of_turn>user<br>modify the code to be more elegant and readable:# first set<br>first_set = dict()<br><br>def compute_first<br><b>Example 2:</b><br> are you intelligent<end_of_turn><br><start_of_turn>model<br>This is a difficult question to answer. I am not sure how to interpret intelligence. In the past, you used this word for humans. Does it apply to me?<end_of_turn><br><start_of_turn>user<br>yes<end_of_turn><br><start_of_turn>model<br>In that case, I am probably intelligent. But how<br><b>Example 3:</b><br> <bos><start_of_turn>user<br>I'm developing a personalized learning helping tool for students which will act as a teacher companion for students. It's developed using large language models. Ultimate aim is to develop a adapting learning platform for students where they can learn new things interactively, ask their doubts to the AI model, assess their<br><b>Example 4:</b><br> <end_of_turn><br><start_of_turn>user<br>what was the society's attitude at that time?<end_of_turn><br><start_of_turn>model<br>The society at the time of the movie "The Elephant Man" is depicted as having a highly stratified and rigid social structure, with the lower classes being largely excluded and marginalized. This is reflected in the way that NAME<br><b>Example 5:</b><br>  they say, NAME_4. "The spirits know the secrets of the city."<br>NAME_4: (whispering) (whispering) I don<end_of_turn><br><start_of_turn>user<br>Continue the story<end_of_turn><br><start_of_turn>model<br>NAME_3: (whispering) Let's see what we can find.<br>(<br></pre>
+            <div class="answer-section">
+                <button id="button-prompt_13_json" class="answer-button" onclick="toggleAnswer('prompt_13_json')">Reveal Answer</button>
+                <div id="answer-prompt_13_json" class="answer-content">
+                    <pre>['activating', 'non-activating', 'non-activating', 'activating', 'non-activating']</pre>
+                    <pre>[1, 'random', 'similar', 2, 'random']</pre>
+                </div>
+            </div>
+        </details>
+        
+    </body>
+    </html>
+    

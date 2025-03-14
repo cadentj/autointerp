@@ -149,7 +149,7 @@ class Classifier:
         self.threshold = threshold
         self.verbose = verbose
 
-    async def __call__(
+    def __call__(
         self,
         feature: Feature,
         explanation: str,
@@ -168,8 +168,11 @@ class Classifier:
             self._generate(explanation, batch, **generation_kwargs)
             for batch in batches
         ]
-        results = await asyncio.gather(*tasks)
-        return self._grade(results, batches)
+        truth = [[sample.activating for sample in batch] for batch in batches]
+        quantiles = [[sample.quantile for sample in batch] for batch in batches]
+        # results = await asyncio.gather(*tasks)
+        # return self._grade(results, batches)
+        return tasks, truth, quantiles
 
     def _grade(
         self, results: List[List[bool]], batches: List[List[Sample]]
@@ -252,7 +255,7 @@ class Classifier:
 
         return random_samples + activating_samples
 
-    async def _generate(
+    def _generate(
         self, explanation: str, batch: List[Sample], **generation_kwargs: Any
     ):
         """
@@ -269,15 +272,17 @@ class Classifier:
 
         prompt = prompt_template(examples, explanation)
 
-        response = await self.client.generate(prompt, **generation_kwargs)
+        # response = await self.client.generate(prompt, **generation_kwargs)
 
-        if self.verbose:
-            with open("response.txt", "a") as f:
-                f.write(f"PROMPT\n{prompt}\n\n")
-                f.write(f"RESPONSE\n{response}\n\n")
-                f.write(f"TRUE\n{[i.activating for i in batch]}\n\n")
+        # if self.verbose:
+        #     with open("response.txt", "a") as f:
+        #         f.write(f"PROMPT\n{prompt}\n\n")
+        #         f.write(f"RESPONSE\n{response}\n\n")
+        #         f.write(f"TRUE\n{[i.activating for i in batch]}\n\n")
 
-        return self._parse(response)
+        # return self._parse(response)
+
+        return prompt
 
     def _parse(self, response: Response) -> List[bool]:
         pattern = r"\[.*?\]"

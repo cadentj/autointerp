@@ -97,7 +97,7 @@ def load(
     path: str,
     sampler: Callable,
     indices: List[int] | int = None,
-    ctx_len: int = 64,
+    ctx_len: int = 128,
     max_examples: int = 2_000,
     max_features: int = None,
     load_similar_non_activating: int = 0,
