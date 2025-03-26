@@ -3,7 +3,6 @@ from typing import List, NamedTuple, TypeVar
 
 import torch
 from torchtyping import TensorType
-from transformers import AutoTokenizer
 
 # Define seq as a type variable for sequence length
 seq = TypeVar('seq')
@@ -44,7 +43,6 @@ class Feature:
 
     def display(
         self,
-        tokenizer: AutoTokenizer,
         threshold: float = 0.0,
         n: int = 10,
     ) -> str:
@@ -66,7 +64,7 @@ class Feature:
             return "".join(result)
         
         strings = [
-            _to_string(tokenizer.batch_decode(example.tokens), example.activations)
+            _to_string(example.str_tokens, example.activations)
             for example in self.examples[:n]
         ]
 

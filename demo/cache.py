@@ -16,7 +16,7 @@ model = AutoModelForCausalLM.from_pretrained(
     torch_dtype=t.bfloat16,
 )
 tokenizer = AutoTokenizer.from_pretrained("unsloth/Qwen2.5-Coder-32B-Instruct")
-sae = Sae.load_from_disk("/workspace/qwen-saes-6k/layers.15", device="cuda")
+sae = Sae.load_from_disk("/workspace/qwen-saes-6k/layers.31", device="cuda")
 
 tokens = tokenizer(
     data["text"],
@@ -37,11 +37,11 @@ with open("/root/autointerp/topk_sae_indices.json", "r") as f:
 
 cache = cache_activations(
     model=model,
-    submodule_dict={"model.layers.15": sae.encode},
+    submodule_dict={"model.layers.31": sae.encode},
     tokens=tokens,
     batch_size=8,
     max_tokens=1_000_000,
-    filters={"model.layers.15": indices},
+    filters={"model.layers.31": indices},
 )
 
 save_dir = "/root/autointerp/cache"
