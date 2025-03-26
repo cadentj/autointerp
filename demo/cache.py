@@ -33,13 +33,13 @@ tokens = tokens[mask]
 
 with open("/root/autointerp/topk_sae_indices.json", "r") as f:
     topk_sae_indices = json.load(f)
-    indices = list(topk_sae_indices["early"].keys())
+    indices = [int(i) for i in topk_sae_indices["early"].keys()]
 
 cache = cache_activations(
     model=model,
     submodule_dict={"model.layers.15": sae.encode},
     tokens=tokens,
-    batch_size=2,
+    batch_size=8,
     max_tokens=1_000_000,
     filters={"model.layers.15": indices},
 )
