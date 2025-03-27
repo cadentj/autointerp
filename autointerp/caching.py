@@ -194,7 +194,10 @@ def cache_activations(
                 acts = ret[path].output
                 if isinstance(acts, tuple):
                     acts = acts[0]
-                latents = dictionary(acts).pre_acts
+                top_acts, top_indices, pre_acts = dictionary(acts.flatten(0, 1))
+                x_hat = t.zeros_like(pre_acts)
+                x_hat.scatter_(1, top_indices, top_acts)
+                latents = x_hat.unflatten(0, acts.shape[:2])
                 cache.add(latents, batch_number, path)
 
             pbar.update(tokens_per_batch)

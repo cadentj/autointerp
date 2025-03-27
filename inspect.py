@@ -8,6 +8,6 @@ features = load(save_path, make_quantile_sampler(n_examples=10, n_quantiles=1))
 
 # %%
 
-idx = 8
+idx = 40
 print(features[idx].max_activation)
 features[idx].display()
