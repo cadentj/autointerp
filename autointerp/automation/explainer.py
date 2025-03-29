@@ -1,5 +1,4 @@
 import re
-from collections import defaultdict
 
 from .prompts.explainer_prompt import build_prompt
 from .clients import HTTPClient
@@ -37,32 +36,13 @@ class Explainer:
             return "Explanation could not be parsed."
 
     def _build_prompt(self, feature: Feature):
-        high_activating_examples = []
-        middle_activating_examples = []
-        low_activating_examples = []
-
-        sorted_examples = defaultdict(list)
-        for example in feature.activating_examples:
-            sorted_examples[example.quantile].append(example)
-
-        for quantile, examples in sorted_examples.items():
-            index = 0
-            for example in examples:
-                index += 1
-                formatted = self._highlight(index, example)
-                if quantile == 3:
-                    high_activating_examples.append(formatted)
-                elif quantile == 2:
-                    middle_activating_examples.append(formatted)
-                elif quantile == 1:
-                    low_activating_examples.append(formatted)
-                else:
-                    raise ValueError(f"Invalid quantile: {quantile}")
+        formatted_examples = [
+            self._highlight(index + 1, example)
+            for index, example in enumerate(feature.examples)
+        ]
 
         return build_prompt(
-            high_activating_examples="\n".join(high_activating_examples),
-            middle_activating_examples="\n".join(middle_activating_examples),
-            low_activating_examples="\n".join(low_activating_examples),
+            examples="\n".join(formatted_examples),
             insert_as_prompt=self.insert_as_prompt,
         )
 

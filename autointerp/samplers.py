@@ -6,7 +6,8 @@ import torch.nn.functional as F
 from torchtyping import TensorType
 from transformers import AutoTokenizer
 from tqdm import tqdm
-from .base import Example, Feature
+
+from .base import Example, Feature, NonActivatingType
 
 
 def _normalize(
@@ -78,8 +79,8 @@ def quantile_sampler(
                     normalized_activations=_normalize(
                         trimmed_activation, max_activation
                     ),
-                    quantile=n_quantiles
-                    - i,  # Reverse order so highest quantile is n_quantiles
+                    # Reverse order so highest quantile is n_quantiles
+                    quantile=n_quantiles - i,
                     str_tokens=tokenizer.batch_decode(trimmed_window),
                 )
             )
@@ -157,9 +158,6 @@ class RandomSampler:
             tokens, locations, ctx_len
         )
 
-        # pad_token_id = t.tensor([self.subject_tokenizer.pad_token_id])
-        # self.pad_token_mask = t.isin(tokens, pad_token_id)
-
     def __call__(self, features: List[Feature], n_examples: int = 10) -> None:
         all_random_idxs = t.rand(len(features), n_examples)
 
@@ -185,7 +183,7 @@ class RandomSampler:
                         tokens=trimmed_window,
                         activations=activation_window,
                         normalized_activations=activation_window,
-                        quantile=-1,  # Random non-activating
+                        quantile=NonActivatingType.RANDOM.value,  # Random non-activating
                         str_tokens=self.subject_tokenizer.batch_decode(
                             trimmed_window
                         ),
@@ -288,7 +286,7 @@ class SimilaritySearch:
                     tokens=trimmed_window,
                     activations=activation_window,
                     normalized_activations=activation_window,
-                    quantile=0,
+                    quantile=NonActivatingType.SIMILAR.value,
                     str_tokens=self.subject_tokenizer.batch_decode(
                         trimmed_window
                     ),

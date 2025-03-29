@@ -13,7 +13,7 @@ dependencies = [
     "sentence-transformers>=3.4.1",
     "setuptools>=75.8.2",
     "torchtyping>=0.1.5",
-    "transformers==4.48.3",
+    "transformers>=4.50.2",
 ]
 
 # uv pip install -e .

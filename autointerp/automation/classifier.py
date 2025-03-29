@@ -9,11 +9,12 @@ from typing import (
     Literal,
     NamedTuple,
     Sequence,
+
 )
 
 import torch
 from collections import defaultdict
-from ..base import Feature, Example
+from ..base import Feature, Example, NonActivatingTypes
 from .clients import HTTPClient, Response
 from .prompts.detection_prompt import prompt as detection_prompt
 from .prompts.fuzz_prompt import prompt as fuzz_prompt
@@ -52,7 +53,7 @@ def examples_to_samples(
         # the example is activating.
         # The second condition is for detection. A quantile of 0 or -1 means that the example is not activating.
         activating = (highlighted and n_incorrect == 0) or (
-            not highlighted and (example.quantile != 0 and example.quantile != -1)
+            not highlighted and (example.non_activating_type is None)
         )
 
         samples.append(
@@ -237,7 +238,7 @@ class Classifier:
         ]
 
         # 4) Create samples
-        random_samples = examples_to_samples(
+        non_activating_samples = examples_to_samples(
             non_activating_examples,
             n_incorrect=n_incorrect,
             highlighted=True,
@@ -250,7 +251,7 @@ class Classifier:
             threshold=self.threshold,
         )
 
-        return random_samples + activating_samples
+        return non_activating_samples + activating_samples
 
     async def _generate(
         self, explanation: str, batch: List[Sample], **generation_kwargs: Any

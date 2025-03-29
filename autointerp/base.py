@@ -1,8 +1,14 @@
 from dataclasses import dataclass, field
 from typing import List, NamedTuple
+from enum import Enum
 
 from torchtyping import TensorType
 from transformers import AutoTokenizer
+
+
+class NonActivatingType(Enum):
+    RANDOM = -1
+    SIMILAR = 0
 
 
 class Example(NamedTuple):
@@ -19,7 +25,7 @@ class Example(NamedTuple):
     """Normalized activations. Used for similarity search."""
 
     quantile: int
-    """Quantile of the activation. -1 if random non-activating. 0 if non-activating."""
+    """Quantile of the activation. Non activating examples have a quantile of 0 or -1."""
 
 
 @dataclass
@@ -42,7 +48,6 @@ class Feature:
 
     def display(
         self,
-        tokenizer: AutoTokenizer,
         threshold: float = 0.0,
         n: int = 10,
     ) -> str:
@@ -68,9 +73,7 @@ class Feature:
             return "".join(result)
 
         strings = [
-            _to_string(
-                tokenizer.batch_decode(example.tokens), example.activations
-            )
+            _to_string(example.str_tokens, example.activations)
             for example in self.examples[:n]
         ]
 
