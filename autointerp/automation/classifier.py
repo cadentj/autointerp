@@ -14,7 +14,7 @@ from typing import (
 
 import torch
 from collections import defaultdict
-from ..base import Feature, Example, NonActivatingTypes
+from ..base import Feature, Example, NonActivatingQuantiles
 from .clients import HTTPClient, Response
 from .prompts.detection_prompt import prompt as detection_prompt
 from .prompts.fuzz_prompt import prompt as fuzz_prompt
@@ -53,7 +53,7 @@ def examples_to_samples(
         # the example is activating.
         # The second condition is for detection. A quantile of 0 or -1 means that the example is not activating.
         activating = (highlighted and n_incorrect == 0) or (
-            not highlighted and (example.non_activating_type is None)
+            not highlighted and (example.quantile not in NonActivatingQuantiles)
         )
 
         samples.append(

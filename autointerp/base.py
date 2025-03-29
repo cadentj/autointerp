@@ -3,13 +3,12 @@ from typing import List, NamedTuple
 from enum import Enum
 
 from torchtyping import TensorType
-from transformers import AutoTokenizer
-
 
 class NonActivatingType(Enum):
     RANDOM = -1
     SIMILAR = 0
 
+NonActivatingQuantiles = [non_activating_type.value for non_activating_type in NonActivatingType]
 
 class Example(NamedTuple):
     tokens: TensorType["seq"]
