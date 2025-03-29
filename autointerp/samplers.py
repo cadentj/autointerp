@@ -5,8 +5,9 @@ import torch as t
 import torch.nn.functional as F
 from torchtyping import TensorType
 from transformers import AutoTokenizer
+from tqdm import tqdm
 
-from .base import Example, Feature
+from .base import Example, Feature, NonActivatingType
 
 
 def _normalize(
@@ -23,7 +24,8 @@ def quantile_sampler(
     tokenizer: AutoTokenizer,
     n_examples: int,
     n_quantiles: int,
-    n_top_exclude: int
+    n_exclude: int,
+    n_top_exclude: int,
 ) -> List[Example]:
     """Sample the top n_examples from each quantile of the activation distribution.
 
@@ -35,23 +37,37 @@ def quantile_sampler(
         tokenizer: Tokenizer to decode the windows.
         n_examples: Number of examples to sample from each quantile.
         n_quantiles: Number of quantiles to sample from.
-        n_top_exclude: Number of top examples to exclude from sampling.
-    """
-    token_windows = token_windows[n_top_exclude:]
-    activation_windows = activation_windows[n_top_exclude:]
+        n_exclude: Number of examples to exclude from the beginning of each quantile.
+        n_top_exclude: Number of top examples to exclude from the entire dataset.
 
-    if len(token_windows) < n_examples:
+    Returns:
+        List of Example objects, with n_examples from each quantile.
+        Returns None if there aren't enough examples to satisfy the requirements.
+    """
+    if n_top_exclude > 0:
+        token_windows = token_windows[n_top_exclude:]
+        activation_windows = activation_windows[n_top_exclude:]
+
+    total_examples = token_windows.shape[0]
+    quantile_size = total_examples // n_quantiles
+
+    if (quantile_size - n_exclude) < n_examples:
         return None
 
     max_activation = activation_windows.max()
-    examples_per_quantile = n_examples // n_quantiles
 
     examples = []
     for i in range(n_quantiles):
-        start_idx = i * examples_per_quantile
-        end_idx = start_idx + examples_per_quantile
+        quantile_start = i * quantile_size
+        quantile_end = (
+            (i + 1) * quantile_size if i < n_quantiles - 1 else total_examples
+        )
 
-        for j in range(start_idx, end_idx):
+        sample_start = quantile_start + n_exclude
+
+        assert sample_start + n_examples <= quantile_end
+
+        for j in range(sample_start, sample_start + n_examples):
             pad_token_mask = token_windows[j] == tokenizer.pad_token_id
             trimmed_window = token_windows[j][~pad_token_mask]
             trimmed_activation = activation_windows[j][~pad_token_mask]
@@ -63,6 +79,7 @@ def quantile_sampler(
                     normalized_activations=_normalize(
                         trimmed_activation, max_activation
                     ),
+                    # Reverse order so highest quantile is n_quantiles
                     quantile=n_quantiles - i,
                     str_tokens=tokenizer.batch_decode(trimmed_window),
                 )
@@ -70,37 +87,115 @@ def quantile_sampler(
 
     return examples
 
+
 def make_quantile_sampler(
     n_examples: int = 20,
     n_quantiles: int = 1,
+    n_exclude: int = 0,
     n_top_exclude: int = 0,
 ) -> Callable:
     """Create a quantile sampler function.
 
-    Sampling n_examples from 1 quantile is equivalent to max activation sampling.
-
     Args:
         n_examples: Number of examples to sample from each quantile.
         n_quantiles: Number of quantiles to sample from.
-        n_top_exclude: Number of top examples to exclude from sampling.
+        n_exclude: Number of examples to exclude from the beginning of each quantile.
+        n_top_exclude: Number of top examples to exclude from the entire dataset.
 
     Returns:
         A function that samples examples from a quantile.
     """
 
     from functools import partial
+
     return partial(
         quantile_sampler,
         n_examples=n_examples,
         n_quantiles=n_quantiles,
+        n_exclude=n_exclude,
         n_top_exclude=n_top_exclude,
     )
+
+
+def _create_strides_and_ctx_locations(
+    tokens: TensorType["batch", "seq_len"],
+    locations: TensorType["batch", "2"],
+    ctx_len: int,
+):
+    """Create strides and context locations from tokens and locations.
+
+    Strides is the tokens reshaped into chunks of size ctx_len.
+    Context locations is a tensor the length of locations. In each row, the first index
+    is a stride index and the second index is a feature.
+    """
+    # Set context locations
+    seq_len = tokens.shape[1]
+    flat_indices = locations[:, 0] * seq_len + locations[:, 1]
+    ctx_indices = flat_indices // ctx_len
+    ctx_locations = t.stack([ctx_indices, locations[:, 2]], dim=1)
+    max_ctx_idx = ctx_locations[:, 0].max().item()
+
+    # Reshape strides and strides mask
+    batch_size, seq_len = tokens.shape
+    n_contexts = batch_size * (seq_len // ctx_len)
+    strides = tokens.reshape(n_contexts, ctx_len)
+    strides = strides[: max_ctx_idx + 1]
+
+    return strides, ctx_locations
+
+
+class RandomSampler:
+    def __init__(
+        self,
+        subject_tokenizer: AutoTokenizer,
+        tokens: TensorType["batch", "seq_len"],
+        locations: TensorType["batch", "2"],
+        ctx_len: int,
+    ):
+        self.subject_tokenizer = subject_tokenizer
+
+        self.strides, self.ctx_locations = _create_strides_and_ctx_locations(
+            tokens, locations, ctx_len
+        )
+
+    def __call__(self, features: List[Feature], n_examples: int = 10) -> None:
+        all_random_idxs = t.rand(len(features), n_examples)
+
+        for feature, random_idxs in tqdm(zip(features, all_random_idxs)):
+            locations_mask = self.ctx_locations[:, 1] == feature.index
+            locations_idxs = self.ctx_locations[locations_mask, 0]
+
+            random_idxs = random_idxs * (locations_idxs.numel() - 1)
+            random_idxs = random_idxs.round().int()
+
+            non_activating_stride_idxs = locations_idxs[random_idxs]
+
+            for stride_idx in non_activating_stride_idxs[:n_examples]:
+                token_window = self.strides[stride_idx]
+                pad_token_mask = (
+                    token_window == self.subject_tokenizer.pad_token_id
+                )
+                trimmed_window = token_window[~pad_token_mask]
+                activation_window = t.zeros_like(trimmed_window)
+
+                feature.non_activating_examples.append(
+                    Example(
+                        tokens=trimmed_window,
+                        activations=activation_window,
+                        normalized_activations=activation_window,
+                        quantile=NonActivatingType.RANDOM.value,  # Random non-activating
+                        str_tokens=self.subject_tokenizer.batch_decode(
+                            trimmed_window
+                        ),
+                    )
+                )
+
 
 class SimilaritySearch:
     """Use similarity search to sample non-activating examples.
 
     Calling an instance of this class on a batch of features will initialize their
-    non_activating_examples with examples sampled from the token dataset. 
+    non_activating_examples with examples sampled from the token dataset.
 
     Args:
         subject_model_id: The model id of the subject model.
@@ -112,32 +207,21 @@ class SimilaritySearch:
 
     def __init__(
         self,
-        subject_model_id: str,
+        subject_tokenizer: AutoTokenizer,
         tokens: TensorType["batch", "seq_len"],
         locations: TensorType["batch", "2"],
         ctx_len: int,
         embedding_model_id: str = "all-MiniLM-L6-v2",
     ):
         self.model = SentenceTransformer(embedding_model_id)
-        self.subject_tokenizer = AutoTokenizer.from_pretrained(
-            subject_model_id
+        self.subject_tokenizer = subject_tokenizer
+
+        self.strides, self.ctx_locations = _create_strides_and_ctx_locations(
+            tokens, locations, ctx_len
         )
 
-        # Set context locations
-        seq_len = tokens.shape[1]
-        flat_indices = locations[:, 0] * seq_len + locations[:, 1]
-        ctx_indices = flat_indices // ctx_len
-        self.ctx_locations = t.stack([ctx_indices, locations[:, 2]], dim=1)
-        max_ctx_idx = self.ctx_locations[:, 0].max().item()
-
-        # Reshape strides and strides mask
-        batch_size, seq_len = tokens.shape
-        n_contexts = batch_size * (seq_len // ctx_len)
-        strides = tokens.reshape(n_contexts, ctx_len)
-        strides = strides[: max_ctx_idx + 1]
-
         # Embed context windows
-        str_data = self.subject_tokenizer.batch_decode(strides)
+        str_data = self.subject_tokenizer.batch_decode(self.strides)
         print("Encoding token contexts...")
         embeddings = self.model.encode(
             str_data,
@@ -145,9 +229,6 @@ class SimilaritySearch:
             show_progress_bar=True,
             convert_to_tensor=True,
         )
-
-        # Set all strides and valid strides
-        self.strides = strides
 
         # Normalize embeddings
         normalized_embeddings = F.normalize(embeddings, p=2, dim=1).t()
@@ -205,7 +286,7 @@ class SimilaritySearch:
                     tokens=trimmed_window,
                     activations=activation_window,
                     normalized_activations=activation_window,
-                    quantile=0,
+                    quantile=NonActivatingType.SIMILAR.value,
                     str_tokens=self.subject_tokenizer.batch_decode(
                         trimmed_window
                     ),
@@ -227,9 +308,10 @@ class SimilaritySearch:
             batch_size: The batch size for encoding.
             n_examples: The number of examples to sample.
         """
-        # Concatenate the first 20 examples of each feature into a single "query"
+        # Concatenate the first 10 examples of each feature into a single "query"
         queries = [
-            t.cat([e.tokens for e in feature.examples[:20]]) for feature in features
+            t.cat([e.tokens for e in feature.activating_examples[:10]])
+            for feature in features
         ]
         queries = self.subject_tokenizer.batch_decode(queries)
 
@@ -254,6 +336,6 @@ class SimilaritySearch:
         for features, query_batch in query_embedding_batches:
             topk_indices = self._query(features, query_batch, k=n_examples)
             for idxs, feature in zip(topk_indices, features):
-                feature.non_activating_examples = (
-                    self._get_similar_examples(idxs)
+                feature.non_activating_examples = self._get_similar_examples(
+                    idxs
                 )

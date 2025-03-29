@@ -36,17 +36,13 @@ class Explainer:
             return "Explanation could not be parsed."
 
     def _build_prompt(self, feature: Feature):
-        highlighted_examples = []
-        for i, example in enumerate(feature.activating_examples):
-            index = i + 1  # Start at 1
-            formatted = self._highlight(index, example)
-
-            highlighted_examples.append(formatted)
-
-        highlighted_examples = "\n".join(highlighted_examples)
+        formatted_examples = [
+            self._highlight(index + 1, example)
+            for index, example in enumerate(feature.examples)
+        ]
 
         return build_prompt(
-            examples=highlighted_examples,
+            examples="\n".join(formatted_examples),
             insert_as_prompt=self.insert_as_prompt,
         )
 

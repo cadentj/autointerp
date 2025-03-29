@@ -6,7 +6,7 @@ from transformers import AutoTokenizer
 from tqdm import tqdm
 
 from .base import Feature
-from .samplers import SimilaritySearch
+from .samplers import SimilaritySearch, RandomSampler
 
 
 def _pool_max_activation_windows(
@@ -99,7 +99,9 @@ def load(
     indices: List[int] | int = None,
     ctx_len: int = 64,
     max_examples: int = 2_000,
-    load_non_activating: int = 0,
+    max_features: int = None,
+    load_similar_non_activating: int = 0,
+    load_random_non_activating: int = 0,
 ) -> List[Feature]:
     """Load cached activations from disk.
 
@@ -151,11 +153,21 @@ def load(
         )
         features.append(feature)
 
-    if load_non_activating > 0:
+        if max_features is not None and len(features) >= max_features:
+            break
+
+    if load_similar_non_activating > 0:
         print("Running similarity search...")
         similarity_search = SimilaritySearch(
-            data["model_id"], tokens, locations, ctx_len
+            tokenizer, tokens, locations, ctx_len
         )
-        similarity_search(features)
+        similarity_search(features, n_examples=load_similar_non_activating)
+
+    if load_random_non_activating > 0:
+        print("Running random non-activating search...")
+        random_sampler = RandomSampler(
+            tokenizer, tokens, locations, ctx_len
+        )
+        random_sampler(features, n_examples=load_random_non_activating)
 
     return features

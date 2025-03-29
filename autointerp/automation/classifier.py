@@ -9,6 +9,7 @@ from typing import (
     Literal,
     NamedTuple,
     Sequence,
+
 )
 
 import torch
@@ -33,6 +34,7 @@ class Sample(NamedTuple):
 
 def examples_to_samples(
     examples: List[Example],
+    activating: bool,
     n_incorrect: int = 0,
     threshold: float = 0.3,
     highlighted: bool = False,
@@ -43,16 +45,6 @@ def examples_to_samples(
         str_toks = example.str_tokens
         text = _prepare_text(
             example, str_toks, n_incorrect, threshold, highlighted
-        )
-
-        # NOTE:
-        # Activating means whether the example's ground truth is to be "correct" or "incorrect"
-        # The first condition is for fuzzing. If the example has incorrectly marked tokens, it is not activating.
-        # Also note that fuzzed examples should never have a quantile of 0 because the prompt entailment is that
-        # the example is activating.
-        # The second condition is for detection. A quantile of 0 means that the example is not activating.
-        activating = (highlighted and n_incorrect == 0) or (
-            not highlighted and example.quantile != 0
         )
 
         samples.append(
@@ -177,8 +169,8 @@ class Classifier:
         per_quantile_results = defaultdict(
             lambda: {"TP": 0, "FN": 0, "FP": 0, "TN": 0}
         )
-        for batch, results in zip(batches, results):
-            for sample, prediction in zip(batch, results):
+        for batch, _results in zip(batches, results):
+            for sample, prediction in zip(batch, _results):
                 match (sample.activating, prediction == 1):
                     case (True, True):
                         per_quantile_results[sample.quantile]["TP"] += 1
@@ -195,10 +187,12 @@ class Classifier:
         """Prepare samples for detection method"""
         random_samples = examples_to_samples(
             feature.non_activating_examples,
+            activating=False,
         )
 
         activating_samples = examples_to_samples(
             feature.activating_examples,
+            activating=True,
         )
 
         return random_samples + activating_samples
@@ -215,6 +209,8 @@ class Classifier:
         nonzero_counts = torch.count_nonzero(
             stacked_activations, dim=list(range(1, stacked_activations.ndim))
         )
+        # We'll call this n_incorrect for the number of 
+        # false tokens to highlight in the example
         n_incorrect = int(nonzero_counts.float().mean().item())
 
         # 2) Bin examples by quantile
@@ -237,20 +233,26 @@ class Classifier:
         ]
 
         # 4) Create samples
-        random_samples = examples_to_samples(
+        # NOTE: Activating means whether the example's ground truth is to be "correct" or "incorrect"
+        # The first condition is for fuzzing. If the example has incorrectly marked tokens, it is not activating.
+        # Also note that fuzzed examples should never have a quantile of 0 or -1 because the prompt entailment is that
+        # the example is activating.
+        non_activating_samples = examples_to_samples(
             non_activating_examples,
+            activating=False,
             n_incorrect=n_incorrect,
             highlighted=True,
             threshold=self.threshold,
         )
         activating_samples = examples_to_samples(
             activating_examples,
+            activating=True,
             n_incorrect=0,
             highlighted=True,
             threshold=self.threshold,
         )
 
-        return random_samples + activating_samples
+        return non_activating_samples + activating_samples
 
     async def _generate(
         self, explanation: str, batch: List[Sample], **generation_kwargs: Any
