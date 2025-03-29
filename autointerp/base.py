@@ -5,10 +5,9 @@ from enum import Enum
 from torchtyping import TensorType
 
 class NonActivatingType(Enum):
-    RANDOM = -1
-    SIMILAR = 0
+    RANDOM = "random"
+    SIMILAR = "similar"
 
-NonActivatingQuantiles = [non_activating_type.value for non_activating_type in NonActivatingType]
 
 class Example(NamedTuple):
     tokens: TensorType["seq"]
@@ -23,8 +22,8 @@ class Example(NamedTuple):
     normalized_activations: TensorType["seq"]
     """Normalized activations. Used for similarity search."""
 
-    quantile: int
-    """Quantile of the activation. Non activating examples have a quantile of 0 or -1."""
+    quantile: int | NonActivatingType
+    """Quantile of the activation."""
 
 
 @dataclass
