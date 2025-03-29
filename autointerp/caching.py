@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 MAX_INT = t.iinfo(t.int32).max
 
+
 class Cache:
     def __init__(
         self, batch_size: int, filters: Dict[str, List[int]], remove_bos: bool
@@ -87,7 +88,9 @@ class Cache:
                 self.activations[module_path], dim=0
             )
 
-    def save_to_disk(self, save_dir: str, model_id: str, tokens_path: str):
+    def save_to_disk(
+        self, save_dir: str, model_id: str, tokens_path: str, n_shards: int = 1
+    ):
         """Save cached activations to disk. Requires a path to tokens and
         model ID for easy loading.
 
@@ -100,6 +103,12 @@ class Cache:
         if tokens_path is not None and not os.path.isabs(tokens_path):
             raise ValueError("Tokens path must be absolute.")
 
+        if n_shards == 1:
+            self._save_single(save_dir, model_id, tokens_path)
+        else:
+            self._save_sharded(save_dir, model_id, tokens_path, n_shards)
+
+    def _save_single(self, save_dir: str, model_id: str, tokens_path: str):
         for module_path in self.locations.keys():
             os.makedirs(save_dir, exist_ok=True)
             save_path = os.path.join(save_dir, f"{module_path}.pt")
@@ -112,6 +121,48 @@ class Cache:
                 },
                 save_path,
             )
+
+    def _save_sharded(
+        self, save_dir: str, model_id: str, tokens_path: str, n_shards: int
+    ):
+        import pandas as pd
+
+        for module_path, locations in self.locations.items():
+            module_save_dir = os.path.join(save_dir, f"{module_path}")
+            os.makedirs(module_save_dir, exist_ok=True)
+
+            features = t.unique(locations[:, 2])
+            features = t.chunk(features, n_shards)
+
+            header = []
+
+            for i, feature_shard in enumerate(features):
+                shard_save_path = os.path.join(module_save_dir, f"{i}.pt")
+                indices = t.isin(locations[:, 2], feature_shard)
+                shard_locations = locations[indices]
+                shard_activations = self.activations[module_path][indices]
+
+                t.save(
+                    {
+                        "locations": shard_locations,
+                        "activations": shard_activations,
+                        "tokens_path": tokens_path,
+                        "model_id": model_id,
+                    },
+                    shard_save_path,
+                )
+
+                _header = [
+                    {
+                        "feature_idx": feature_idx,
+                        "shard": i,
+                    }
+                    for feature_idx in feature_shard.tolist()
+                ]
+                header.extend(_header)
+
+        df = pd.DataFrame(header)
+        df.to_parquet(os.path.join(module_save_dir, "header.parquet"))
 
 
 def _batch_tokens(
@@ -157,7 +208,7 @@ def cache_activations(
     filters: Dict[str, List[int]] = {},
     remove_bos: bool = True,
 ) -> Cache:
-    """Cache dictionary activations. 
+    """Cache dictionary activations.
 
     Note: Padding is not supported at the moment. Please remove padding from tokenizer.
 

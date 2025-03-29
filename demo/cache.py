@@ -1,3 +1,5 @@
+# %%
+
 from datasets import load_dataset
 import torch as t
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -5,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from autointerp import cache_activations
 from gemma import JumpReLUSAE
 
-data = load_dataset("kh4dien/fineweb-100m-sample", split="train[:25%]")
+data = load_dataset("kh4dien/fineweb-sample", split="train[:25%]")
 
 model = AutoModelForCausalLM.from_pretrained("google/gemma-2-2b").to("cuda")
 tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-2b")
@@ -30,13 +32,18 @@ cache = cache_activations(
     tokens=tokens,
     batch_size=32,
     max_tokens=1_000_000,
-    filters={"model.layers.0": [1, 2, 3]},
+    filters={"model.layers.0": list(range(1000))},
 )
+
+# %%
+
 
 save_dir = "/root/autointerp/cache"
 cache.save_to_disk(
     save_dir=save_dir,
     model_id="google/gemma-2-2b",
     tokens_path=f"{save_dir}/tokens.pt",
+    n_shards=5,
 )
 t.save(tokens, f"{save_dir}/tokens.pt")
+

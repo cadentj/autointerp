@@ -8,6 +8,7 @@ dependencies = [
     "baukit",
     "datasets>=2.14.4",
     "httpx>=0.27.2",
+    "ipywidgets>=8.1.5",
     "nest-asyncio>=1.6.0",
     "pydantic>=2.10.6",
     "sentence-transformers>=3.4.1",
