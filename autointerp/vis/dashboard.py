@@ -1,8 +1,7 @@
 import ipywidgets as widgets
-from IPython.display import display, clear_output, HTML
+from IPython.display import display, clear_output
 
 from .backend import Backend, FeatureFn
-# from .components.example import STYLES, example_to_html
 from .components.token_display import TokenDisplay
 from .components.feature_display import FeatureDisplay
 
@@ -92,10 +91,10 @@ class FeatureVisualizationDashboard:
 
     def _on_run_clicked(self, b):
         """Handle run button click."""
-        selected_indices = self.token_display.get_selected_indices()
+        selected_indices = sorted(list(self.selected_tokens))
 
         if not selected_indices:
-            return
+            selected_indices = "all"
 
         with self.feature_display.root:
             clear_output()
@@ -104,7 +103,6 @@ class FeatureVisualizationDashboard:
         query_results = self.model.inference_query(
             self.text_input.value,
             selected_indices,
-            k=1
         )
         self.feature_display.display(query_results)
 

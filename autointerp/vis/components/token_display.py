@@ -25,16 +25,6 @@ class TokenDisplay:
         self.selected_tokens = set()
         self.root = self.token_display
 
-    def get_selected_indices(self):
-        if not self.selected_tokens:
-            with self.token_display:
-                clear_output()
-                print("Please select at least one token")
-
-            return False
-        
-        return sorted(list(self.selected_tokens))
-
     def display(self, tokens: List[str]):
         """Display tokenized text with selectable boxes resembling spans."""
         token_widgets = []

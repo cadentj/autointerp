@@ -14,10 +14,6 @@ TOOLTIP = """
     display: inline-block;
 }
 
-.tooltip:hover {
-    border-bottom: 1px solid black;
-}
-
 .tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
@@ -42,7 +38,7 @@ TOOLTIP = """
 
 HIGHLIGHTED_TOKEN_WRAPPER = """
 <span class="tooltip">
-    <span style="background-color: rgba(255, 255, 0, {opacity:.2f})">{token}</span>
+    <span style="background-color: rgba(0, 0, 255, {opacity:.2f})">{token}</span>
     <span class="tooltiptext">{activation:.2f}</span>
 </span>
 """

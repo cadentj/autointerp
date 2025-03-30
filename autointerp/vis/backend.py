@@ -1,5 +1,5 @@
 import os
-from typing import Callable, List, Dict, Any, NamedTuple
+from typing import Callable, List, Dict, NamedTuple, Literal
 
 import pandas as pd
 from baukit import TraceDict
@@ -86,11 +86,16 @@ class Backend:
 
         return loaded_features
 
-    def inference_query(self, prompt: str, positions: List[int], k: int = 10):
+    def inference_query(
+        self, prompt: str, positions: List[int] | Literal["all"], k: int = 10
+    ):
         encoder_acts = self.run_model(prompt)
 
-        # Get the features at relevant positions
-        selected_features = encoder_acts[positions, :]
+        if positions == "all":
+            # Get the features at relevant positions
+            selected_features = encoder_acts
+        else:
+            selected_features = encoder_acts[positions, :]
 
         # Max across the sequence dimension
         # (batch * seq, d_sae) -> (d_sae)
