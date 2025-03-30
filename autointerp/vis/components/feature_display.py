@@ -6,6 +6,48 @@ from IPython.display import display, clear_output, HTML
 from ...base import Example
 from ..backend import InferenceResult
 
+
+TOOLTIP = """
+<style>
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip:hover {
+    border-bottom: 1px solid black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1000;
+    top: 100%;
+    left: 120%;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+</style>
+"""
+
+HIGHLIGHTED_TOKEN_WRAPPER = """
+<span class="tooltip">
+    <span style="background-color: rgba(255, 255, 0, {opacity:.2f})">{token}</span>
+    <span class="tooltiptext">{activation:.2f}</span>
+</span>
+"""
+
+
 class FeatureDisplay:
     def __init__(self):
         self.feature_display = widgets.Output(
@@ -23,69 +65,44 @@ class FeatureDisplay:
         """Display the top features for the selected tokens."""
         with self.feature_display:
             clear_output()
-            
-            # Add CSS for tooltips
-            tooltip_css = """
-            <style>
-                .token-wrapper {
-                    position: relative;
-                    display: inline-block;
-                }
-                .token-wrapper .tooltip {
-                    visibility: hidden;
-                    background-color: #555;
-                    color: white;
-                    text-align: center;
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    position: absolute;
-                    z-index: 1;
-                    bottom: 125%;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    font-size: 12px;
-                    white-space: nowrap;
-                }
-                .token-wrapper:hover .tooltip {
-                    visibility: visible;
-                }
-            </style>
-            """
-            display(HTML(tooltip_css))
+
+            display(HTML(TOOLTIP))
             display(HTML("<h3>Top Features</h3>"))
 
             for query_result in query_results:
                 index = query_result.feature.index
                 display(HTML(f"<h4>Feature {index}</h4>"))
-                example_html = self._example_to_html(
+                examples = [
                     query_result.inference_example
-                )
-                display(HTML(example_html))
+                ] + query_result.feature.activating_examples
+                examples_html = [
+                    self._example_to_html(example) for example in examples
+                ]
+                display(HTML("<br><br>".join(examples_html)))
 
     def _example_to_html(
         self,
         example: Example,
         threshold: float = 0.0,
     ) -> str:
-        activations = example.activations
         str_tokens = example.str_tokens
+        activations = example.activations
 
         result = []
         max_act = activations.max()
         _threshold = max_act * threshold
 
         for i in range(len(str_tokens)):
-            activation_str = f"Activation: {activations[i]:.3f}"
             if activations[i] > _threshold:
+                # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
                 opacity = 0.2 + 0.8 * (activations[i] / max_act)
                 result.append(
-                    f'<div class="token-wrapper"><mark style="opacity: {opacity:.2f}">{str_tokens[i]}'
-                    f'</mark><span class="tooltip">{activation_str}</span></div>'
+                    HIGHLIGHTED_TOKEN_WRAPPER.format(
+                        token=str_tokens[i],
+                        opacity=opacity,
+                        activation=activations[i].item(),
+                    )
                 )
             else:
-                result.append(
-                    f'<div class="token-wrapper"><span>{str_tokens[i]}'
-                    f'</span><span class="tooltip">{activation_str}</span></div>'
-                )
-
+                result.append(str_tokens[i])
         return "".join(result)

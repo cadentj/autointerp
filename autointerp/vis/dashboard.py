@@ -1,5 +1,5 @@
 import ipywidgets as widgets
-from IPython.display import display, clear_output
+from IPython.display import display, clear_output, HTML
 
 from .backend import Backend, FeatureFn
 # from .components.example import STYLES, example_to_html
@@ -104,9 +104,12 @@ class FeatureVisualizationDashboard:
         query_results = self.model.inference_query(
             self.text_input.value,
             selected_indices,
+            k=1
         )
         self.feature_display.display(query_results)
 
     def display(self):
         """Display the dashboard."""
         display(self.main_container)
+
+             
