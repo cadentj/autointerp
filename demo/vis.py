@@ -12,3 +12,7 @@ dashboard.display()
 # %%
 
 
+from autointerp.autointerp.vis.backend import Backend
+
+path = "/root/autointerp/cache/google/gemma-3-4b-pt"
+backend = Backend(cache_dir="/root/autointerp/cache/google/gemma-3-4b-pt")

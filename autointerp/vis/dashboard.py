@@ -18,17 +18,6 @@ BUTTON_STYLE = """
 </style>
 """
 
-def load_artifacts(cache_dir: str, feature_fn: FeatureFn):
-    header_path = os.path.join(cache_dir, "header.parquet")
-    header = pd.read_parquet(header_path)
-
-    shard = t.load(os.path.join(cache_dir, "0.pt"))
-    model_id = shard["model_id"]
-    hook_module = cache_dir.split("/")[-1]
-    model = Backend(model_id, hook_module, feature_fn)
-
-    return model, header
-
 
 def make_dashboard(cache_dir: str, feature_fn: FeatureFn):
     model, header = load_artifacts(cache_dir, feature_fn)
