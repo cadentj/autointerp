@@ -9,7 +9,7 @@ from sparsify import Sae
 
 data = load_dataset("kh4dien/fineweb-sample", split="train[:25%]")
 
-model = AutoModelForCausalLM.from_pretrained("google/gemma-3-4b-pt").to("cuda")
+model = AutoModelForCausalLM.from_pretrained("google/gemma-3-4b-pt", torch_dtype=t.bfloat16, device_map="auto")
 tokenizer = AutoTokenizer.from_pretrained("google/gemma-3-4b-pt")
 path = "/workspace/gemma-3-4b-saes/gemma-3-4b-step-final/language_model.model.layers.16"
 sae = Sae.load_from_disk(path, device="cuda")
@@ -36,19 +36,18 @@ cache = cache_activations(
     model=model,
     submodule_dict={"language_model.model.layers.16": encode},
     tokens=tokens,
-    batch_size=32,
-    max_tokens=1_000_000,
-    filters={"language_model.model.layers.16": list(range(1_000))},
+    batch_size=8,
+    max_tokens=2_500_000,
 )
 
 # %%
 
-save_dir = "/root/autointerp/cache"
+save_dir = "/workspace/gemma-cache"
 cache.save_to_disk(
     save_dir=save_dir,
     model_id="google/gemma-3-4b-pt",
     tokens_path=f"{save_dir}/tokens.pt",
-    n_shards=5,
+    n_shards=50,
 )
 t.save(tokens, f"{save_dir}/tokens.pt")
 
