@@ -4,6 +4,7 @@ from enum import Enum
 
 from torchtyping import TensorType
 
+
 class NonActivatingType(Enum):
     RANDOM = "random"
     SIMILAR = "similar"
@@ -25,6 +26,26 @@ class Example(NamedTuple):
     quantile: int | NonActivatingType
     """Quantile of the activation."""
 
+def to_html(
+    str_tokens: List[str],
+    activations: TensorType["seq"],
+    threshold: float = 0.0,
+) -> str:
+    result = []
+    max_act = activations.max()
+    _threshold = max_act * threshold
+
+    for i in range(len(str_tokens)):
+        if activations[i] > _threshold:
+            # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
+            opacity = 0.2 + 0.8 * (activations[i] / max_act)
+            result.append(
+                f'<mark style="opacity: {opacity:.2f}">{str_tokens[i]}</mark>'
+            )
+        else:
+            result.append(str_tokens[i])
+
+    return "".join(result)
 
 @dataclass
 class Feature:
@@ -51,27 +72,8 @@ class Feature:
     ) -> str:
         from IPython.display import HTML, display
 
-        def _to_string(
-            tokens: TensorType["seq"], activations: TensorType["seq"]
-        ) -> str:
-            result = []
-            max_act = activations.max()
-            _threshold = max_act * threshold
-
-            for i in range(len(tokens)):
-                if activations[i] > _threshold:
-                    # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
-                    opacity = 0.2 + 0.8 * (activations[i] / max_act)
-                    result.append(
-                        f'<mark style="opacity: {opacity:.2f}">{tokens[i]}</mark>'
-                    )
-                else:
-                    result.append(tokens[i])
-
-            return "".join(result)
-
         strings = [
-            _to_string(example.str_tokens, example.activations)
+            to_html(example.str_tokens, example.activations, threshold)
             for example in self.examples[:n]
         ]
 

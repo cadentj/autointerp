@@ -1,11 +1,7 @@
-import os
-import pandas as pd
-import torch as t
+from typing import List, Dict, Any
 
 import ipywidgets as widgets
 from IPython.display import display, clear_output, HTML
-from typing import List, Dict, Any, Callable
-
 
 from .backend import Backend, FeatureFn, sample_feature_extraction
 
@@ -18,11 +14,9 @@ BUTTON_STYLE = """
 </style>
 """
 
-
 def make_dashboard(cache_dir: str, feature_fn: FeatureFn):
-    model, header = load_artifacts(cache_dir, feature_fn)
-
-    return FeatureVisualizationDashboard(model)
+    backend = Backend(cache_dir, feature_fn)
+    return FeatureVisualizationDashboard(backend).display()
 
 
 class FeatureVisualizationDashboard:
@@ -175,12 +169,6 @@ class FeatureVisualizationDashboard:
 
     def _on_run_clicked(self, b):
         """Handle run button click."""
-        if self.run_callback is None:
-            with self.feature_display:
-                clear_output()
-                print("Run callback not set")
-            return
-
         if not self.selected_tokens:
             with self.feature_display:
                 clear_output()
@@ -194,7 +182,10 @@ class FeatureVisualizationDashboard:
             clear_output()
             print(f"Analyzing features for selected tokens: {selected_indices}")
 
-        features = self.run_callback(selected_indices)
+        features = self.model.inference_query(
+            self.text_input.value,
+            selected_indices,
+        )
         self._display_features(features)
 
     def _display_features(self, features: Dict[str, Any]):
@@ -206,14 +197,13 @@ class FeatureVisualizationDashboard:
             display(HTML("<h3>Top Features</h3>"))
 
             # Example display, adjust based on actual feature data format
-            if isinstance(features, dict):
-                for token_idx, feats in features.items():
-                    display(HTML(f"<h4>Token {token_idx}</h4>"))
-                    if isinstance(feats, list):
-                        for i, feat in enumerate(feats):
-                            display(
-                                HTML(f"<p><b>Feature {i + 1}:</b> {feat}</p>")
-                            )
+
+            for token_idx, query_result in features.items():
+                display(HTML(f"<h4>Feature {token_idx}</h4>"))
+                display(HTML(f"Max activation: {query_result.max_activation}"))
+                display(HTML(query_result.context_activation))
+                cached_html = "<br><br>".join(query_result.cached_activations)
+                display(HTML(cached_html))
 
 
     def display(self):

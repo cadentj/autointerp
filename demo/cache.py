@@ -38,7 +38,7 @@ cache = cache_activations(
     tokens=tokens,
     batch_size=32,
     max_tokens=1_000_000,
-    filters={"language_model.model.layers.16": list(range(1000))},
+    filters={"language_model.model.layers.16": list(range(1_000))},
 )
 
 # %%
@@ -48,7 +48,7 @@ cache.save_to_disk(
     save_dir=save_dir,
     model_id="google/gemma-3-4b-pt",
     tokens_path=f"{save_dir}/tokens.pt",
-    n_shards=2,
+    n_shards=5,
 )
 t.save(tokens, f"{save_dir}/tokens.pt")
 
