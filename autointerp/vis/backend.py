@@ -8,7 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from torchtyping import TensorType
 
 from ..loader import load
-from ..base import to_html
+from ..base import Feature, Example
 from ..samplers import make_quantile_sampler
 
 ModelActivation = TensorType["batch", "sequence", "d_model"]
@@ -19,37 +19,9 @@ FeatureFn = Callable[
 ]
 
 
-class QueryResult(NamedTuple):
-    cached_activations: List[str]
-    context_activation: str
-    max_activation: float
-
-
-def sample_feature_extraction(token_indices: List[int]) -> Dict[str, Any]:
-    """
-    Sample feature extraction function.
-
-    In practice, this would run the actual model and extract features.
-
-    Args:
-        token_indices: Indices of selected tokens
-
-    Returns:
-        Dictionary mapping token indices to features
-    """
-    # Mock feature data for demonstration
-    features = {}
-
-    for idx in token_indices:
-        # In a real implementation, this would contain actual neural network features
-        features[str(idx)] = [
-            f"Activation pattern A: {0.8 - idx * 0.1:.2f}",
-            f"Semantic direction: {['subject', 'object', 'verb'][idx % 3]}",
-            f"Attention head #3: {0.5 + idx * 0.1:.2f}",
-            f"Layer 8 neuron #1024: {0.9 - idx * 0.05:.2f}",
-        ]
-
-    return features
+class InferenceResult(NamedTuple):
+    feature: Feature
+    inference_example: Example
 
 
 class Backend:
@@ -93,27 +65,10 @@ class Backend:
         encoder_acts = self.feature_fn(x.flatten(0, 1))
         return encoder_acts
 
-    def inference_query(self, prompt: str, positions: List[int], k: int = 10):
-        encoder_acts = self.run_model(prompt)
-
-        # Get the features at relevant positions
-        selected_features = encoder_acts[positions, :]
-
-        # Max across the sequence dimension
-        # (batch * seq, d_sae) -> (d_sae)
-        reduced = selected_features.max(dim=0).values
-
-        # Get the top k features
-        _, top_selected_idxs = reduced.topk(k)
-
-        # Query the header to get information on relevant features
-        top_feature_list = top_selected_idxs.tolist()
-        feature_data = self.header[
-            self.header["feature_idx"].isin(top_feature_list)
-        ]
+    def query(self, features: List[int]) -> Dict[int, Feature]:
+        feature_data = self.header[self.header["feature_idx"].isin(features)]
 
         loaded_features = {}
-        prompt_str_tokens = self.tokenize(prompt, to_str=True)
 
         # Group and load features from each shard
         for shard, rows in feature_data.groupby("shard"):
@@ -124,24 +79,43 @@ class Backend:
                 shard_path, self.sampler, indices=indices, max_examples=5
             )
 
+            # Return a dictionary for quick sorting later
             for f in shard_features:
-                # Load the top activations HTML
-                cached_activations = [
-                    to_html(example.str_tokens, example.activations)
-                    for example in f.activating_examples
-                ]
-
-                # Load the context activation HTML
-                context_acts = encoder_acts[:, f.index]
-                context_activation = to_html(
-                    prompt_str_tokens,
-                    context_acts,
-                )
-
-                loaded_features[f.index] = QueryResult(
-                    cached_activations=cached_activations,
-                    context_activation=context_activation,
-                    max_activation=f.max_activation,
-                )
+                loaded_features[f.index] = f
 
         return loaded_features
+
+    def inference_query(self, prompt: str, positions: List[int], k: int = 10):
+        encoder_acts = self.run_model(prompt)
+
+        # Get the features at relevant positions
+        selected_features = encoder_acts[positions, :]
+
+        # Max across the sequence dimension
+        # (batch * seq, d_sae) -> (d_sae)
+        reduced = selected_features.max(dim=0).values
+
+        # Get the top k features and query
+        _, top_selected_idxs = reduced.topk(k)
+        top_feature_list = top_selected_idxs.tolist()
+        loaded_features = self.query(top_feature_list)
+
+        # Tokenize the prompt
+        prompt_str_tokens = self.tokenize(prompt, to_str=True)
+
+        query_results = []
+        for index in top_feature_list:
+            f = loaded_features[index]
+
+            example = Example(
+                tokens=None,
+                str_tokens=prompt_str_tokens,
+                activations=encoder_acts[:, f.index],
+                normalized_activations=None,
+                quantile=None,
+            )
+
+            query_result = InferenceResult(feature=f, inference_example=example)
+            query_results.append(query_result)
+
+        return query_results
