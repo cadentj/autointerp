@@ -129,7 +129,7 @@ def load(
     available_features = _get_valid_features(locations, indices)
 
     features = []
-    for feature in tqdm(available_features, desc="Loading features"):
+    for feature in tqdm(available_features, desc="Loading features", leave=False):
         indices = locations[:, 2] == feature
         _locations = locations[indices]
         _activations = activations[indices]

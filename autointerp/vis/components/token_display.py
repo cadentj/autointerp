@@ -22,10 +22,23 @@ class TokenDisplay:
             )
         )
 
+        self.selected_tokens = set()
+        self.root = self.token_display
+
+    def get_selected_indices(self):
+        if not self.selected_tokens:
+            with self.token_display:
+                clear_output()
+                print("Please select at least one token")
+
+            return False
+        
+        return sorted(list(self.selected_tokens))
+
     def display(self, tokens: List[str]):
         """Display tokenized text with selectable boxes resembling spans."""
         token_widgets = []
-        selected_tokens = set()
+        self.selected_tokens = set()
 
         with self.token_display:  # Use the output widget context
             clear_output(wait=True)  # Clear previous content
@@ -60,11 +73,11 @@ class TokenDisplay:
                 # Click handler remains the same, toggling the background color
                 def create_selection_handler(idx, btn):
                     def handler(b):
-                        if idx in selected_tokens:
-                            selected_tokens.remove(idx)
+                        if idx in self.selected_tokens:
+                            self.selected_tokens.remove(idx)
                             btn.style.button_color = color_unselected
                         else:
-                            selected_tokens.add(idx)
+                            self.selected_tokens.add(idx)
                             btn.style.button_color = color_selected
 
                     return handler

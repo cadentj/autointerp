@@ -6,6 +6,7 @@ from baukit import TraceDict
 import torch as t
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from torchtyping import TensorType
+from tqdm import tqdm
 
 from ..loader import load
 from ..base import Feature, Example
@@ -71,7 +72,7 @@ class Backend:
         loaded_features = {}
 
         # Group and load features from each shard
-        for shard, rows in feature_data.groupby("shard"):
+        for shard, rows in tqdm(feature_data.groupby("shard")):
             shard_path = os.path.join(self.cache_dir, f"{shard}.pt")
             indices = rows["feature_idx"].tolist()
 

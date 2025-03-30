@@ -6,51 +6,6 @@ from IPython.display import display, clear_output, HTML
 from ...base import Example
 from ..backend import InferenceResult
 
-TOOLTIP_STYLES = """
-<style>
-/* CSS for custom instant tooltip */
-.tooltip-span {
-  position: relative; /* Needed for absolute positioning of the tooltip */
-  display: inline-block;
-  text-decoration: none; /* Ensure no underline */
-  border-bottom: 1px dotted black; /* Optional: visual cue */
-  cursor: help; /* Optional: change cursor on hover */
-}
-
-/* Tooltip pseudo-element */
-.tooltip-span::after {
-  content: attr(data-tooltip); /* Use the data-tooltip attribute content */
-  position: absolute;
-  background-color: #333; /* Tooltip background */
-  color: #fff;           /* Tooltip text color */
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.9em;
-  white-space: nowrap; /* Prevent tooltip text wrapping */
-  z-index: 10;          /* Ensure tooltip is on top */
-
-  /* Positioning: above the element */
-  left: 50%;
-  bottom: 100%;
-  transform: translateX(-50%);
-  margin-bottom: 5px; /* Space between element and tooltip */
-
-  /* Visibility: hidden by default, visible on hover */
-  visibility: hidden;
-  opacity: 0;
-  /* Remove transition for instant appearance */
-  /* transition: opacity 0.2s, visibility 0.2s; */
-}
-
-/* Show tooltip on hover */
-.tooltip-span:hover::after {
-  visibility: visible;
-  opacity: 1;
-}
-</style>
-"""
-
-
 class FeatureDisplay:
     def __init__(self):
         self.feature_display = widgets.Output(
@@ -62,12 +17,41 @@ class FeatureDisplay:
             )
         )
 
+        self.root = self.feature_display
+
     def display(self, query_results: List[InferenceResult]):
         """Display the top features for the selected tokens."""
         with self.feature_display:
             clear_output()
-
-            display(HTML(TOOLTIP_STYLES))
+            
+            # Add CSS for tooltips
+            tooltip_css = """
+            <style>
+                .token-wrapper {
+                    position: relative;
+                    display: inline-block;
+                }
+                .token-wrapper .tooltip {
+                    visibility: hidden;
+                    background-color: #555;
+                    color: white;
+                    text-align: center;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    position: absolute;
+                    z-index: 1;
+                    bottom: 125%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    font-size: 12px;
+                    white-space: nowrap;
+                }
+                .token-wrapper:hover .tooltip {
+                    visibility: visible;
+                }
+            </style>
+            """
+            display(HTML(tooltip_css))
             display(HTML("<h3>Top Features</h3>"))
 
             for query_result in query_results:
@@ -91,19 +75,17 @@ class FeatureDisplay:
         _threshold = max_act * threshold
 
         for i in range(len(str_tokens)):
-            activation_value = activations[i]  # Store activation value
-            if activation_value > _threshold:
-                # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
-                opacity = 0.2 + 0.8 * (activation_value / max_act)
-                # Add background-color: red; wrap token in span with class and data-tooltip
-                tooltip_text = f"Activation: {activation_value:.2f}"
+            activation_str = f"Activation: {activations[i]:.3f}"
+            if activations[i] > _threshold:
+                opacity = 0.2 + 0.8 * (activations[i] / max_act)
                 result.append(
-                    f'<mark style="background-color: red; opacity: {opacity:.2f};">'
-                    # Added class="tooltip-span" and data-tooltip attribute
-                    f'<span class="tooltip-span" data-tooltip="{tooltip_text}">{str_tokens[i]}</span>'
-                    f"</mark>"
+                    f'<div class="token-wrapper"><mark style="opacity: {opacity:.2f}">{str_tokens[i]}'
+                    f'</mark><span class="tooltip">{activation_str}</span></div>'
                 )
             else:
-                result.append(str_tokens[i])
+                result.append(
+                    f'<div class="token-wrapper"><span>{str_tokens[i]}'
+                    f'</span><span class="tooltip">{activation_str}</span></div>'
+                )
 
         return "".join(result)

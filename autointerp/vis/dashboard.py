@@ -1,7 +1,5 @@
-from typing import List, Dict, Any
-
 import ipywidgets as widgets
-from IPython.display import display, clear_output, HTML
+from IPython.display import display, clear_output
 
 from .backend import Backend, FeatureFn
 # from .components.example import STYLES, example_to_html
@@ -58,9 +56,9 @@ class FeatureVisualizationDashboard:
         self.analysis_container = widgets.VBox(
             [
                 widgets.Label("Select tokens and analyze:"),
-                self.token_display,
+                self.token_display.root,
                 self.run_button,
-                self.feature_display,
+                self.feature_display.root,
             ]
         )
 
@@ -77,7 +75,7 @@ class FeatureVisualizationDashboard:
 
         text = self.text_input.value
         if not text.strip():
-            with self.token_display:
+            with self.token_display.root:
                 clear_output()
                 print("Please enter some text first")
             return
@@ -89,21 +87,17 @@ class FeatureVisualizationDashboard:
         # Hide text input, show tokens instead
         self.input_container.children = [
             widgets.Label("Tokenized text:"),
-            self.token_display,
+            self.token_display.root,
         ]
 
     def _on_run_clicked(self, b):
         """Handle run button click."""
-        if not self.selected_tokens:
-            with self.feature_display:
-                clear_output()
-                print("Please select at least one token")
+        selected_indices = self.token_display.get_selected_indices()
+
+        if not selected_indices:
             return
 
-        # Convert set to sorted list to ensure consistent ordering
-        selected_indices = sorted(list(self.selected_tokens))
-
-        with self.feature_display:
+        with self.feature_display.root:
             clear_output()
             print(f"Analyzing features for selected tokens: {selected_indices}")
 
