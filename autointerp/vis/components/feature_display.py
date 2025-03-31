@@ -51,7 +51,7 @@ ACTIVATING_EXAMPLE_WRAPPER = """
 
 HIGHLIGHTED_TOKEN_WRAPPER = """
 <span class="tooltip">
-    <span style="background-color: rgba(0, 0, 255, {opacity:.2f})">{token}</span>
+    <span style="background-color: rgba(80, 211, 153, {opacity:.2f})">{token}</span>
     <span class="tooltiptext">{activation:.2f}</span>
 </span>
 """
