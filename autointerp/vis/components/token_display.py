@@ -3,6 +3,7 @@ from typing import List
 import ipywidgets as widgets
 from IPython.display import display, clear_output, HTML
 
+from .base import Component
 
 BUTTON_STYLE = """
 <style>
@@ -17,7 +18,7 @@ BUTTON_STYLE = """
 """
 
 
-class TokenDisplay:
+class TokenDisplay(Component):
     def __init__(self):
         self.token_display = widgets.Output(
             layout=widgets.Layout(
@@ -26,7 +27,8 @@ class TokenDisplay:
         )
 
         self.selected_tokens = set()
-        self.root = self.token_display
+
+        super().__init__(self.token_display)
 
     def display(self, tokens: List[str]):
         """Display tokenized text with selectable boxes resembling spans."""
@@ -36,10 +38,7 @@ class TokenDisplay:
         with self.token_display:  # Use the output widget context
             clear_output(wait=True)  # Clear previous content
 
-            # Unique class for this instance's token container
             token_box_class = f"token-box-{id(self)}"
-            # Use VBox to stack HBox rows for explicit line breaks
-            # Or keep HBox and insert a line break widget. Let's try the latter first.
             token_container = widgets.HBox(
                 layout=widgets.Layout(
                     flex_flow="row wrap",
@@ -49,14 +48,11 @@ class TokenDisplay:
             )
             token_container.add_class(token_box_class)
 
-            # Define colors for selection states
             color_unselected = "transparent"
             color_selected = "lightblue"
 
-            # Generate CSS to override default button styles
             display(HTML(BUTTON_STYLE.format(token_box_class=token_box_class)))
 
-            # Create the buttons (now styled by the CSS above)
             for i, token in enumerate(tokens):
                 is_newline = token == "\n"
                 display_token = "\\n" if is_newline else token
@@ -72,7 +68,6 @@ class TokenDisplay:
                     tooltip=f"Token {i}: '{token}'",  # Add tooltip for clarity
                 )
 
-                # Click handler remains the same, toggling the background color
                 def create_selection_handler(idx, btn):
                     def handler(b):
                         if idx in self.selected_tokens:
@@ -87,20 +82,11 @@ class TokenDisplay:
                 token_button.on_click(create_selection_handler(i, token_button))
                 token_widgets.append(token_button)
 
-                # If it's a newline token, add a widget to force a break
-                if is_newline:
-                    # An empty HTML widget spanning the full width forces a wrap
-                    line_break = widgets.HTML(
-                        "<div style='width: 100%; height: 0;'></div>"
-                    )
-                    token_widgets.append(line_break)
+                # if is_newline:
+                #     line_break = widgets.HTML(
+                #         "<div style='width: 100%; height: 0;'></div>"
+                #     )
+                #     token_widgets.append(line_break)
 
-            token_container.children = (
-                token_widgets  # Assign all widgets to container
-            )
-            # Display the token container within the Output widget
+            token_container.children = token_widgets
             display(token_container)
-
-    def clear(self):
-        """Clear the token display."""
-        self.token_display.clear_output()

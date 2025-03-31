@@ -105,8 +105,10 @@ class FeatureVisualizationDashboard:
         text = self.text_input.value
         if not text.strip():
             self.analysis_container.layout.display = "block"
-            self.feature_display.clear()
-            print("Please enter some text first")
+            with self.feature_display:
+                clear_output()
+                print("Please enter some text first")
+
             self.token_display.clear()
             self.run_button.disabled = True
             self.reset_button.disabled = True
@@ -132,15 +134,19 @@ class FeatureVisualizationDashboard:
             selected_indices = "all"
 
         self.feature_display.clear()
-        print(
-            f"Analyzing top {k_value} features for selected tokens: {selected_indices}"
-        )
+        with self.feature_display:
+            clear_output()
+            print(
+                f"Analyzing top {k_value} features,",
+                f"for selected tokens: {selected_indices}",
+            )
 
-        query_results = self.model.inference_query(
-            self.text_input.value,
-            selected_indices,
-            k=k_value,
-        )
+            # Put this in here so tqdm is displayed in the output widget
+            query_results = self.model.inference_query(
+                self.text_input.value,
+                selected_indices,
+                k=k_value,
+            )
         self.feature_display.display(query_results)
 
     def _on_reset_clicked(self, b):

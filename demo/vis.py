@@ -1,4 +1,5 @@
 # %%
+
 from autointerp.vis.dashboard import make_dashboard
 from sparsify import Sae
 
@@ -11,27 +12,16 @@ sae = Sae.load_from_disk(path, device="cuda")
 cache_path = "/workspace/gemma-cache/language_model.model.layers.16"
 dashboard = make_dashboard(cache_path, sae.simple_encode, in_memory=False)
 
-# hey how are you doing?
-
 # %%
 
+from autointerp.vis.dashboard import make_dashboard
+from sparsify import Sae
 
-from nnsight import LanguageModel
-import torch as t
-
-model = LanguageModel(
-    "google/gemma-3-4b-pt",
-    device_map="auto",
-    dispatch=True,
-    torch_dtype=t.bfloat16,
+path = (
+    
+    "/workspace/qwen-saes/layers.31"
 )
+sae = Sae.load_from_disk(path, device="cuda")
 
-with model.trace(
-    "hey how are you doing?",
-) as ret:
-    acts = model.language_model.model.layers[16].output[0].save()
-
-
-latents = sae.simple_encode(acts)
-
-# %%
+cache_path = "/workspace/qwen-cache/model.layers.31"
+dashboard = make_dashboard(cache_path, sae.simple_encode, in_memory=True)
