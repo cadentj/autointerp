@@ -59,7 +59,7 @@ def _pool_max_activation_windows(
 
 def _get_valid_features(
     locations: TensorType["features", 3],
-    indices: List[int] | int,
+    indices: List[int] | int | None,
 ) -> List[int]:
     """Some features might not have been cached since they were too rare.
     Filter for valid features that were actually cached.
@@ -76,7 +76,7 @@ def _get_valid_features(
 
     features = t.unique(locations[:, 2]).tolist()
 
-    if isinstance(indices, list) and indices is not None:
+    if isinstance(indices, list):
         found_indices = []
         for i in indices:
             if i not in features:
@@ -85,10 +85,59 @@ def _get_valid_features(
                 found_indices.append(i)
         features = found_indices
 
-    elif isinstance(indices, int) and indices is not None:
+    elif isinstance(indices, int):
         if indices not in features:
             raise ValueError(f"Feature {indices} not found in cached features")
         features = [indices]
+
+    return features
+
+
+def _load(
+    tokens: TensorType["batch", "seq"],
+    locations: TensorType["features", 3],
+    activations: TensorType["features"],
+    sampler: Callable,
+    indices: List[int] | int,
+    tokenizer: AutoTokenizer,
+    ctx_len: int = 64,
+    max_examples: int = 2_000,
+    max_features: int = None,
+):
+    """Underlying function for feature loading interface."""
+
+    features = []
+    for feature in tqdm(indices, desc="Loading features", leave=False):
+        mask = locations[:, 2] == feature
+
+        if mask.sum() == 0:
+            print(f"Feature {feature} not found in cached features")
+            continue
+
+        _locations = locations[mask]
+        _activations = activations[mask]
+
+        max_activation = _activations.max().item()
+
+        token_windows, activation_windows = _pool_max_activation_windows(
+            _activations, _locations, tokens, ctx_len, max_examples
+        )
+
+        examples = sampler(token_windows, activation_windows, tokenizer)
+
+        if examples is None:
+            print(f"Not enough examples found for feature {feature}")
+            continue
+
+        feature = Feature(
+            index=feature,
+            max_activation=max_activation,
+            activating_examples=examples,
+        )
+        features.append(feature)
+
+        if max_features is not None and len(features) >= max_features:
+            break
 
     return features
 
@@ -115,6 +164,7 @@ def load(
     """
     data = t.load(path)
     tokens = t.load(data["tokens_path"])
+
     tokenizer = AutoTokenizer.from_pretrained(data["model_id"])
 
     # Locations corresponds to rows of (batch, seq, feature)
@@ -128,33 +178,17 @@ def load(
 
     available_features = _get_valid_features(locations, indices)
 
-    features = []
-    for feature in tqdm(available_features, desc="Loading features", leave=False):
-        indices = locations[:, 2] == feature
-        _locations = locations[indices]
-        _activations = activations[indices]
-
-        max_activation = _activations.max().item()
-
-        token_windows, activation_windows = _pool_max_activation_windows(
-            _activations, _locations, tokens, ctx_len, max_examples
-        )
-
-        examples = sampler(token_windows, activation_windows, tokenizer)
-
-        if examples is None:
-            print(f"Not enough examples found for feature {feature}")
-            continue
-
-        feature = Feature(
-            index=feature,
-            max_activation=max_activation,
-            activating_examples=examples,
-        )
-        features.append(feature)
-
-        if max_features is not None and len(features) >= max_features:
-            break
+    features = _load(
+        tokens,
+        locations,
+        activations,
+        sampler,
+        available_features,
+        tokenizer,
+        ctx_len,
+        max_examples,
+        max_features,
+    )
 
     if load_similar_non_activating > 0:
         print("Running similarity search...")
@@ -165,9 +199,7 @@ def load(
 
     if load_random_non_activating > 0:
         print("Running random non-activating search...")
-        random_sampler = RandomSampler(
-            tokenizer, tokens, locations, ctx_len
-        )
+        random_sampler = RandomSampler(tokenizer, tokens, locations, ctx_len)
         random_sampler(features, n_examples=load_random_non_activating)
 
     return features

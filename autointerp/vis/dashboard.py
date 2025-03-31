@@ -6,8 +6,8 @@ from .components.token_display import TokenDisplay
 from .components.feature_display import FeatureDisplay
 
 
-def make_dashboard(cache_dir: str, feature_fn: FeatureFn):
-    backend = Backend(cache_dir, feature_fn)
+def make_dashboard(cache_dir: str, feature_fn: FeatureFn, in_memory: bool = False):
+    backend = Backend(cache_dir, feature_fn, in_memory=in_memory)
     return FeatureVisualizationDashboard(backend).display()
 
 
@@ -91,7 +91,7 @@ class FeatureVisualizationDashboard:
 
     def _on_run_clicked(self, b):
         """Handle run button click."""
-        selected_indices = sorted(list(self.selected_tokens))
+        selected_indices = sorted(list(self.token_display.selected_tokens))
 
         if not selected_indices:
             selected_indices = "all"
