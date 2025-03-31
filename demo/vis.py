@@ -9,7 +9,7 @@ sae = Sae.load_from_disk(path, device="cuda")
 
 
 cache_path = "/workspace/gemma-cache/language_model.model.layers.16"
-dashboard = make_dashboard(cache_path, sae.simple_encode, in_memory=True)
+dashboard = make_dashboard(cache_path, sae.simple_encode, in_memory=False)
 
 # hey how are you doing?
 
@@ -33,3 +33,5 @@ with model.trace(
 
 
 latents = sae.simple_encode(acts)
+
+# %%
