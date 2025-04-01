@@ -1,3 +1,5 @@
+from typing import List
+
 import ipywidgets as widgets
 from IPython.display import display, clear_output
 
@@ -11,6 +13,21 @@ def make_dashboard(
 ):
     backend = Backend(cache_dir, feature_fn, in_memory=in_memory)
     return FeatureVisualizationDashboard(backend).display()
+
+
+def make_feature_display(
+    cache_dir: str, features: List[int]
+):
+    backend = Backend(cache_dir, None, load_model=False)
+    dash = FeatureDisplay()
+
+    display(dash.root)
+
+    with dash:
+        loaded_features = backend.query(features)
+
+    loaded_features = list(loaded_features.values())
+    dash.display(loaded_features)
 
 
 class FeatureVisualizationDashboard:

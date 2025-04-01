@@ -17,11 +17,18 @@ dashboard = make_dashboard(cache_path, sae.simple_encode, in_memory=False)
 from autointerp.vis.dashboard import make_dashboard
 from sparsify import Sae
 
-path = (
-    
-    "/workspace/qwen-saes/layers.31"
-)
+path = "/workspace/qwen-saes-two/qwen-step-final/model.layers.31"
 sae = Sae.load_from_disk(path, device="cuda")
 
 cache_path = "/workspace/qwen-cache/model.layers.31"
 dashboard = make_dashboard(cache_path, sae.simple_encode, in_memory=True)
+
+# %%
+
+from autointerp.vis.dashboard import make_feature_display
+
+cache_path = "/workspace/qwen-cache/model.layers.31"
+
+feature_display = make_feature_display(
+    cache_path, [1000, 1001]
+)

@@ -3,7 +3,7 @@ from typing import List
 import ipywidgets as widgets
 from IPython.display import display, clear_output, HTML
 
-from ...base import Example
+from ...base import Example, Feature
 from ..backend import InferenceResult
 from .base import Component
 
@@ -70,7 +70,7 @@ class FeatureDisplay(Component):
 
         super().__init__(self.feature_display)
 
-    def display(self, query_results: List[InferenceResult]):
+    def display(self, query_results: List[InferenceResult | Feature]):
         """Display the top features for the selected tokens."""
         with self.feature_display:
             clear_output()
@@ -79,26 +79,33 @@ class FeatureDisplay(Component):
             display(HTML("<h3>Top Features</h3>"))
 
             for i, query_result in enumerate(query_results):
-                index = query_result.feature.index
+                index = (
+                    query_result.index
+                    if isinstance(query_result, Feature)
+                    else query_result.feature.index
+                )
                 display(HTML(f"<h4>Feature {index}</h4>"))
 
-                inference_html = self._example_to_html(
-                    query_result.inference_example
-                )
-                display(
-                    HTML(
-                        ACTIVATING_EXAMPLE_WRAPPER.format(
-                            example=inference_html
+                if isinstance(query_result, InferenceResult):
+                    inference_html = self._example_to_html(
+                        query_result.inference_example
+                    )
+                    display(
+                        HTML(
+                            ACTIVATING_EXAMPLE_WRAPPER.format(
+                                example=inference_html
+                            )
                         )
                     )
-                )
 
-                display(HTML("<hr>"))
+                    display(HTML("<hr>"))
+
+                    query_result = query_result.feature
 
                 # Only add dropdown if there are activating examples
-                if query_result.feature.activating_examples:
+                if query_result.activating_examples:
                     # Display activating examples directly
-                    for example in query_result.feature.activating_examples:
+                    for example in query_result.activating_examples:
                         example_html = self._example_to_html(example)
                         display(
                             HTML(

@@ -25,7 +25,11 @@ class InferenceResult(NamedTuple):
 
 class Backend:
     def __init__(
-        self, cache_dir: str, feature_fn: FeatureFn, in_memory: bool = False
+        self,
+        cache_dir: str,
+        feature_fn: FeatureFn,
+        load_model: bool = False,
+        in_memory: bool = False,
     ):
         header_path = os.path.join(cache_dir, "header.parquet")
         self.header = pd.read_parquet(header_path)
@@ -36,11 +40,12 @@ class Backend:
         model_id = shard["model_id"]
 
         # Load model artifacts
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_id,
-            torch_dtype=t.bfloat16,
-            device_map="auto",
-        )
+        if load_model:
+            self.model = AutoModelForCausalLM.from_pretrained(
+                model_id,
+                torch_dtype=t.bfloat16,
+                device_map="auto",
+            )
         self.tokenizer = AutoTokenizer.from_pretrained(model_id)
         self.feature_fn = feature_fn
 
@@ -55,7 +60,7 @@ class Backend:
 
     def _load_in_memory(self):
         """Load the shards into memory and combined into a single cache."""
-        
+
         locations = []
         activations = []
 
@@ -64,7 +69,7 @@ class Backend:
         ):
             if not shard.endswith(".pt"):
                 continue
-            
+
             shard_path = os.path.join(self.cache_dir, shard)
             shard_data = t.load(shard_path)
 
@@ -105,8 +110,7 @@ class Backend:
         encoder_acts = self.feature_fn(x).flatten(0, 1)
         return encoder_acts
 
-
-    def _query_in_memory(self, features: List[int]) -> Dict[int, Feature]:
+    def query_in_memory(self, features: List[int]) -> Dict[int, Feature]:
         feature_data = self.header[self.header["feature_idx"].isin(features)]
         indices = feature_data["feature_idx"].tolist()
 
@@ -121,7 +125,7 @@ class Backend:
 
         return {f.index: f for f in loaded_features}
 
-    def _query(self, features: List[int]) -> Dict[int, Feature]:
+    def query(self, features: List[int]) -> Dict[int, Feature]:
         feature_data = self.header[self.header["feature_idx"].isin(features)]
 
         loaded_features = {}
@@ -161,9 +165,9 @@ class Backend:
         top_feature_list = top_selected_idxs.tolist()
 
         if self.cache is not None:
-            loaded_features = self._query_in_memory(top_feature_list)
+            loaded_features = self.query(top_feature_list)
         else:
-            loaded_features = self._query(top_feature_list)
+            loaded_features = self.query(top_feature_list)
 
         # Tokenize the prompt
         prompt_str_tokens = self.tokenize(prompt, to_str=True)

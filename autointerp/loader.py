@@ -102,7 +102,6 @@ def _load(
     tokenizer: AutoTokenizer,
     ctx_len: int = 64,
     max_examples: int = 2_000,
-    max_features: int = None,
 ):
     """Underlying function for feature loading interface."""
 
@@ -136,9 +135,6 @@ def _load(
         )
         features.append(feature)
 
-        if max_features is not None and len(features) >= max_features:
-            break
-
     return features
 
 
@@ -148,7 +144,6 @@ def load(
     indices: List[int] | int = None,
     ctx_len: int = 64,
     max_examples: int = 2_000,
-    max_features: int = None,
     load_similar_non_activating: int = 0,
     load_random_non_activating: int = 0,
 ) -> List[Feature]:
@@ -187,7 +182,6 @@ def load(
         tokenizer,
         ctx_len,
         max_examples,
-        max_features,
     )
 
     if load_similar_non_activating > 0:
