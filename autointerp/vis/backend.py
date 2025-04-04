@@ -28,7 +28,7 @@ class Backend:
         self,
         cache_dir: str,
         feature_fn: FeatureFn,
-        load_model: bool = False,
+        load_model: bool = True,
         in_memory: bool = False,
     ):
         header_path = os.path.join(cache_dir, "header.parquet")
