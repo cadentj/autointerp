@@ -12,13 +12,12 @@ MAX_INT = t.iinfo(t.int32).max
 
 class Cache:
     def __init__(
-        self, batch_size: int, filters: Dict[str, List[int]], remove_bos: bool
+        self, batch_size: int, filters: Dict[str, List[int]]
     ):
         self.locations = defaultdict(list)
         self.activations = defaultdict(list)
         self.filters = filters
         self.batch_size = batch_size
-        self.remove_bos = remove_bos
 
     def add(
         self,
@@ -26,8 +25,6 @@ class Cache:
         batch_number: int,
         module_path: str,
     ):
-        if self.remove_bos:
-            latents[:, 0] = 0
 
         locations, activations = self._get_nonzeros(latents, module_path)
         locations = locations.cpu()
@@ -207,6 +204,7 @@ def cache_activations(
     max_tokens: int = 100_000,
     filters: Dict[str, List[int]] = {},
     remove_bos: bool = True,
+    pad_token: int = None,
 ) -> Cache:
     """Cache dictionary activations.
 
@@ -220,14 +218,11 @@ def cache_activations(
         max_tokens: Maximum number of tokens to cache.
     """
 
-    if remove_bos:
-        print("Skipping BOS tokens.")
-
     filters = {
         module_path: t.tensor(indices, dtype=t.int64).to("cuda")
         for module_path, indices in filters.items()
     }
-    cache = Cache(batch_size, filters, remove_bos)
+    cache = Cache(batch_size, filters)
 
     token_batches, tokens_per_batch = _batch_tokens(
         tokens, batch_size, max_tokens
@@ -241,11 +236,21 @@ def cache_activations(
             ) as ret:
                 _ = model(batch)
 
+            if pad_token is not None:
+                pad_mask = batch == pad_token
+
             for path, dictionary in submodule_dict.items():
                 acts = ret[path].output
                 if isinstance(acts, tuple):
                     acts = acts[0]
                 latents = dictionary(acts)
+
+                if pad_token is not None:
+                    latents[pad_mask] = 0
+
+                if remove_bos:
+                    latents[:, 0] = 0
+
                 cache.add(latents, batch_number, path)
 
             pbar.update(tokens_per_batch)
