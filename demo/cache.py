@@ -35,9 +35,10 @@ mask = ~(tokens == 0).any(dim=1)
 tokens = tokens[mask]
 
 def encode(x):
-    flat_x = x.flatten(0,1)
+    flat_x = x.flatten(0, 1)
     flat_resid = flat_x - sae.simple_forward(flat_x)
-    resid = flat_resid.unflatten(0,1)
+    B, S, _ = x.shape
+    resid = flat_resid.unflatten(0, (B, S))
     return ssae.simple_encode(resid)
 
 cache = cache_activations(

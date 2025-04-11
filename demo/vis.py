@@ -27,7 +27,7 @@ dashboard = make_dashboard(cache_path, sae.simple_encode, in_memory=True)
 
 from autointerp.vis.dashboard import make_feature_display
 
-cache_path = "/workspace/qwen-ssae-cache/model.layers.31"
+cache_path = "/workspace/qwen-ssae-cache-two/model.layers.31"
 
 features = list(range(100))
 feature_display = make_feature_display(cache_path, features)
