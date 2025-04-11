@@ -12,8 +12,12 @@ data = load_dataset("kh4dien/fineweb-sample", split="train[:25%]")
 model_id = "unsloth/Qwen2.5-Coder-32B-Instruct"
 model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=t.bfloat16, device_map="auto")
 tokenizer = AutoTokenizer.from_pretrained(model_id)
+
 path = "/workspace/qwen-saes-two/qwen-step-final/model.layers.31"
 sae = Sae.load_from_disk(path, device="cuda")
+
+path = "/workspace/qwen-saes-ft/qwen/layers.31"
+ssae = Sae.load_from_disk(path, device="cuda")
 
 # %%
 
@@ -31,19 +35,22 @@ mask = ~(tokens == 0).any(dim=1)
 tokens = tokens[mask]
 
 def encode(x):
-    return sae.simple_encode(x)
+    flat_x = x.flatten(0,1)
+    flat_resid = flat_x - sae.simple_forward(flat_x)
+    resid = flat_resid.unflatten(0,1)
+    return ssae.simple_encode(resid)
 
 cache = cache_activations(
     model=model,
     submodule_dict={"model.layers.31": encode},
     tokens=tokens,
     batch_size=8,
-    max_tokens=2_500_000,
+    max_tokens=1_000_000,
 )
 
 # %%
 
-save_dir = "/workspace/qwen-cache"
+save_dir = "/workspace/qwen-ssae-cache-two"
 cache.save_to_disk(
     save_dir=save_dir,
     model_id=model_id,
