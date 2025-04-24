@@ -16,7 +16,7 @@ def make_dashboard(
 
 
 def make_feature_display(
-    cache_dir: str, features: List[int]
+    cache_dir: str, features: List[int], **load_kwargs
 ):
     backend = Backend(cache_dir, None, load_model=False)
     dash = FeatureDisplay()
@@ -24,7 +24,7 @@ def make_feature_display(
     display(dash.root)
 
     with dash:
-        loaded_features = backend.query(features)
+        loaded_features = backend.query(features, **load_kwargs)
 
     loaded_features = list(loaded_features.values())
     dash.display(loaded_features)

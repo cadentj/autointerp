@@ -125,7 +125,7 @@ class Backend:
 
         return {f.index: f for f in loaded_features}
 
-    def query(self, features: List[int]) -> Dict[int, Feature]:
+    def query(self, features: List[int], **load_kwargs) -> Dict[int, Feature]:
         feature_data = self.header[self.header["feature_idx"].isin(features)]
 
         loaded_features = {}
@@ -136,7 +136,11 @@ class Backend:
             shard_path = os.path.join(self.cache_dir, f"{shard}.pt")
 
             shard_features = load(
-                shard_path, self.sampler, indices=indices, max_examples=5
+                shard_path,
+                self.sampler,
+                indices=indices,
+                max_examples=5,
+                **load_kwargs,
             )
 
             # Return a dictionary for quick sorting later
