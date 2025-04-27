@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 import ipywidgets as widgets
 from IPython.display import display, clear_output, HTML
@@ -51,7 +51,7 @@ ACTIVATING_EXAMPLE_WRAPPER = """
 
 HIGHLIGHTED_TOKEN_WRAPPER = """
 <span class="tooltip">
-    <span style="background-color: rgba(80, 211, 153, {opacity:.2f})">{token}</span>
+    <span style="background-color: rgba({color}, {opacity:.2f})">{token}</span>
     <span class="tooltiptext">{activation:.2f}</span>
 </span>
 """
@@ -70,72 +70,91 @@ class FeatureDisplay(Component):
 
         super().__init__(self.feature_display)
 
-    def display(self, query_results: List[InferenceResult | Feature]):
+    def _display_inference_example(self, query_result: InferenceResult):
+        inference_html = self._example_to_html(query_result.inference_example)
+        display(HTML(ACTIVATING_EXAMPLE_WRAPPER.format(example=inference_html)))
+
+        display(HTML("<hr>"))
+
+        return query_result.feature
+
+    def display(self, features: Dict[str, List[InferenceResult | Feature]]):
         """Display the top features for the selected tokens."""
         with self.feature_display:
             clear_output()
 
             display(HTML(TOOLTIP))
-            display(HTML("<h3>Top Features</h3>"))
+            for hookpoint, features in features.items():
 
-            for i, query_result in enumerate(query_results):
-                index = (
-                    query_result.index
-                    if isinstance(query_result, Feature)
-                    else query_result.feature.index
-                )
-                display(HTML(f"<h4>Feature {index}</h4>"))
+                display(HTML(f"<h2>{hookpoint}</h2>"))
 
-                if isinstance(query_result, InferenceResult):
-                    inference_html = self._example_to_html(
-                        query_result.inference_example
+                for query_result in features:
+                    index = (
+                        query_result.index
+                        if isinstance(query_result, Feature)
+                        else query_result.feature.index
                     )
-                    display(
-                        HTML(
-                            ACTIVATING_EXAMPLE_WRAPPER.format(
-                                example=inference_html
-                            )
-                        )
-                    )
+                    display(HTML(f"<h4>Feature {index}</h4>"))
 
-                    display(HTML("<hr>"))
+                    if isinstance(query_result, InferenceResult):
+                        query_result = self._display_inference_example(query_result)
 
-                    query_result = query_result.feature
-
-                # Only add dropdown if there are activating examples
-                if query_result.activating_examples:
-                    # Display activating examples directly
-                    for example in query_result.activating_examples:
-                        example_html = self._example_to_html(example)
-                        display(
-                            HTML(
-                                ACTIVATING_EXAMPLE_WRAPPER.format(
-                                    example=example_html,
+                    # Only add dropdown if there are activating examples
+                    if query_result.activating_examples:
+                        # Display activating examples directly
+                        for example in query_result.activating_examples:
+                            example_html = self._example_to_html(example)
+                            display(
+                                HTML(
+                                    ACTIVATING_EXAMPLE_WRAPPER.format(
+                                        example=example_html,
+                                    )
                                 )
                             )
-                        )
 
     def _example_to_html(
         self,
         example: Example,
-        threshold: float = 0.0,
+        threshold_ratio: float = 0.0,  # Renamed threshold for clarity
     ) -> str:
         str_tokens = example.str_tokens
         activations = example.activations
 
         result = []
-        max_act = activations.max()
-        _threshold = max_act * threshold
+        # Calculate max absolute activation for normalization, handle potential empty tensor
+        if activations.numel() == 0:
+            max_abs_act = 0.0
+        else:
+            max_abs_act = activations.abs().max().item()
+
+        # Calculate absolute threshold based on ratio
+        threshold = max_abs_act * threshold_ratio
+
+        # Define base colors (RGB)
+        positive_color = "0, 102, 204"  # Blue
+        negative_color = "204, 51, 51"  # Red
 
         for i in range(len(str_tokens)):
-            if activations[i] > _threshold:
+            activation_val = activations[i].item()
+            abs_activation = abs(activation_val)
+
+            if abs_activation > threshold:
                 # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
-                opacity = 0.2 + 0.8 * (activations[i] / max_act)
+                # Avoid division by zero if max_abs_act is 0
+                opacity = 0.2 + 0.8 * (abs_activation / max_abs_act) if max_abs_act > 0 else 0.2
+
+                if activation_val > 0:
+                    color = positive_color
+                else:
+                    # Use negative color even for exactly zero if threshold is zero and we want to highlight negatives
+                    color = negative_color
+
                 result.append(
                     HIGHLIGHTED_TOKEN_WRAPPER.format(
                         token=str_tokens[i],
+                        color=color,
                         opacity=opacity,
-                        activation=activations[i].item(),
+                        activation=activation_val,
                     )
                 )
             else:

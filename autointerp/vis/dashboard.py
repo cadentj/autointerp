@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 import ipywidgets as widgets
 from IPython.display import display, clear_output
@@ -9,33 +9,45 @@ from .components.feature_display import FeatureDisplay
 
 
 def make_dashboard(
-    cache_dir: str, feature_fn: FeatureFn, in_memory: bool = False
+    cache_dir: str,
+    feature_fn: FeatureFn,
+    in_memory: bool = False,
+    **load_kwargs,
 ):
     backend = Backend(cache_dir, feature_fn, in_memory=in_memory)
-    return FeatureVisualizationDashboard(backend).display()
+    return FeatureVisualizationDashboard(backend, **load_kwargs).display()
 
 
 def make_feature_display(
-    cache_dir: str, features: List[int], **load_kwargs
+    cache_dirs: List[str], features: Dict[str, List[int]], **load_kwargs
 ):
-    backend = Backend(cache_dir, None, load_model=False)
+    backends = [
+        Backend(cache_dir, None, load_model=False) for cache_dir in cache_dirs
+    ]
     dash = FeatureDisplay()
 
     display(dash.root)
 
+    loaded_features = {}
     with dash:
-        loaded_features = backend.query(features, **load_kwargs)
+        for backend in backends:
+            # Hookpoint should be the directory name
+            hookpoint = backend.hook_module
+            loaded = backend.query(
+                features[hookpoint], as_dict=False, **load_kwargs
+            )
+            loaded_features.update(loaded)
 
-    loaded_features = list(loaded_features.values())
     dash.display(loaded_features)
 
 
 class FeatureVisualizationDashboard:
     """Dashboard for visualizing features in a neural network."""
 
-    def __init__(self, model: Backend):
+    def __init__(self, model: Backend, **load_kwargs):
         """Initialize the dashboard components."""
         self.model = model
+        self.load_kwargs = load_kwargs
 
         # Input components
         self.text_input = widgets.Textarea(
@@ -163,8 +175,10 @@ class FeatureVisualizationDashboard:
                 self.text_input.value,
                 selected_indices,
                 k=k_value,
+                **self.load_kwargs,
             )
-        self.feature_display.display(query_results)
+        hookpoint = self.model.hook_module
+        self.feature_display.display({hookpoint: query_results})
 
     def _on_reset_clicked(self, b):
         """Handle reset button click."""

@@ -52,7 +52,6 @@ class Backend:
         hook_module = cache_dir.split("/")[-1]
         self.hook_module = hook_module
 
-        self.sampler = make_quantile_sampler(n_examples=5, n_quantiles=1)
         self.cache = None
 
         if in_memory:
@@ -110,23 +109,35 @@ class Backend:
         encoder_acts = self.feature_fn(x).flatten(0, 1)
         return encoder_acts
 
-    def query_in_memory(self, features: List[int]) -> Dict[int, Feature]:
+    def query_in_memory(
+        self, features: List[int], **load_kwargs
+    ) -> Dict[int, Feature]:
         feature_data = self.header[self.header["feature_idx"].isin(features)]
         indices = feature_data["feature_idx"].tolist()
+
+        max_examples = load_kwargs.pop("max_examples", 5)
+        sampler = make_quantile_sampler(n_examples=max_examples, n_quantiles=1)
 
         loaded_features = _load(
             self.cache["tokens"],
             self.cache["locations"],
             self.cache["activations"],
-            self.sampler,
+            sampler,
             indices,
             self.tokenizer,
+            max_examples=max_examples,
+            **load_kwargs,
         )
 
         return {f.index: f for f in loaded_features}
 
-    def query(self, features: List[int], **load_kwargs) -> Dict[int, Feature]:
+    def query(
+        self, features: List[int], as_dict: bool = True, **load_kwargs
+    ) -> Dict[int, Feature]:
         feature_data = self.header[self.header["feature_idx"].isin(features)]
+
+        max_examples = load_kwargs.pop("max_examples", 5)
+        sampler = make_quantile_sampler(n_examples=max_examples, n_quantiles=1)
 
         loaded_features = {}
 
@@ -137,9 +148,9 @@ class Backend:
 
             shard_features = load(
                 shard_path,
-                self.sampler,
+                sampler,
                 indices=indices,
-                max_examples=5,
+                max_examples=max_examples,
                 **load_kwargs,
             )
 
@@ -147,10 +158,17 @@ class Backend:
             for f in shard_features:
                 loaded_features[f.index] = f
 
-        return loaded_features
+        if not as_dict:
+            return {self.hook_module: list(loaded_features.values())}
+
+        return {self.hook_module: loaded_features}
 
     def inference_query(
-        self, prompt: str, positions: List[int] | Literal["all"], k: int = 10
+        self,
+        prompt: str,
+        positions: List[int] | Literal["all"],
+        k: int = 10,
+        **load_kwargs,
     ):
         encoder_acts = self.run_model(prompt)
 
@@ -169,9 +187,11 @@ class Backend:
         top_feature_list = top_selected_idxs.tolist()
 
         if self.cache is not None:
-            loaded_features = self.query(top_feature_list)
+            loaded_features = self.query_in_memory(
+                top_feature_list, **load_kwargs
+            )
         else:
-            loaded_features = self.query(top_feature_list)
+            loaded_features = self.query(top_feature_list, **load_kwargs)
 
         # Tokenize the prompt
         prompt_str_tokens = self.tokenize(prompt, to_str=True)
@@ -191,4 +211,4 @@ class Backend:
             query_result = InferenceResult(feature=f, inference_example=example)
             query_results.append(query_result)
 
-        return query_results
+        return {self.hook_module: query_results}
