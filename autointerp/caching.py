@@ -149,16 +149,18 @@ class Cache:
                     shard_save_path,
                 )
 
-                header = [
-                    {
-                        "feature_idx": feature_idx,
-                        "shard": i,
-                    }
-                    for feature_idx in feature_shard.tolist()
-                ]
+                header.extend(
+                    [
+                        {
+                            "feature_idx": feature_idx,
+                            "shard": i,
+                        }
+                        for feature_idx in feature_shard.tolist()
+                    ]
+                )
 
-                df = pd.DataFrame(header)
-                df.to_parquet(os.path.join(module_save_dir, "header.parquet"))
+            df = pd.DataFrame(header)
+            df.to_parquet(os.path.join(module_save_dir, "header.parquet"))
 
 
 def _batch_tokens(
