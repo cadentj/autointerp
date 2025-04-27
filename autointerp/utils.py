@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Callable
 
 import torch as t
 from torchtyping import TensorType
@@ -19,8 +19,30 @@ def get_top_logits(
     per_example_top_logits = top_logits.T
 
     decoded_top_logits = [
-        tokenizer.batch_decode(logits)
-        for logits in per_example_top_logits
+        tokenizer.batch_decode(logits) for logits in per_example_top_logits
     ]
 
     return decoded_top_logits
+
+
+class SimpleAE(t.nn.Module):
+    def __init__(self, vector: TensorType["d_model", "d_sae"]):
+        super().__init__()
+        # Normalize the vector to ensure we get proper projections
+        vector = vector / vector.norm(dim=0, keepdim=True)
+
+        self.register_buffer("vector", vector)
+
+    def encode(
+        self, x: TensorType["batch", "seq", "d_model"]
+    ) -> TensorType["batch", "seq", "d_sae"]:
+        projection = t.matmul(x, self.vector)
+
+        return projection
+
+    @classmethod
+    def load_from_disk(cls, path: str, process: Callable = lambda x: x):
+        vector = t.load(path)
+        vector = process(vector)
+
+        return cls(vector)

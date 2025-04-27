@@ -9,15 +9,15 @@ from tqdm import tqdm
 
 MAX_INT = t.iinfo(t.int32).max
 
+
 class Cache:
     def __init__(
-        self, batch_size: int, filters: Dict[str, List[int]], remove_bos: bool
+        self, batch_size: int, filters: Dict[str, List[int]]
     ):
         self.locations = defaultdict(list)
         self.activations = defaultdict(list)
         self.filters = filters
         self.batch_size = batch_size
-        self.remove_bos = remove_bos
 
     def add(
         self,
@@ -25,8 +25,6 @@ class Cache:
         batch_number: int,
         module_path: str,
     ):
-        if self.remove_bos:
-            latents[:, 0] = 0
 
         locations, activations = self._get_nonzeros(latents, module_path)
         locations = locations.cpu()
@@ -87,7 +85,9 @@ class Cache:
                 self.activations[module_path], dim=0
             )
 
-    def save_to_disk(self, save_dir: str, model_id: str, tokens_path: str):
+    def save_to_disk(
+        self, save_dir: str, model_id: str, tokens_path: str, n_shards: int = 1
+    ):
         """Save cached activations to disk. Requires a path to tokens and
         model ID for easy loading.
 
@@ -100,6 +100,12 @@ class Cache:
         if tokens_path is not None and not os.path.isabs(tokens_path):
             raise ValueError("Tokens path must be absolute.")
 
+        if n_shards == 1:
+            self._save_single(save_dir, model_id, tokens_path)
+        else:
+            self._save_sharded(save_dir, model_id, tokens_path, n_shards)
+
+    def _save_single(self, save_dir: str, model_id: str, tokens_path: str):
         for module_path in self.locations.keys():
             os.makedirs(save_dir, exist_ok=True)
             save_path = os.path.join(save_dir, f"{module_path}.pt")
@@ -112,6 +118,49 @@ class Cache:
                 },
                 save_path,
             )
+
+    def _save_sharded(
+        self, save_dir: str, model_id: str, tokens_path: str, n_shards: int
+    ):
+        import pandas as pd
+
+        for module_path, locations in self.locations.items():
+            module_save_dir = os.path.join(save_dir, f"{module_path}")
+            os.makedirs(module_save_dir, exist_ok=True)
+
+            features = t.unique(locations[:, 2])
+            features = t.chunk(features, n_shards)
+
+            header = []
+
+            for i, feature_shard in enumerate(features):
+                shard_save_path = os.path.join(module_save_dir, f"{i}.pt")
+                indices = t.isin(locations[:, 2], feature_shard)
+                shard_locations = locations[indices]
+                shard_activations = self.activations[module_path][indices]
+
+                t.save(
+                    {
+                        "locations": shard_locations,
+                        "activations": shard_activations,
+                        "tokens_path": tokens_path,
+                        "model_id": model_id,
+                    },
+                    shard_save_path,
+                )
+
+                header.extend(
+                    [
+                        {
+                            "feature_idx": feature_idx,
+                            "shard": i,
+                        }
+                        for feature_idx in feature_shard.tolist()
+                    ]
+                )
+
+            df = pd.DataFrame(header)
+            df.to_parquet(os.path.join(module_save_dir, "header.parquet"))
 
 
 def _batch_tokens(
@@ -156,8 +205,9 @@ def cache_activations(
     max_tokens: int = 100_000,
     filters: Dict[str, List[int]] = {},
     remove_bos: bool = True,
+    pad_token: int = None,
 ) -> Cache:
-    """Cache dictionary activations. 
+    """Cache dictionary activations.
 
     Note: Padding is not supported at the moment. Please remove padding from tokenizer.
 
@@ -169,14 +219,11 @@ def cache_activations(
         max_tokens: Maximum number of tokens to cache.
     """
 
-    if remove_bos:
-        print("Skipping BOS tokens.")
-
     filters = {
         module_path: t.tensor(indices, dtype=t.int64).to("cuda")
         for module_path, indices in filters.items()
     }
-    cache = Cache(batch_size, filters, remove_bos)
+    cache = Cache(batch_size, filters)
 
     token_batches, tokens_per_batch = _batch_tokens(
         tokens, batch_size, max_tokens
@@ -190,11 +237,21 @@ def cache_activations(
             ) as ret:
                 _ = model(batch)
 
+            if pad_token is not None:
+                pad_mask = batch == pad_token
+
             for path, dictionary in submodule_dict.items():
                 acts = ret[path].output
                 if isinstance(acts, tuple):
                     acts = acts[0]
                 latents = dictionary(acts)
+
+                if pad_token is not None:
+                    latents[pad_mask] = 0
+
+                if remove_bos:
+                    latents[:, 0] = 0
+
                 cache.add(latents, batch_number, path)
 
             pbar.update(tokens_per_batch)

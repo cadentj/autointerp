@@ -157,7 +157,7 @@ Models = Literal["gemma-2-2b", "gemma-2-9b"]
 FEATURE_REQUEST_URL = (
     "https://www.neuronpedia.org/api/feature/{model_id}/{layer_id}/{index}"
 )
-TOKEN = os.environ["NEURONPEDIA_TOKEN"]
+TOKEN = os.environ.get("NEURONPEDIA_TOKEN", None)
 
 
 async def fetch_feature(

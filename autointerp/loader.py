@@ -59,7 +59,7 @@ def _pool_max_activation_windows(
 
 def _get_valid_features(
     locations: TensorType["features", 3],
-    indices: List[int] | int,
+    indices: List[int] | int | None,
 ) -> List[int]:
     """Some features might not have been cached since they were too rare.
     Filter for valid features that were actually cached.
@@ -76,7 +76,7 @@ def _get_valid_features(
 
     features = t.unique(locations[:, 2]).tolist()
 
-    if isinstance(indices, list) and indices is not None:
+    if isinstance(indices, list):
         found_indices = []
         for i in indices:
             if i not in features:
@@ -85,7 +85,7 @@ def _get_valid_features(
                 found_indices.append(i)
         features = found_indices
 
-    elif isinstance(indices, int) and indices is not None:
+    elif isinstance(indices, int):
         if indices not in features:
             raise ValueError(f"Feature {indices} not found in cached features")
         features = [indices]
@@ -93,46 +93,28 @@ def _get_valid_features(
     return features
 
 
-def load(
-    path: str,
+def _load(
+    tokens: TensorType["batch", "seq"],
+    locations: TensorType["features", 3],
+    activations: TensorType["features"],
     sampler: Callable,
-    indices: List[int] | int = None,
+    indices: List[int] | int,
+    tokenizer: AutoTokenizer,
     ctx_len: int = 64,
     max_examples: int = 2_000,
-    max_features: int = None,
-    load_similar_non_activating: int = 0,
-    load_random_non_activating: int = 0,
-) -> List[Feature]:
-    """Load cached activations from disk.
-
-    Args:
-        path: Path to cached activations.
-        sampler: Samplers define how to reconstruct examples.
-        indices: Optional list of indices of features to load.
-        ctx_len: Sequence length of each example.
-        max_examples: Maximum number of examples to load. Set to -1 to load all.
-        load_non_activating: Number of non-activating examples to load.
-    """
-    data = t.load(path)
-    tokens = t.load(data["tokens_path"])
-    tokenizer = AutoTokenizer.from_pretrained(data["model_id"])
-
-    # Locations corresponds to rows of (batch, seq, feature)
-    locations: TensorType["features", 3] = data["locations"]
-    # Activations is the corresponding activation for each location
-    activations: TensorType["features"] = data["activations"]
-
-    assert tokens.shape[1] % ctx_len == 0, (
-        "Token sequence length must be a multiple of ctx_len"
-    )
-
-    available_features = _get_valid_features(locations, indices)
+):
+    """Underlying function for feature loading interface."""
 
     features = []
-    for feature in tqdm(available_features, desc="Loading features"):
-        indices = locations[:, 2] == feature
-        _locations = locations[indices]
-        _activations = activations[indices]
+    for feature in tqdm(indices, desc="Loading features", leave=False):
+        mask = locations[:, 2] == feature
+
+        if mask.sum() == 0:
+            print(f"Feature {feature} not found in cached features")
+            continue
+
+        _locations = locations[mask]
+        _activations = activations[mask]
 
         max_activation = _activations.max().item()
 
@@ -153,8 +135,54 @@ def load(
         )
         features.append(feature)
 
-        if max_features is not None and len(features) >= max_features:
-            break
+    return features
+
+
+def load(
+    path: str,
+    sampler: Callable,
+    indices: List[int] | int = None,
+    ctx_len: int = 64,
+    max_examples: int = 2_000,
+    load_similar_non_activating: int = 0,
+    load_random_non_activating: int = 0,
+) -> List[Feature]:
+    """Load cached activations from disk.
+
+    Args:
+        path: Path to cached activations.
+        sampler: Samplers define how to reconstruct examples.
+        indices: Optional list of indices of features to load.
+        ctx_len: Sequence length of each example.
+        max_examples: Maximum number of examples to load. Set to -1 to load all.
+        load_non_activating: Number of non-activating examples to load.
+    """
+    data = t.load(path)
+    tokens = t.load(data["tokens_path"])
+
+    tokenizer = AutoTokenizer.from_pretrained(data["model_id"])
+
+    # Locations corresponds to rows of (batch, seq, feature)
+    locations: TensorType["features", 3] = data["locations"]
+    # Activations is the corresponding activation for each location
+    activations: TensorType["features"] = data["activations"]
+
+    assert tokens.shape[1] % ctx_len == 0, (
+        "Token sequence length must be a multiple of ctx_len"
+    )
+
+    available_features = _get_valid_features(locations, indices)
+
+    features = _load(
+        tokens,
+        locations,
+        activations,
+        sampler,
+        available_features,
+        tokenizer,
+        ctx_len,
+        max_examples,
+    )
 
     if load_similar_non_activating > 0:
         print("Running similarity search...")
@@ -165,9 +193,7 @@ def load(
 
     if load_random_non_activating > 0:
         print("Running random non-activating search...")
-        random_sampler = RandomSampler(
-            tokenizer, tokens, locations, ctx_len
-        )
+        random_sampler = RandomSampler(tokenizer, tokens, locations, ctx_len)
         random_sampler(features, n_examples=load_random_non_activating)
 
     return features
