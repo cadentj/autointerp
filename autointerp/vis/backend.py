@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from ..loader import load, _load
 from ..base import Feature, Example
-from ..samplers import make_quantile_sampler
+from ..samplers import identity_sampler
 
 FeatureFn = Callable[
     [TensorType["batch", "sequence", "d_model"]],
@@ -116,13 +116,12 @@ class Backend:
         indices = feature_data["feature_idx"].tolist()
 
         max_examples = load_kwargs.pop("max_examples", 5)
-        sampler = make_quantile_sampler(n_examples=max_examples, n_quantiles=1)
 
         loaded_features = _load(
             self.cache["tokens"],
             self.cache["locations"],
             self.cache["activations"],
-            sampler,
+            identity_sampler,
             indices,
             self.tokenizer,
             max_examples=max_examples,
@@ -137,7 +136,6 @@ class Backend:
         feature_data = self.header[self.header["feature_idx"].isin(features)]
 
         max_examples = load_kwargs.pop("max_examples", 5)
-        sampler = make_quantile_sampler(n_examples=max_examples, n_quantiles=1)
 
         loaded_features = {}
 
@@ -148,7 +146,7 @@ class Backend:
 
             shard_features = load(
                 shard_path,
-                sampler,
+                identity_sampler,
                 indices=indices,
                 max_examples=max_examples,
                 **load_kwargs,

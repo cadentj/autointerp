@@ -55,7 +55,10 @@ class Feature:
     max_activation: float
     """Maximum activation of the feature across all examples."""
 
-    activating_examples: List[Example]
+    max_activating_examples: List[Example]
+    """Activating examples."""
+
+    min_activating_examples: List[Example] = field(default_factory=list)
     """Activating examples."""
 
     non_activating_examples: List[Example] = field(default_factory=list)
