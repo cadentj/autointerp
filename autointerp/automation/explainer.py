@@ -1,8 +1,9 @@
 import re
+from typing import List
 
 from .prompts.explainer_prompt import build_prompt
 from .clients import HTTPClient
-from ..base import Feature
+from ..base import Example
 
 
 class Explainer:
@@ -16,13 +17,13 @@ class Explainer:
         self.verbose = verbose
         self.insert_as_prompt = insert_as_prompt
 
-    async def __call__(self, feature: Feature, **generation_kwargs):
-        messages = self._build_prompt(feature)
+    async def __call__(self, examples: List[Example], **generation_kwargs):
+        messages = self._build_prompt(examples)
 
         response = await self.client.generate(messages, **generation_kwargs)
 
         if self.verbose:
-            with open(f"response-{feature.index}.txt", "w") as f:
+            with open("response.txt", "w") as f:
                 for message in messages:
                     f.write(f"{message['role'].upper()}:\n\n")
                     f.write(message["content"] + "\n\n")
@@ -35,10 +36,10 @@ class Explainer:
             print(f"Explanation parsing failed: {e}")
             return "Explanation could not be parsed."
 
-    def _build_prompt(self, feature: Feature):
+    def _build_prompt(self, examples: List[Example]):
         formatted_examples = [
             self._highlight(index + 1, example)
-            for index, example in enumerate(feature.examples)
+            for index, example in enumerate(examples)
         ]
 
         return build_prompt(

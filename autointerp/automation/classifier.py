@@ -144,12 +144,13 @@ class Classifier:
     async def __call__(
         self,
         feature: Feature,
+        examples_key: str,
         explanation: str,
         **generation_kwargs: Any,
     ):
         """Run classification on a feature"""
         prepare = getattr(self, f"_prepare_{self.method}")
-        samples = prepare(feature)
+        samples = prepare(feature, examples_key)
         random.shuffle(samples)
 
         batches = [
@@ -183,7 +184,7 @@ class Classifier:
 
         return dict(per_quantile_results)
 
-    def _prepare_detection(self, feature: Feature) -> List[Sample]:
+    def _prepare_detection(self, feature: Feature, examples_key: str) -> List[Sample]:
         """Prepare samples for detection method"""
         random_samples = examples_to_samples(
             feature.non_activating_examples,
@@ -191,15 +192,15 @@ class Classifier:
         )
 
         activating_samples = examples_to_samples(
-            feature.activating_examples,
+            getattr(feature, examples_key),
             activating=True,
         )
 
         return random_samples + activating_samples
 
-    def _prepare_fuzzing(self, feature: Feature) -> List[Sample]:
+    def _prepare_fuzzing(self, feature: Feature, examples_key: str) -> List[Sample]:
         """Prepare samples for fuzzing method"""
-        examples = feature.activating_examples
+        examples = getattr(feature, examples_key)
         random.shuffle(examples)
 
         # 1) Count average number of non-zero activations in each example

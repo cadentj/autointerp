@@ -1,3 +1,4 @@
+import os
 from typing import List, Tuple, Callable
 
 import torch as t
@@ -156,6 +157,34 @@ def _load(
     return features
 
 
+def _merge_shards_in_memory(cache_dir: str):
+    """Load the shards into memory and combined into a single cache."""
+
+    locations = []
+    activations = []
+
+    for shard in tqdm(
+        os.listdir(cache_dir), desc="Loading cache shards"
+    ):
+        if not shard.endswith(".pt"):
+            continue
+
+        shard_path = os.path.join(cache_dir, shard)
+        shard_data = t.load(shard_path)
+
+        locations.append(shard_data["locations"])
+        activations.append(shard_data["activations"])
+
+    tokens = t.load(shard_data["tokens_path"])
+    locations = t.cat(locations, dim=0)
+    activations = t.cat(activations, dim=0)
+
+    return {
+        "locations": locations,
+        "activations": activations,
+        "tokens": tokens,
+    }
+
 def load(
     path: str,
     sampler: Callable,
@@ -176,8 +205,12 @@ def load(
         max_examples: Maximum number of examples to load. Set to -1 to load all.
         load_non_activating: Number of non-activating examples to load.
     """
-    data = t.load(path)
-    tokens = t.load(data["tokens_path"])
+    if os.path.isdir(path):
+        data = _merge_shards_in_memory(path)
+        tokens = data["tokens"]
+    else:
+        data = t.load(path)
+        tokens = t.load(data["tokens_path"])
 
     tokenizer = AutoTokenizer.from_pretrained(data["model_id"])
 
