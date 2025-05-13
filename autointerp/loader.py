@@ -162,6 +162,7 @@ def _merge_shards_in_memory(cache_dir: str):
 
     locations = []
     activations = []
+    model_id = None
 
     for shard in tqdm(
         os.listdir(cache_dir), desc="Loading cache shards"
@@ -175,6 +176,9 @@ def _merge_shards_in_memory(cache_dir: str):
         locations.append(shard_data["locations"])
         activations.append(shard_data["activations"])
 
+        if model_id is None: 
+            model_id = shard_data["model_id"]
+
     tokens = t.load(shard_data["tokens_path"])
     locations = t.cat(locations, dim=0)
     activations = t.cat(activations, dim=0)
@@ -183,6 +187,7 @@ def _merge_shards_in_memory(cache_dir: str):
         "locations": locations,
         "activations": activations,
         "tokens": tokens,
+        "model_id": model_id,
     }
 
 def load(
