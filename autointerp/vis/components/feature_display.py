@@ -86,7 +86,9 @@ class FeatureDisplay(Component):
             display(HTML(TOOLTIP))
             for hookpoint, features in features.items():
 
-                display(HTML(f"<h2>{hookpoint}</h2>"))
+                feature_html = ""
+
+                feature_html += f"<h2>{hookpoint}</h2>"
 
                 for query_result in features:
                     index = (
@@ -94,23 +96,38 @@ class FeatureDisplay(Component):
                         if isinstance(query_result, Feature)
                         else query_result.feature.index
                     )
-                    display(HTML(f"<h4>Feature {index}</h4>"))
+                    feature_html += f"<h4>Feature {index}</h4>"
 
                     if isinstance(query_result, InferenceResult):
                         query_result = self._display_inference_example(query_result)
 
-                    # Only add dropdown if there are activating examples
-                    if query_result.activating_examples:
+                    feature_html += "<h5>Max Activating Examples</h4>"
+
+                    max_example_html = ""
+                    if query_result.max_activating_examples:
                         # Display activating examples directly
-                        for example in query_result.activating_examples:
+                        for example in query_result.max_activating_examples:
                             example_html = self._example_to_html(example)
-                            display(
-                                HTML(
-                                    ACTIVATING_EXAMPLE_WRAPPER.format(
-                                        example=example_html,
-                                    )
-                                )
+                            max_example_html += ACTIVATING_EXAMPLE_WRAPPER.format(
+                                example=example_html,
                             )
+
+                    feature_html += max_example_html
+
+                    feature_html += "<h5>Min Activating Examples</h4>"
+
+                    min_example_html = ""
+                    if query_result.min_activating_examples:
+                        # Display activating examples directly
+                        for example in query_result.min_activating_examples:
+                            example_html = self._example_to_html(example)
+                            min_example_html += ACTIVATING_EXAMPLE_WRAPPER.format(
+                                example=example_html,
+                            )
+
+                    feature_html += min_example_html
+
+                display(HTML(feature_html))
 
     def _example_to_html(
         self,
@@ -131,17 +148,17 @@ class FeatureDisplay(Component):
         threshold = max_abs_act * threshold_ratio
 
         # Define base colors (RGB)
-        positive_color = "0, 102, 204"  # Blue
-        negative_color = "204, 51, 51"  # Red
+        positive_color = "103, 171, 209"  # Blue
+        negative_color = "229, 132, 104"  # Red
 
         for i in range(len(str_tokens)):
             activation_val = activations[i].item()
             abs_activation = abs(activation_val)
 
             if abs_activation > threshold:
-                # Calculate opacity based on activation value (normalized between 0.2 and 1.0)
+                # Calculate opacity based on activation value (normalized between 0.0 and 1.0)
                 # Avoid division by zero if max_abs_act is 0
-                opacity = 0.2 + 0.8 * (abs_activation / max_abs_act) if max_abs_act > 0 else 0.2
+                opacity = 0.0 + 0.8 * (abs_activation / max_abs_act) if max_abs_act > 0 else 0.0
 
                 if activation_val > 0:
                     color = positive_color

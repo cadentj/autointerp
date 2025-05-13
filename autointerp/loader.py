@@ -1,3 +1,4 @@
+import os
 from typing import List, Tuple, Callable
 
 import torch as t
@@ -9,12 +10,13 @@ from .base import Feature
 from .samplers import SimilaritySearch, RandomSampler
 
 
-def _pool_max_activation_windows(
+def _pool_activation_windows(
     activations: TensorType["features"],
     locations: TensorType["features", 3],
     tokens: TensorType["batch", "seq"],
     ctx_len: int,
     max_examples: int,
+    reverse: bool = False
 ) -> Tuple[TensorType["seq"], TensorType["seq"]]:
     batch_idxs = locations[:, 0]
     seq_idxs = locations[:, 1]
@@ -31,7 +33,10 @@ def _pool_max_activation_windows(
     )
 
     # 2) Compute the max activation for each context
-    max_buffer = t.segment_reduce(activations, "max", lengths=lengths)
+    if reverse: 
+        max_buffer = t.segment_reduce(activations, "min", lengths=lengths)
+    else:
+        max_buffer = t.segment_reduce(activations, "max", lengths=lengths)
 
     # 3) Reconstruct the activation windows for each context
     new_tensor = t.zeros(
@@ -48,7 +53,11 @@ def _pool_max_activation_windows(
         k = len(max_buffer)
     else:
         k = min(max_examples, len(max_buffer))
-    _, top_indices = t.topk(max_buffer, k, sorted=True)
+
+    if reverse:
+        _, top_indices = t.topk(max_buffer, k, sorted=True, largest=False)
+    else:
+        _, top_indices = t.topk(max_buffer, k, sorted=True, largest=True)
 
     # 6) Return the top k activation windows and tokens
     activation_windows = t.stack([new_tensor[i] for i in top_indices])
@@ -100,6 +109,7 @@ def _load(
     sampler: Callable,
     indices: List[int] | int,
     tokenizer: AutoTokenizer,
+    load_min_activating: bool = False,
     ctx_len: int = 64,
     max_examples: int = 2_000,
 ):
@@ -118,25 +128,73 @@ def _load(
 
         max_activation = _activations.max().item()
 
-        token_windows, activation_windows = _pool_max_activation_windows(
+        token_windows, activation_windows = _pool_activation_windows(
             _activations, _locations, tokens, ctx_len, max_examples
         )
-
+        
         examples = sampler(token_windows, activation_windows, tokenizer)
 
         if examples is None:
             print(f"Not enough examples found for feature {feature}")
             continue
 
+        min_examples = []
+        if load_min_activating:
+            min_token_windows, min_activation_windows = _pool_activation_windows(
+                _activations, _locations, tokens, ctx_len, max_examples, reverse=True
+            )
+            
+            min_examples = sampler(min_token_windows, min_activation_windows, tokenizer)
+
         feature = Feature(
             index=feature,
             max_activation=max_activation,
-            activating_examples=examples,
+            max_activating_examples=examples,
+            min_activating_examples=min_examples,
         )
         features.append(feature)
 
     return features
 
+
+def _merge_shards_in_memory(cache_dir: str):
+    """Load the shards into memory and combined into a single cache."""
+
+    locations = []
+    activations = []
+    model_id = None
+
+    for shard in tqdm(
+        os.listdir(cache_dir), desc="Loading cache shards"
+    ):
+        if not shard.endswith(".pt"):
+            continue
+
+        shard_path = os.path.join(cache_dir, shard)
+
+        shard_path = shard_path.replace("/root/", "/workspace/")
+
+        shard_data = t.load(shard_path)
+
+        locations.append(shard_data["locations"])
+        activations.append(shard_data["activations"])
+
+        if model_id is None: 
+            model_id = shard_data["model_id"]
+
+    tokens_path = shard_data["tokens_path"]
+    tokens_path = tokens_path.replace("/root/", "/workspace/")
+
+    tokens = t.load(tokens_path)
+    locations = t.cat(locations, dim=0)
+    activations = t.cat(activations, dim=0)
+
+    return {
+        "locations": locations,
+        "activations": activations,
+        "tokens": tokens,
+        "model_id": model_id,
+    }
 
 def load(
     path: str,
@@ -146,6 +204,7 @@ def load(
     max_examples: int = 2_000,
     load_similar_non_activating: int = 0,
     load_random_non_activating: int = 0,
+    load_min_activating: bool = False
 ) -> List[Feature]:
     """Load cached activations from disk.
 
@@ -157,8 +216,12 @@ def load(
         max_examples: Maximum number of examples to load. Set to -1 to load all.
         load_non_activating: Number of non-activating examples to load.
     """
-    data = t.load(path)
-    tokens = t.load(data["tokens_path"])
+    if os.path.isdir(path):
+        data = _merge_shards_in_memory(path)
+        tokens = data["tokens"]
+    else:
+        data = t.load(path)
+        tokens = t.load(data["tokens_path"])
 
     tokenizer = AutoTokenizer.from_pretrained(data["model_id"])
 
@@ -180,6 +243,7 @@ def load(
         sampler,
         available_features,
         tokenizer,
+        load_min_activating,
         ctx_len,
         max_examples,
     )

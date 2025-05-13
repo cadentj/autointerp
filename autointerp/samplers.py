@@ -18,6 +18,34 @@ def _normalize(
     return normalized.round().int()
 
 
+def identity_sampler(
+    token_windows: TensorType["batch", "seq"],
+    activation_windows: TensorType["batch", "seq"],
+    tokenizer: AutoTokenizer,
+) -> List[Example]:
+    examples = []
+
+    max_activation = activation_windows.max()
+
+    for i in range(token_windows.shape[0]):
+        pad_token_mask = token_windows[i] == tokenizer.pad_token_id
+        trimmed_window = token_windows[i][~pad_token_mask]
+        trimmed_activations = activation_windows[i][~pad_token_mask]
+
+        examples.append(
+            Example(
+                tokens=trimmed_window,
+                activations=trimmed_activations,
+                normalized_activations=_normalize(
+                    trimmed_activations, max_activation
+                ),
+                quantile=0,
+                str_tokens=tokenizer.batch_decode(trimmed_window),
+            )
+        )
+
+    return examples
+
 def quantile_sampler(
     token_windows: TensorType["batch", "seq"],
     activation_windows: TensorType["batch", "seq"],
@@ -275,9 +303,7 @@ class SimilaritySearch:
         examples = []
         for idx in idxs:
             token_window = self.strides[idx]
-            pad_token_mask = (
-                token_window == self.subject_tokenizer.pad_token_id
-            )
+            pad_token_mask = token_window == self.subject_tokenizer.pad_token_id
             trimmed_window = token_window[~pad_token_mask]
             activation_window = t.zeros_like(trimmed_window)
 
