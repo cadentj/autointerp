@@ -171,6 +171,9 @@ def _merge_shards_in_memory(cache_dir: str):
             continue
 
         shard_path = os.path.join(cache_dir, shard)
+
+        shard_path = shard_path.replace("/root/", "/workspace/")
+
         shard_data = t.load(shard_path)
 
         locations.append(shard_data["locations"])
@@ -179,7 +182,10 @@ def _merge_shards_in_memory(cache_dir: str):
         if model_id is None: 
             model_id = shard_data["model_id"]
 
-    tokens = t.load(shard_data["tokens_path"])
+    tokens_path = shard_data["tokens_path"]
+    tokens_path = tokens_path.replace("/root/", "/workspace/")
+
+    tokens = t.load(tokens_path)
     locations = t.cat(locations, dim=0)
     activations = t.cat(activations, dim=0)
 
