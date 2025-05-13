@@ -1,3 +1,4 @@
+import os
 from typing import List, Dict
 
 import ipywidgets as widgets
@@ -17,27 +18,59 @@ def make_dashboard(
     backend = Backend(cache_dir, feature_fn, in_memory=in_memory)
     return FeatureVisualizationDashboard(backend, **load_kwargs).display()
 
+def _enumerate_subfolders(cache_dir: str):
+    subfolders = []
+    for path in os.listdir(cache_dir):
+        full_path = os.path.join(cache_dir, path)
+        if os.path.isdir(full_path):
+            subfolders.append(full_path)
+
+    return subfolders
 
 def make_feature_display(
-    cache_dirs: List[str], features: Dict[str, List[int]], **load_kwargs
+    cache_dir: str, features: Dict[str, List[int]] | List[str] = {}, **load_kwargs
 ):
+    # Subfolder names are hookpoints for cached modules
+    subfolders = _enumerate_subfolders(cache_dir)
+
+    requested_subfolders = []
+
+    # Build requested subfolders from features
+    if features != {}:
+        hookpoints = features if isinstance(features, list) else features.keys()
+
+        for hookpoint in hookpoints:
+            probable_path = os.path.join(cache_dir, hookpoint)
+            if probable_path not in subfolders:
+                raise ValueError(f"Hookpoint {hookpoint} not found in {cache_dir}")
+
+            else: 
+                requested_subfolders.append(probable_path)
+
+    # If no features are requested, use all subfolders
+    else:
+        requested_subfolders = subfolders
+
+    # Make backends for all subfolders
     backends = [
-        Backend(cache_dir, None, load_model=False) for cache_dir in cache_dirs
+        Backend(cache_dir, None, load_model=False) for cache_dir in requested_subfolders
     ]
     dash = FeatureDisplay()
 
+    # Display root widget
     display(dash.root)
 
     loaded_features = {}
+
+    # NOTE: This just displays the TQDM pbars in the widget, not necessary. Maybe better to suppress?
     with dash:
         for backend in backends:
             # Hookpoint should be the directory name
             hookpoint = backend.hook_module
             loaded = backend.query(
-                features[hookpoint], as_dict=False, **load_kwargs
+                features.get(hookpoint, None), as_dict=False, **load_kwargs
             )
             loaded_features.update(loaded)
-
 
     dash.display(loaded_features)
 

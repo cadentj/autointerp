@@ -131,9 +131,14 @@ class Backend:
         return {f.index: f for f in loaded_features}
 
     def query(
-        self, features: List[int], as_dict: bool = True, **load_kwargs
+        self, features: List[int] | None, as_dict: bool = True, **load_kwargs
     ) -> Dict[int, Feature]:
-        feature_data = self.header[self.header["feature_idx"].isin(features)]
+        # Get relevant rows from the header
+        # Load all features if None
+        if features is None:
+            feature_data = self.header
+        else:
+            feature_data = self.header[self.header["feature_idx"].isin(features)]
 
         max_examples = load_kwargs.pop("max_examples", 5)
 
