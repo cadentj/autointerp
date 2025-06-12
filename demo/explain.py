@@ -1,3 +1,20 @@
+# %%
+
+from autointerp import load, make_quantile_sampler
+
+FEATURE_PATH = "/root/cache/gemma-2-2b/model.layers.8"
+
+sampler = make_quantile_sampler(n_examples=20, n_quantiles=1)
+cache = load(FEATURE_PATH, sampler, max_examples=2000)
+
+
+
+
+
+
+
+# %%
+
 import asyncio
 from autointerp.automation import OpenRouterClient, Explainer
 from autointerp import load, make_quantile_sampler

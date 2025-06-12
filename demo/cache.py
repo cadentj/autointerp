@@ -2,26 +2,25 @@
 
 from datasets import load_dataset
 import torch as t
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
+import os
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from gemma import JumpReLUSAE
 from autointerp import cache_activations
-from sparsify import Sae
 
+t.set_grad_enabled(False)
+
+model_id = "google/gemma-2-2b"
+tok = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id, torch_dtype=t.bfloat16, device_map="auto"
+)
+sae = JumpReLUSAE.from_pretrained(8).to("cuda", t.bfloat16)
 data = load_dataset("kh4dien/fineweb-sample", split="train[:25%]")
 
-model_id = "unsloth/Qwen2.5-Coder-32B-Instruct"
-model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=t.bfloat16, device_map="auto")
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-
-path = "/workspace/qwen-saes-two/qwen-step-final/model.layers.31"
-sae = Sae.load_from_disk(path, device="cuda")
-
-path = "/workspace/qwen-saes-ft/qwen/layers.31"
-ssae = Sae.load_from_disk(path, device="cuda")
 
 # %%
 
-tokens = tokenizer(
+tokens = tok(
     data["text"],
     padding=True,
     return_tensors="pt",
@@ -34,29 +33,26 @@ tokens = tokens["input_ids"]
 mask = ~(tokens == 0).any(dim=1)
 tokens = tokens[mask]
 
-def encode(x):
-    flat_x = x.flatten(0, 1)
-    flat_resid = flat_x - sae.simple_forward(flat_x)
-    B, S, _ = x.shape
-    resid = flat_resid.unflatten(0, (B, S))
-    return ssae.simple_encode(resid)
-
+filters = {"model.layers.8": [list(range(100))]}
 cache = cache_activations(
     model=model,
-    submodule_dict={"model.layers.31": encode},
+    submodule_dict={"model.layers.8": sae.encode},
     tokens=tokens,
+    filters=filters,
     batch_size=8,
     max_tokens=1_000_000,
 )
 
 # %%
 
-save_dir = "/workspace/qwen-ssae-cache-two"
+save_dir = "/root/cache/gemma-2-2b"
+os.makedirs(save_dir, exist_ok=True)
+
 cache.save_to_disk(
     save_dir=save_dir,
     model_id=model_id,
     tokens_path=f"{save_dir}/tokens.pt",
-    n_shards=50,
+    n_shards=5,
 )
 t.save(tokens, f"{save_dir}/tokens.pt")
 
