@@ -1,10 +1,11 @@
 import os
-from typing import List, Tuple, Callable
+from typing import List, Tuple, Callable, Any, Literal
 
 import torch as t
 from torchtyping import TensorType
 from transformers import AutoTokenizer
 from tqdm import tqdm
+
 
 from .base import Feature
 from .samplers import SimilaritySearch, RandomSampler
@@ -112,11 +113,22 @@ def _load(
     load_min_activating: bool = False,
     ctx_len: int = 64,
     max_examples: int = 2_000,
+    pbar: Literal["tqdm", "streamlit"] = "tqdm"
 ):
     """Underlying function for feature loading interface."""
 
     features = []
-    for feature in tqdm(indices, desc="Loading features", leave=False):
+
+
+    if pbar == "streamlit":
+        from .utils import get_streamlit_pbar
+        pbar = get_streamlit_pbar(indices, desc="Loading features")
+
+    else:
+        pbar = tqdm(indices, desc="Loading features", leave=False)
+
+    for feature in pbar:
+
         mask = locations[:, 2] == feature
 
         if mask.sum() == 0:
@@ -204,7 +216,8 @@ def load(
     max_examples: int = 2_000,
     load_similar_non_activating: int = 0,
     load_random_non_activating: int = 0,
-    load_min_activating: bool = False
+    load_min_activating: bool = False,
+    pbar: Literal["tqdm", "streamlit"] = "tqdm"
 ) -> List[Feature]:
     """Load cached activations from disk.
 
@@ -246,6 +259,7 @@ def load(
         load_min_activating,
         ctx_len,
         max_examples,
+        pbar,
     )
 
     if load_similar_non_activating > 0:

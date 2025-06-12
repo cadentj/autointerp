@@ -59,33 +59,105 @@ def create_client(client_type: str, model: str) -> Any:
     else:
         raise ValueError(f"Unknown client type: {client_type}")
 
-def sampler_options():
-    """Create sampler selection interface."""
-    st.subheader("Sampler Configuration")
+def feature_loading_component(base_path: str, key_prefix: str):
+    """Create feature loading interface with sampler configuration."""
+    st.subheader("🔄 Feature Loading")
     
-    sampler_type = st.selectbox(
-        "Sampler Type", 
-        ["quantile", "identity"],
-        help="Choose how to sample examples from features"
+    if not base_path or not os.path.exists(base_path):
+        st.warning("Please provide a valid base path containing feature directories in the sidebar.")
+        return None, None
+    
+    # Caching job directory selection
+    caching_jobs = load_feature_directories(base_path)
+    if not caching_jobs:
+        st.warning("No caching job directories found in the specified path.")
+        return None, None
+    
+    selected_caching_job = st.selectbox(
+        "Select Caching Job",
+        caching_jobs,
+        help="Choose which caching job directory to load from",
+        key=f"{key_prefix}_caching_job"
     )
     
-    if sampler_type == "quantile":
-        col1, col2 = st.columns(2)
-        with col1:
-            n_examples = st.number_input("Examples per quantile", min_value=1, value=20)
-            n_quantiles = st.number_input("Number of quantiles", min_value=1, value=1)
-        with col2:
-            n_exclude = st.number_input("Exclude from start", min_value=0, value=0)
-            n_top_exclude = st.number_input("Exclude from top", min_value=0, value=0)
+    full_path = None
+    if selected_caching_job:
+        caching_job_path = os.path.join(base_path, selected_caching_job)
         
-        return make_quantile_sampler(
-            n_examples=n_examples,
-            n_quantiles=n_quantiles,
-            n_exclude=n_exclude,
-            n_top_exclude=n_top_exclude
-        )
+        # Model layer directory selection
+        model_layers = load_feature_directories(caching_job_path)
+        if model_layers:
+            # Add option to select all layers
+            layer_options = ["All Layers"] + model_layers
+            selected_layer = st.selectbox(
+                "Select Model Layer",
+                layer_options,
+                help="Choose specific model layer or 'All Layers' to run on all layers",
+                key=f"{key_prefix}_model_layer"
+            )
+            
+            if selected_layer == "All Layers":
+                full_path = caching_job_path
+                st.info(f"📁 Will load from all layers in: {selected_caching_job}")
+            else:
+                full_path = os.path.join(caching_job_path, selected_layer)
+                st.info(f"📁 Will load from: {selected_caching_job}/{selected_layer}")
+        else:
+            # No subdirectories found, use the caching job directory directly
+            full_path = caching_job_path
+            st.info(f"📁 No model layer subdirectories found. Using: {selected_caching_job}")
     else:
-        return identity_sampler
+        full_path = None
+
+    # Sampler configuration
+    st.subheader("📊 Sampler Configuration")
+    st.text("Quantile Sampler")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        n_examples = st.number_input("Examples per quantile", min_value=1, value=20, key=f"{key_prefix}_n_examples")
+        n_quantiles = st.number_input("Number of quantiles", min_value=1, value=1, key=f"{key_prefix}_n_quantiles")
+    with col2:
+        n_exclude = st.number_input("Exclude from start", min_value=0, value=0, key=f"{key_prefix}_n_exclude")
+        n_top_exclude = st.number_input("Exclude from top of each quantile", min_value=0, value=0, key=f"{key_prefix}_n_top_exclude")
+    
+    sampler = make_quantile_sampler(
+        n_examples=n_examples,
+        n_quantiles=n_quantiles,
+        n_exclude=n_exclude,
+        n_top_exclude=n_top_exclude
+    )
+    
+    # Additional loading options
+    st.subheader("⚙️ Loading Options")
+    col1, col2 = st.columns(2)
+    with col1:
+        ctx_len = st.number_input("Example context length", min_value=16, value=64, key=f"{key_prefix}_ctx_len")
+        max_examples = st.number_input("Max examples to load per feature", min_value=1, value=1000, key=f"{key_prefix}_max_examples")
+    with col2:
+        load_similar = st.number_input("Similar non-activating", min_value=0, value=0, key=f"{key_prefix}_similar")
+        load_random = st.number_input("Random non-activating", min_value=0, value=0, key=f"{key_prefix}_random")
+    
+    # Load features button
+    if full_path and st.button(f"🚀 Load Features", key=f"{key_prefix}_load", type="primary"):
+        with st.spinner("Loading features..."):
+            try:
+                features = load(
+                    full_path,
+                    sampler=sampler,
+                    ctx_len=ctx_len,
+                    max_examples=max_examples,
+                    load_similar_non_activating=load_similar,
+                    load_random_non_activating=load_random,
+                    pbar="streamlit"
+                )
+                st.success(f"✅ Loaded {len(features)} features!")
+                return features, sampler
+            except Exception as e:
+                st.error(f"❌ Failed to load features: {str(e)}")
+                return None, None
+    
+    return None, None
 
 def client_configuration():
     """Create client configuration interface."""
@@ -93,37 +165,16 @@ def client_configuration():
     
     col1, col2 = st.columns(2)
     with col1:
-        client_type = st.selectbox("Client Type", ["Local", "OpenRouter"])
+        client_type = st.selectbox("Client Type", ["OpenRouter", "Local"])
     with col2:
-        model = st.text_input("Model", value="gpt-4o-mini" if client_type == "OpenRouter" else "meta-llama/llama-3.1-8b-instruct")
+        model = st.text_input("Model", value="meta-llama/Llama-3.3-70B-Instruct" if client_type == "OpenRouter" else "meta-llama/llama-3.1-8b-instruct")
     
     return client_type, model
 
-def feature_loader_interface(base_path: str):
-    """Create interface for loading features."""
-    if not base_path or not os.path.exists(base_path):
-        st.warning("Please provide a valid base path containing feature directories.")
-        return None
-    
-    directories = load_feature_directories(base_path)
-    if not directories:
-        st.warning("No feature directories found in the specified path.")
-        return None
-    
-    selected_dir = st.selectbox(
-        "Select Feature Directory",
-        directories,
-        help="Choose which cached feature directory to load"
-    )
-    
-    if selected_dir:
-        full_path = os.path.join(base_path, selected_dir)
-        return full_path
-    
-    return None
 
-async def run_explanation_job(features: List[Feature], explainer: Explainer, job_id: str):
-    """Run explanation job asynchronously."""
+async def run_explanation_job(features: List[Feature], explainer: Explainer, job_id: str, save_dir: str = None):
+    """Run explanation job asynchronously using gather for speed."""
+
     try:
         st.session_state.running_jobs[job_id] = {
             "type": "explanation",
@@ -132,22 +183,32 @@ async def run_explanation_job(features: List[Feature], explainer: Explainer, job
             "status": "running"
         }
         
-        results = {}
-        for i, feature in enumerate(features):
+        # Use asyncio.gather for parallel processing
+        async def process_feature(feature):
             explanation = await explainer(feature)
-            results[feature.index] = explanation
-            
-            # Update progress
-            st.session_state.running_jobs[job_id]["completed"] = i + 1
-            
+            # Update progress atomically
+            st.session_state.running_jobs[job_id]["completed"] += 1
+            return feature.index, explanation
+        
+        # Run all features in parallel
+        results_list = await asyncio.gather(*[process_feature(feature) for feature in features])
+        results = dict(results_list)
+        
         st.session_state.results[job_id] = results
         st.session_state.running_jobs[job_id]["status"] = "completed"
+        
+        # Save results to directory if specified
+        if save_dir and os.path.exists(save_dir):
+            save_path = os.path.join(save_dir, f"{job_id}_explanations.json")
+            with open(save_path, 'w') as f:
+                json.dump(results, f, indent=2)
+            st.session_state.running_jobs[job_id]["save_path"] = save_path
         
     except Exception as e:
         st.session_state.running_jobs[job_id]["status"] = f"error: {str(e)}"
 
-async def run_classification_job(features: List[Feature], classifier: Classifier, explanations: Dict[int, str], job_id: str):
-    """Run classification job asynchronously."""
+async def run_classification_job(features: List[Feature], classifier: Classifier, explanations: Dict[int, str], job_id: str, save_dir: str = None):
+    """Run classification job asynchronously using gather for speed."""
     try:
         st.session_state.running_jobs[job_id] = {
             "type": "classification", 
@@ -156,42 +217,53 @@ async def run_classification_job(features: List[Feature], classifier: Classifier
             "status": "running"
         }
         
-        results = {}
-        for i, feature in enumerate(features):
+        # Use asyncio.gather for parallel processing
+        async def process_feature(feature):
             explanation = explanations.get(feature.index, "No explanation available")
             result = await classifier(feature, "max_activating_examples", explanation)
-            results[feature.index] = result
-            
-            # Update progress
-            st.session_state.running_jobs[job_id]["completed"] = i + 1
+            # Update progress atomically
+            st.session_state.running_jobs[job_id]["completed"] += 1
+            return feature.index, result
+        
+        # Run all features in parallel
+        results_list = await asyncio.gather(*[process_feature(feature) for feature in features])
+        results = dict(results_list)
             
         st.session_state.results[job_id] = results
         st.session_state.running_jobs[job_id]["status"] = "completed"
         
+        # Save results to directory if specified
+        if save_dir and os.path.exists(save_dir):
+            save_path = os.path.join(save_dir, f"{job_id}_classifications.json")
+            with open(save_path, 'w') as f:
+                json.dump(results, f, indent=2)
+            st.session_state.running_jobs[job_id]["save_path"] = save_path
+        
     except Exception as e:
         st.session_state.running_jobs[job_id]["status"] = f"error: {str(e)}"
 
-def explanation_tab():
+def explanation_tab(base_path: str, save_dir: str = None):
     """Create the explanation tab interface."""
     st.header("🔍 Feature Explanation")
     
+    # Feature loading
+    features, sampler = feature_loading_component(base_path, "explain")
+    
+    st.divider()
+    
     # Prompt editor
-    st.subheader("Explainer Prompt")
-    current_prompt = st.text_area(
-        "Edit the explainer prompt (supports Python template strings):",
-        value=SYSTEM,
-        height=300,
-        help="This prompt will be used to generate explanations for features"
-    )
+    st.subheader("💬 Explain")
+
+    with st.expander("Edit explanation prompt"):
     
-    # Sampler configuration
-    sampler = sampler_options()
-    
+        # Show full conversation structure for editing
+        from autointerp.automation.prompts.explainer_prompt import build_prompt
+        example_prompt = build_prompt("Example 1: Sample <<text>> with markers")
+        updated_prompt = prompt_editor(example_prompt, "Explainer_Prompt")
+        
     # Client configuration  
     client_type, model = client_configuration()
     
-    # Additional explainer options
-    st.subheader("Explainer Options")
     col1, col2 = st.columns(2)
     with col1:
         max_or_min = st.selectbox("Activation Type", ["max", "min"])
@@ -201,8 +273,8 @@ def explanation_tab():
         verbose = st.checkbox("Verbose output", value=False)
     
     # Run explanation
-    if st.button("🚀 Run Explanation", type="primary"):
-        if not st.session_state.features:
+    if st.button("🚀 Run Explanation", key="run_explanation", type="primary"):
+        if not features:
             st.error("Please load features first.")
             return
             
@@ -223,7 +295,7 @@ def explanation_tab():
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
                 loop.run_until_complete(
-                    run_explanation_job(st.session_state.features, explainer, job_id)
+                    run_explanation_job(features, explainer, job_id, save_dir)
                 )
                 loop.close()
             
@@ -236,21 +308,24 @@ def explanation_tab():
         except Exception as e:
             st.error(f"Failed to start explanation job: {str(e)}")
 
-def classification_tab():
+def classification_tab(base_path: str, save_dir: str = None):
     """Create the classification tab interface."""
     st.header("📊 Feature Classification")
     
-    # Prompt editor
-    st.subheader("Classification Prompt") 
-    current_prompt = st.text_area(
-        "Edit the classification prompt:",
-        value=DSCORER_SYSTEM_PROMPT,
-        height=300,
-        help="This prompt will be used to classify feature examples"
-    )
+    # Feature loading
+    features, sampler = feature_loading_component(base_path, "classify")
     
-    # Classification options
-    st.subheader("Classification Options")
+    st.divider()
+    
+    # Prompt editor
+    st.subheader("💬 Classification") 
+    
+    with st.expander("Edit classification prompt"):
+        # Show full conversation structure for editing
+        from autointerp.automation.prompts.detection_prompt import prompt
+        example_prompt = prompt("Example 1: Sample text", "Sample explanation")
+        updated_prompt = prompt_editor(example_prompt, "Classification_Prompt")
+    
     col1, col2 = st.columns(2)
     with col1:
         batch_size = st.number_input("Batch size", min_value=1, value=32)
@@ -259,14 +334,11 @@ def classification_tab():
         provide_random = st.checkbox("Provide random examples", value=True)
         provide_similar = st.checkbox("Provide similar examples", value=True)
     
-    # Sampler configuration
-    sampler = sampler_options()
-    
     # Client configuration
     client_type, model = client_configuration()
     
     # Additional classifier options
-    st.subheader("Classifier Options")
+    st.subheader("⚙️ Classifier Options")
     col1, col2 = st.columns(2)
     with col1:
         n_examples_shown = st.number_input("Examples shown", min_value=1, value=10)
@@ -275,8 +347,8 @@ def classification_tab():
         verbose = st.checkbox("Verbose output", value=False)
     
     # Run classification
-    if st.button("🚀 Run Classification", type="primary"):
-        if not st.session_state.features:
+    if st.button("🚀 Run Classification", key="run_classification", type="primary"):
+        if not features:
             st.error("Please load features first.")
             return
             
@@ -308,7 +380,7 @@ def classification_tab():
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
                 loop.run_until_complete(
-                    run_classification_job(st.session_state.features, classifier, explanation_results, job_id)
+                    run_classification_job(features, classifier, explanation_results, job_id, save_dir)
                 )
                 loop.close()
             
@@ -333,6 +405,8 @@ def job_progress_sidebar():
         for job_id, job_info in st.session_state.running_jobs.items():
             if job_info["status"] == "completed":
                 st.success(f"✅ {job_id[:20]}...")
+                if "save_path" in job_info:
+                    st.text(f"💾 Saved to: {os.path.basename(job_info['save_path'])}")
                 continue
             elif job_info["status"].startswith("error"):
                 st.error(f"❌ {job_id[:20]}...")
@@ -344,6 +418,128 @@ def job_progress_sidebar():
             st.text(f"🔄 {job_info['type'].title()}")
             st.progress(progress)
             st.text(f"{job_info['completed']}/{job_info['total']} features")
+
+def messages_to_text(messages: List[Dict[str, str]]) -> str:
+    """Convert messages to a single editable text format."""
+    text_parts = []
+    for msg in messages:
+        role = msg["role"].upper()
+        content = msg["content"]
+        text_parts.append(f"[[{role}]]\n{content}")
+    return "\n\n".join(text_parts)
+
+def text_to_messages(text: str) -> List[Dict[str, str]]:
+    """Parse text format back to messages."""
+    messages = []
+    parts = text.split("[[")
+    
+    for part in parts[1:]:  # Skip first empty part
+        if "]]" not in part:
+            continue
+        
+        role_end = part.find("]]")
+        role = part[:role_end].strip().lower()
+        content = part[role_end + 2:].strip()
+        
+        if role and content:
+            messages.append({"role": role, "content": content})
+    
+    return messages
+
+def check_messages_valid(messages: List[Dict[str, str]]) -> bool:
+    """Check if messages are valid."""
+    if not messages:
+        return False
+        
+    # Must start with system message
+    if messages[0]["role"] != "system":
+        return False
+        
+    # Check alternating pattern and valid roles
+    for i, msg in enumerate(messages[1:], 1):
+        if msg["role"] not in ["user", "assistant"]:
+            return False
+            
+        # Check alternating pattern
+        if i > 0 and msg["role"] == messages[i-1]["role"]:
+            return False
+            
+    return True
+
+def prompt_editor(messages: List[Dict[str, str]], title: str):
+    """Main prompt editing interface with toggle between edit and preview modes."""
+    # Initialize session state for this conversation
+    edit_key = f"{title}_edit_mode"
+    text_key = f"{title}_text"
+    
+    if edit_key not in st.session_state:
+        st.session_state[edit_key] = True
+    
+    if text_key not in st.session_state:
+        st.session_state[text_key] = messages_to_text(messages)
+    
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        if st.button("📝 Edit Mode", key=f"{title}_edit_btn", type="primary" if st.session_state[edit_key] else "secondary"):
+            st.session_state[edit_key] = True
+            
+    with col2:
+        if st.button("👁️ Preview Mode", key=f"{title}_preview_btn", type="primary" if not st.session_state[edit_key] else "secondary"):
+            st.session_state[edit_key] = False
+    
+    if st.session_state[edit_key]:
+        # Edit mode - show text area
+        st.markdown("**Edit the conversation:**")
+        st.markdown("Use `[[SYSTEM]]`, `[[USER]]`, `[[ASSISTANT]]` to mark different parts")
+        
+        edited_text = st.text_area(
+            "Conversation:",
+            value=st.session_state[text_key],
+            height=400,
+            key=f"{title}_textarea",
+            help="Edit the conversation using role markers"
+        )
+        
+        # Update session state when text changes
+        st.session_state[text_key] = edited_text
+        
+        # Try to parse and return updated messages
+        try:
+            parsed_messages = text_to_messages(edited_text)
+            if parsed_messages:
+                return parsed_messages
+        except:
+            pass
+    
+    else:
+        # Preview mode - auto-parse and show formatted output
+        st.markdown("**Formatted Conversation Preview:**")
+        
+        try:
+            parsed_messages = text_to_messages(st.session_state[text_key])
+            
+            if parsed_messages:
+                # Display parsed count
+                if check_messages_valid(parsed_messages):
+                    st.info(f"📊 Parsed {len(parsed_messages)} messages")
+                else:
+                    st.error("⚠️ Invalid messages found. Check your formatting.")
+                
+                # Display as JSON with proper wrapping
+                st.markdown("**JSON Format:**")
+                json_str = json.dumps(parsed_messages, indent=2, ensure_ascii=False)
+                st.code(json_str, language="json", wrap_lines=True)
+                
+                return parsed_messages
+            else:
+                st.warning("⚠️ No valid messages found. Check your formatting.")
+                
+        except Exception as e:
+            st.error(f"❌ Error parsing conversation: {str(e)}")
+            st.code(st.session_state[text_key], language="text", wrap_lines=True)
+    
+    return messages  # Return original if no updates
 
 def main():
     """Main application."""
@@ -360,26 +556,8 @@ def main():
         else:
             base_path = st.text_input("Base path to feature directories:", placeholder="/path/to/features")
         
-        # Feature loader
-        if base_path:
-            selected_path = feature_loader_interface(base_path)
-            
-            if selected_path and st.button("Load Features"):
-                with st.spinner("Loading features..."):
-                    try:
-                        sampler = make_quantile_sampler(n_examples=20, n_quantiles=1)
-                        features = load(
-                            selected_path,
-                            sampler=sampler,
-                            ctx_len=64,
-                            max_examples=100,
-                            load_similar_non_activating=10,
-                            load_random_non_activating=10
-                        )
-                        st.session_state.features = features
-                        st.success(f"Loaded {len(features)} features!")
-                    except Exception as e:
-                        st.error(f"Failed to load features: {str(e)}")
+        # Save directory input
+        save_dir = st.text_input("Save directory for results:", placeholder="/path/to/save/results", help="Directory to save job results as JSON files")
         
         st.divider()
         
@@ -393,9 +571,9 @@ def main():
     with col1:
         # Main content area
         if tab_selection == "Explain":
-            explanation_tab()
+            explanation_tab(base_path if base_path else "", save_dir if save_dir else None)
         else:
-            classification_tab()
+            classification_tab(base_path if base_path else "", save_dir if save_dir else None)
     
     with col2:
         job_progress_sidebar()

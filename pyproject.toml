@@ -5,14 +5,18 @@ description = "A simple, hackable implementation of automated interpretability."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "accelerate>=1.7.0",
     "baukit",
     "datasets>=2.14.4",
+    "dotenv>=0.9.9",
     "httpx>=0.27.2",
+    "ipykernel>=6.29.5",
     "ipywidgets>=8.1.5",
     "nest-asyncio>=1.6.0",
     "pydantic>=2.10.6",
     "sentence-transformers>=3.4.1",
     "setuptools>=75.8.2",
+    "streamlit>=1.45.1",
     "torchtyping>=0.1.5",
     "transformers>=4.50.2",
 ]

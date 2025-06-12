@@ -1,8 +1,18 @@
-from typing import List, Callable
+from typing import List, Callable, Iterable, Any
 
 import torch as t
 from torchtyping import TensorType
 from transformers import AutoTokenizer
+import streamlit as st
+
+def get_streamlit_pbar(iterable: Iterable, desc: str = "Loading features") -> Any:
+    pbar = st.progress(0, text="Loading features")
+
+    for i, item in enumerate(iterable):
+        pbar.progress(i + 1, text=desc)
+        yield item
+
+    pbar.empty()
 
 
 def get_top_logits(
