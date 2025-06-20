@@ -29,6 +29,8 @@ def make_feature_display(
     display(dash.root)
 
     loaded_features = {}
+
+
     with dash:
         for backend in backends:
             # Hookpoint should be the directory name
@@ -36,6 +38,11 @@ def make_feature_display(
             loaded = backend.query(
                 features[hookpoint], as_dict=False, **load_kwargs
             )
+
+            # print to text file
+            with open("/root/loaded_features.txt", "w") as f:
+                f.write(str(loaded) + "\n" + str(features[hookpoint]))
+
             loaded_features.update(loaded)
 
 

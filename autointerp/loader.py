@@ -224,6 +224,10 @@ def load(
         tokens = t.load(data["tokens_path"])
 
     tokenizer = AutoTokenizer.from_pretrained(data["model_id"])
+    tokenizer.padding_side = "right"
+
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
 
     # Locations corresponds to rows of (batch, seq, feature)
     locations: TensorType["features", 3] = data["locations"]

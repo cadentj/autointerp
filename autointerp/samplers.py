@@ -100,6 +100,9 @@ def quantile_sampler(
             trimmed_window = token_windows[j][~pad_token_mask]
             trimmed_activation = activation_windows[j][~pad_token_mask]
 
+            if trimmed_window.numel() <= 1: 
+                continue
+
             examples.append(
                 Example(
                     tokens=trimmed_window,
