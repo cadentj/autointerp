@@ -47,6 +47,9 @@ class Backend:
                 device_map="auto",
             )
         self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+        assert model_id == "meta-llama/Llama-3.1-8B"
+
         self.feature_fn = feature_fn
 
         hook_module = cache_dir.split("/")[-1]

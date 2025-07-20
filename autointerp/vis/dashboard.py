@@ -31,6 +31,7 @@ def make_feature_display(
     loaded_features = {}
     with dash:
         for backend in backends:
+            print(backend.hook_module)
             # Hookpoint should be the directory name
             hookpoint = backend.hook_module
             loaded = backend.query(
@@ -40,6 +41,8 @@ def make_feature_display(
 
 
     dash.display(loaded_features)
+
+    return backends
 
 
 class FeatureVisualizationDashboard:

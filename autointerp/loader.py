@@ -102,7 +102,6 @@ def _get_valid_features(
 
     return features
 
-
 def _load(
     tokens: TensorType["batch", "seq"],
     locations: TensorType["features", 3],
@@ -119,6 +118,9 @@ def _load(
 
     features = []
 
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.pad_token_id = tokenizer.eos_token_id
 
     if pbar == "streamlit":
         from .utils import get_streamlit_pbar
@@ -143,7 +145,7 @@ def _load(
         token_windows, activation_windows = _pool_activation_windows(
             _activations, _locations, tokens, ctx_len, max_examples
         )
-        
+
         examples = sampler(token_windows, activation_windows, tokenizer)
 
         if examples is None:
@@ -211,7 +213,7 @@ def _merge_shards_in_memory(cache_dir: str):
 def load(
     path: str,
     sampler: Callable,
-    indices: List[int] | int = None,
+    indices: List[int] | int | None = None,
     ctx_len: int = 64,
     max_examples: int = 2_000,
     load_similar_non_activating: int = 0,
