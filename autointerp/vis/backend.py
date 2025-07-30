@@ -46,9 +46,17 @@ class Backend:
                 torch_dtype=t.bfloat16,
                 device_map="auto",
             )
-        self.tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-        assert model_id == "meta-llama/Llama-3.1-8B"
+        # print(model_id)
+        # print("WARNIINGNGALKJDWLAD: using llama 3.1 tokenizer")
+        # self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.1-8B")
+
+        self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+
+        # assert model_id == "meta-llama/Llama-3.1-8B"
 
         self.feature_fn = feature_fn
 
