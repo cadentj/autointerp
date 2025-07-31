@@ -38,8 +38,7 @@ class Query:
         explanation_completion = await self.client.chat.completions.create(
             model=self.model,
             messages=messages,
-            reasoning_effort="low",
-            max_completion_tokens=16_384,
+            max_tokens=256,
             seed=0,
             **generation_kwargs,
         )
@@ -61,18 +60,24 @@ class Query:
         completion = await self.client.chat.completions.create(
             model=self.model,
             messages=messages,
-            reasoning_effort="low",
-            max_completion_tokens=16_384,
-            # logprobs=True,
-            # top_logprobs=20,
+            max_tokens=1,
+            logprobs=True,
+            top_logprobs=20,
             seed=0,
             **generation_kwargs,
         )
 
-        score = completion.choices[0].message.content
+        logprobs = self.logprob_probs(completion)
+        score = self._aggregate_0_100_score(logprobs)
 
-        # logprobs = self.logprob_probs(completion)
-        # score = self._aggregate_0_100_score(logprobs)
+        # messages.extend([
+        #     {
+        #         "role": "assistant",
+        #         "content": score,
+        #     },
+        # ])
+        # with open('/root/messages.txt', 'a') as f:
+        #     f.write(str(messages) + "\n")
 
         return explanation, score
 
