@@ -38,8 +38,8 @@ class Query:
         explanation_completion = await self.client.chat.completions.create(
             model=self.model,
             messages=messages,
-            max_tokens=200,
-            temperature=0,
+            reasoning_effort="low",
+            max_completion_tokens=16_384,
             seed=0,
             **generation_kwargs,
         )
@@ -61,16 +61,18 @@ class Query:
         completion = await self.client.chat.completions.create(
             model=self.model,
             messages=messages,
-            max_tokens=1,
-            temperature=0,
-            logprobs=True,
-            top_logprobs=20,
+            reasoning_effort="low",
+            max_completion_tokens=16_384,
+            # logprobs=True,
+            # top_logprobs=20,
             seed=0,
             **generation_kwargs,
         )
 
-        logprobs = self.logprob_probs(completion)
-        score = self._aggregate_0_100_score(logprobs)
+        score = completion.choices[0].message.content
+
+        # logprobs = self.logprob_probs(completion)
+        # score = self._aggregate_0_100_score(logprobs)
 
         return explanation, score
 
